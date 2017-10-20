@@ -2,7 +2,7 @@
 
 > A complete API wrapper for the [Binance](https://binance.com) API.
 
-Note: This wrapper uses Promises, if they are not supported on your, you might
+Note: This wrapper uses Promises, if they are not supported in your environment, you might
 want to add [a polyfill](https://github.com/stefanpenner/es6-promise) for them.
 
 ### Installation
@@ -516,10 +516,10 @@ Live user messages data feed.
 **Requires authentication**
 
 ```js
-const clean = client.ws.user(msg => {
+const clean = await client.ws.user(msg => {
   console.log(msg)
 })
 ```
 
-Note that this method returns a `clean` callback, that will clear
+Note that this method returns a promise returning a `clean` callback, that will clear
 the keep-alive interval and close the data stream.

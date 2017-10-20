@@ -119,7 +119,7 @@ const userTransforms = {
 const user = opts => cb => {
   const { getDataStream, keepDataStream, closeDataStream } = httpMethods(opts)
 
-  getDataStream().then(({ listenKey }) => {
+  return getDataStream().then(({ listenKey }) => {
     const w = new WebSocket(`${BASE}/${listenKey}`)
     w.on('message', msg => {
       const { e: type, ...rest } = JSON.parse(msg)
