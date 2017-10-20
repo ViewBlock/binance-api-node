@@ -131,7 +131,7 @@ console.log(await client.candles({ symbol: 'ETHBTC' }))
 |Param|Type|Required|Default|Description|
 |--- |--- |--- |--- |--- |
 |symbol|String|true|
-|interval|String|false|`5m`|`1m`, `3m`, `5m`, `15m`, `30m`, `1h`, `2h`, `4h`, `6h`, `8h`, `12h`, `1d`, `3d`, `1w`, `1M`|
+|interval|String|false|`5m`|`1m`, `3m`, `5m`, `15m`, `30m`, `1h`, `2h`,<br>`4h`, `6h`, `8h`, `12h`, `1d`, `3d`, `1w`, `1M`|
 |limit|Number|false|`500`|Max `500`|
 |startTime|Number|false|
 |endTime|Number|false|
