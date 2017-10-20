@@ -1,9 +1,6 @@
 import test from 'ava'
-import dotenv from 'dotenv'
 
 import Binance from 'index'
-
-dotenv.load()
 
 const client = Binance({
   apiKey: process.env.API_KEY,

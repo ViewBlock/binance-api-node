@@ -36,6 +36,9 @@
       "babel-register",
       "babel-polyfill"
     ],
+    "files": [
+      "test/index.js"
+    ],
     "babel": "inherit"
   },
   "author": "Balthazar Gronon <bgronon@gmail.com>",

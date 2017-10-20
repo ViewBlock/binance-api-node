@@ -1,7 +1,10 @@
 import test from 'ava'
+import dotenv from 'dotenv'
 
 import Binance from 'index'
 import { candleFields } from 'http'
+
+dotenv.load()
 
 const client = Binance()
 
