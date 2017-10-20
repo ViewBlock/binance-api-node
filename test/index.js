@@ -1,9 +1,17 @@
 import test from 'ava'
+import dotenv from 'dotenv'
 
 import Binance from 'index'
 import { candleFields } from 'http'
 
+dotenv.load()
+
 const client = Binance()
+
+const aClient = Binance({
+  apiKey: process.env.API_KEY,
+  apiSecret: process.env.API_SECRET,
+})
 
 const checkFields = (t, object, fields) => {
   fields.forEach(field => {
@@ -104,4 +112,22 @@ test.serial('[REST] Signed call without creds', t => {
   } catch (e) {
     t.is(e.message, 'You need to pass an API key and secret to make authenticated calls.')
   }
+})
+
+test.serial('[REST] order', async t => {
+  await aClient.orderTest({
+    symbol: 'ETHBTC',
+    side: 'BUY',
+    quantity: 1,
+    price: 1,
+  })
+
+  await aClient.orderTest({
+    symbol: 'ETHBTC',
+    side: 'BUY',
+    quantity: 1,
+    type: 'MARKET',
+  })
+
+  t.pass()
 })

@@ -1,7 +1,10 @@
 language: node_js
 node_js:
-  - 7
-  - 8
+- 7
+- 8
 script:
-  - npm run lint
-  - npm run report
+- npm run lint
+- npm run report
+env:
+  matrix:
+    secure: BJFmrdKMr+81ZaYCa1P5UcJBOi2tpENIe6mr8KUyJYF2K5x4nArhpXQzzI3OGD9wx0kKkCrvSVfH6FGtBhLqDXEiG++Wzf26nxwG9TZx1l/H3BzSighOPHkPYhYnGWOLfUTBifpzY4qdX5tfSsDURaJpRu48RH3OqyFC6iuWRNeFLZGDGvSAnGSLi+Kc3TUx45+dOy1ZvBevhZD2c4KNnJITSRfvtFvmwOffdiJEO5vnrxgQCStGcxYxrn7thBBSN0dyz123G8EebXaZlwaCEpMciXoydvDo3pB8nkWVB0exjGmjwINmdDcBOxZu7soveTyF+Vyfs3XJOm3e6bG2xZQ+Qgn5EMKpOLEKChz4He0aF97hbUC247HOJT2xZwpCs7f5/gz/4EGW7avtIFuhsTN+KIDUgzx1n4DeFv8j0WRsr6zL+tHs5ZuH8JWV79NXkw3mfmRLOLlZZe4Pdy8N4bWFRHwpSIiESIJQbf0c/fWuo5k0LXe/fGs28THd8vPSbkFA9HM5piKw8H4JkXo+7V6pUJp7g3FmVj+RYs1CnuS7E2547JLmb5noiHDXwm8vx5QRvH5Ys1eUkijL1ievFyLKjRx+9rdzqGKdOPUujLfORQUXRVi/Fabpggj6SHZV5/Cg6IDkaMpV79MLzEaHRWF0awXdxKRjGVS15sivgsw=
