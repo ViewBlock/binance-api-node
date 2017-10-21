@@ -137,6 +137,8 @@ export const userEventHandler = cb => msg => {
   cb(userTransforms[type] ? userTransforms[type](rest) : { type, ...rest })
 }
 
+export const keepStreamAlive = (method, listenKey) => () => method({ listenKey })
+
 const user = opts => cb => {
   const { getDataStream, keepDataStream, closeDataStream } = httpMethods(opts)
 
@@ -144,9 +146,8 @@ const user = opts => cb => {
     const w = new WebSocket(`${BASE}/${listenKey}`)
     w.on('message', userEventHandler(cb))
 
-    const int = setInterval(() => {
-      keepDataStream({ listenKey })
-    }, 42e3)
+    const int = setInterval(keepStreamAlive(keepDataStream, listenKey), 42e3)
+    keepStreamAlive(keepDataStream, listenKey)()
 
     return () => {
       clearInterval(int)

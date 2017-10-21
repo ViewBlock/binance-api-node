@@ -145,7 +145,7 @@ test.serial('[WS] trades', t => {
   })
 })
 
-test.serial('[WS] userTransforms', t => {
+test.serial('[WS] userEvents', t => {
   const accountPayload = {
     e: 'outboundAccountInfo',
     E: 1499405658849,
@@ -312,6 +312,12 @@ test.serial('[WS] userTransforms', t => {
       isBuyerMaker: false,
     })
   })(JSON.stringify(tradePayload))
+
+  const newEvent = { e: 'totallyNewEvent', yolo: 42 }
+
+  userEventHandler(res => {
+    t.deepEqual(res, { type: 'totallyNewEvent', yolo: 42 })
+  })(JSON.stringify(newEvent))
 })
 
 if (process.env.API_KEY) {
