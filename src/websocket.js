@@ -98,7 +98,7 @@ const trades = (payload, cb) =>
     })
   })
 
-export const userTransforms = {
+const userTransforms = {
   outboundAccountInfo: m => ({
     eventType: 'account',
     eventTime: m.E,
@@ -132,15 +132,17 @@ export const userTransforms = {
   }),
 }
 
+export const userEventHandler = cb => msg => {
+  const { e: type, ...rest } = JSON.parse(msg)
+  cb(userTransforms[type] ? userTransforms[type](rest) : { type, ...rest })
+}
+
 const user = opts => cb => {
   const { getDataStream, keepDataStream, closeDataStream } = httpMethods(opts)
 
   return getDataStream().then(({ listenKey }) => {
     const w = new WebSocket(`${BASE}/${listenKey}`)
-    w.on('message', msg => {
-      const { e: type, ...rest } = JSON.parse(msg)
-      cb(userTransforms[type] ? userTransforms[type](rest) : { type, ...rest })
-    })
+    w.on('message', userEventHandler(cb))
 
     const int = setInterval(() => {
       keepDataStream({ listenKey })
