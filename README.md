@@ -353,6 +353,21 @@ console.log(await client.getOrder({
 <summary>Output</summary>
 
 ```js
+{
+  symbol: 'ENGETH',
+  orderId: 191938,
+  clientOrderId: '1XZTVBTGS4K1e',
+  price: '0.00138000',
+  origQty: '1.00000000',
+  executedQty: '1.00000000',
+  status: 'FILLED',
+  timeInForce: 'GTC',
+  type: 'LIMIT',
+  side: 'SELL',
+  stopPrice: '0.00000000',
+  icebergQty: '0.00000000',
+  time: 1508611114735
+}
 ```
 
 </details>
@@ -428,6 +443,21 @@ console.log(await client.allOrders({
 <summary>Output</summary>
 
 ```js
+[{
+  symbol: 'ENGETH',
+  orderId: 191938,
+  clientOrderId: '1XZTVBTGS4K1e',
+  price: '0.00138000',
+  origQty: '1.00000000',
+  executedQty: '1.00000000',
+  status: 'FILLED',
+  timeInForce: 'GTC',
+  type: 'LIMIT',
+  side: 'SELL',
+  stopPrice: '0.00000000',
+  icebergQty: '0.00000000',
+  time: 1508611114735
+}]
 ```
 
 </details>
@@ -437,7 +467,7 @@ console.log(await client.allOrders({
 Get current account information.
 
 ```js
-console.log(await client.openOrders())
+console.log(await client.accountInfo())
 ```
 
 |Param|Type|Required|
@@ -448,6 +478,19 @@ console.log(await client.openOrders())
 <summary>Output</summary>
 
 ```js
+{
+  makerCommission: 10,
+  takerCommission: 10,
+  buyerCommission: 0,
+  sellerCommission: 0,
+  canTrade: true,
+  canWithdraw: true,
+  canDeposit: true,
+  balances: [
+    { asset: 'BTC', free: '0.00000000', locked: '0.00000000' },
+    { asset: 'LTC', free: '0.00000000', locked: '0.00000000' },
+  ]
+}
 ```
 
 </details>
@@ -473,6 +516,18 @@ console.log(await client.myTrades({
 <summary>Output</summary>
 
 ```js
+[{
+  id: 9960,
+  orderId: 191939,
+  price: '0.00138000',
+  qty: '10.00000000',
+  commission: '0.00001380',
+  commissionAsset: 'ETH',
+  time: 1508611114735,
+  isBuyer: false,
+  isMaker: false,
+  isBestMatch: true
+}]
 ```
 
 </details>
@@ -481,7 +536,8 @@ console.log(await client.myTrades({
 
 #### depth
 
-Live depth market data feed for a given symbol.
+Live depth market data feed. The first parameter can either
+be a single symbol string or an array of symbols.
 
 ```js
 client.ws.depth('ETHBTC', depth => {
@@ -489,9 +545,32 @@ client.ws.depth('ETHBTC', depth => {
 })
 ```
 
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'depthUpdate',
+  eventTime: 1508612956950,
+  symbol: 'ETHBTC',
+  updateId: 18331140,
+  bidDepth: [
+    { price: '0.04896500', quantity: '0.00000000' },
+    { price: '0.04891100', quantity: '15.00000000' },
+    { price: '0.04891000', quantity: '0.00000000' } ],
+  askDepth: [
+    { price: '0.04910600', quantity: '0.00000000' },
+    { price: '0.04910700', quantity: '11.24900000' }
+  ]
+}
+```
+
+</details>
+
 #### candles
 
-Live candle data feed for a given symbol and interval.
+Live candle data feed for a given interval. You can pass either a symbol string
+or a symbol array.
 
 ```js
 client.ws.candles('ETHBTC', '1m', candle => {
@@ -499,15 +578,56 @@ client.ws.candles('ETHBTC', '1m', candle => {
 })
 ```
 
-#### trades
-
-Live trade data feed for a given symbol.
+<details>
+<summary>Output</summary>
 
 ```js
-client.ws.trades('ETHBTC', trade => {
+{
+  eventType: 'kline',
+  eventTime: 1508613366276,
+  symbol: 'ETHBTC',
+  open: '0.04898000',
+  high: '0.04902700',
+  low: '0.04898000',
+  close: '0.04901900',
+  volume: '37.89600000',
+  trades: 30,
+  interval: '5m',
+  isFinal: false,
+  quoteVolume: '1.85728874',
+  buyVolume: '21.79900000',
+  quoteBuyVolume: '1.06838790'
+}
+```
+
+</details>
+
+#### trades
+
+Live trade data feed. Pass either a single symbol string or an array of symbols.
+
+```js
+client.ws.trades(['ETHBTC', 'BNBBTC'], trade => {
   console.log(trade)
 })
 ```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'aggTrade',
+  eventTime: 1508614495052,
+  symbol: 'ETHBTC',
+  price: '0.04923600',
+  quantity: '3.43500000',
+  maker: false,
+  tradeId: 2148226
+}
+```
+
+</details>
 
 #### user
 
@@ -523,3 +643,20 @@ const clean = await client.ws.user(msg => {
 
 Note that this method returns a promise returning a `clean` callback, that will clear
 the keep-alive interval and close the data stream.
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'account',
+  eventTime: 1508614885818,
+  balances: {
+    '123': { available: '0.00000000', locked: '0.00000000' },
+    '456': { available: '0.00000000', locked: '0.00000000' },
+    BTC: { available: '0.00000000', locked: '0.00000000' },
+  ]
+}
+```
+
+</details>

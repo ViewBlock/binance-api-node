@@ -4,15 +4,11 @@ import dotenv from 'dotenv'
 import Binance from 'index'
 import { candleFields } from 'http'
 
+import { checkFields } from './utils'
+
 dotenv.load()
 
 const client = Binance()
-
-const checkFields = (t, object, fields) => {
-  fields.forEach(field => {
-    t.truthy(object[field])
-  })
-}
 
 test.serial('[REST] ping', async t => {
   t.truthy(await client.ping(), 'A simple ping should work')
@@ -63,7 +59,7 @@ test.serial('[REST] candles', async t => {
 
 test.serial('[REST] aggTrades', async t => {
   try {
-    client.aggTrades({})
+    await client.aggTrades({})
   } catch (e) {
     t.is(e.message, 'Method aggTrades requires symbol parameter.')
   }
@@ -77,7 +73,7 @@ test.serial('[REST] aggTrades', async t => {
 
 test.serial('[REST] dailyStats', async t => {
   try {
-    client.dailyStats({})
+    await client.dailyStats({})
   } catch (e) {
     t.is(e.message, 'Method dailyStats requires symbol parameter.')
   }
@@ -99,14 +95,53 @@ test.serial('[REST] allBookTickers', async t => {
   t.truthy(tickers.ETHBTC)
 })
 
-test.serial('[REST] Signed call without creds', t => {
-  const client = Binance()
-
+test.serial('[REST] Signed call without creds', async t => {
   try {
-    client.order({ symbol: 'ETHBTC', side: 'BUY', quantity: 1 })
+    await client.order({ symbol: 'ETHBTC', side: 'BUY', quantity: 1 })
   } catch (e) {
     t.is(e.message, 'You need to pass an API key and secret to make authenticated calls.')
   }
+})
+
+test.serial('[WS] depth', t => {
+  return new Promise(resolve => {
+    client.ws.depth('ETHBTC', depth => {
+      t.is(depth, depth, 'ETHBTC')
+      checkFields(t, depth, [
+        'eventType',
+        'eventTime',
+        'updateId',
+        'symbol',
+        'bidDepth',
+        'askDepth',
+      ])
+      resolve()
+    })
+  })
+})
+
+test.serial('[WS] candles', t => {
+  try {
+    client.ws.candles('ETHBTC', d => d)
+  } catch (e) {
+    t.is(e.message, 'Please pass a symbol, interval and callback.')
+  }
+
+  return new Promise(resolve => {
+    client.ws.candles('ETHBTC', '5m', candle => {
+      checkFields(t, candle, ['open', 'high', 'low', 'close', 'volume', 'trades', 'quoteVolume'])
+      resolve()
+    })
+  })
+})
+
+test.serial('[WS] trades', t => {
+  return new Promise(resolve => {
+    client.ws.trades(['BNBBTC', 'ETHBTC', 'BNTBTC'], trade => {
+      checkFields(t, trade, ['eventType', 'tradeId', 'maker', 'quantity', 'price', 'symbol'])
+      resolve()
+    })
+  })
 })
 
 if (process.env.API_KEY) {
