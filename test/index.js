@@ -139,7 +139,7 @@ test.serial('[WS] candles', t => {
 test.serial('[WS] trades', t => {
   return new Promise(resolve => {
     client.ws.trades(['BNBBTC', 'ETHBTC', 'BNTBTC'], trade => {
-      checkFields(t, trade, ['eventType', 'tradeId', 'maker', 'quantity', 'price', 'symbol'])
+      checkFields(t, trade, ['eventType', 'tradeId', 'quantity', 'price', 'symbol'])
       resolve()
     })
   })
