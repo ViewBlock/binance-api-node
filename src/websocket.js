@@ -98,7 +98,7 @@ const trades = (payload, cb) =>
     })
   })
 
-const userTransforms = {
+export const userTransforms = {
   outboundAccountInfo: m => ({
     eventType: 'account',
     eventTime: m.E,

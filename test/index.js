@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 
 import Binance from 'index'
 import { candleFields } from 'http'
+import { userTransforms } from 'websocket'
 
 import { checkFields } from './utils'
 
@@ -141,6 +142,169 @@ test.serial('[WS] trades', t => {
       checkFields(t, trade, ['eventType', 'tradeId', 'maker', 'quantity', 'price', 'symbol'])
       resolve()
     })
+  })
+})
+
+test.serial('[WS] userTransforms', t => {
+  const accountPayload = {
+    e: 'outboundAccountInfo',
+    E: 1499405658849,
+    m: 0,
+    t: 0,
+    b: 0,
+    s: 0,
+    T: true,
+    W: true,
+    D: true,
+    B: [
+      {
+        a: 'LTC',
+        f: '17366.18538083',
+        l: '0.00000000',
+      },
+      {
+        a: 'BTC',
+        f: '10537.85314051',
+        l: '2.19464093',
+      },
+      {
+        a: 'ETH',
+        f: '17902.35190619',
+        l: '0.00000000',
+      },
+      {
+        a: 'BNC',
+        f: '1114503.29769312',
+        l: '0.00000000',
+      },
+      {
+        a: 'NEO',
+        f: '0.00000000',
+        l: '0.00000000',
+      },
+    ],
+  }
+
+  t.deepEqual(userTransforms.outboundAccountInfo(accountPayload), {
+    eventType: 'account',
+    eventTime: 1499405658849,
+    balances: {
+      LTC: { available: '17366.18538083', locked: '0.00000000' },
+      BTC: { available: '10537.85314051', locked: '2.19464093' },
+      ETH: { available: '17902.35190619', locked: '0.00000000' },
+      BNC: { available: '1114503.29769312', locked: '0.00000000' },
+      NEO: { available: '0.00000000', locked: '0.00000000' },
+    },
+  })
+
+  const orderPayload = {
+    e: 'executionReport',
+    E: 1499405658658,
+    s: 'ETHBTC',
+    c: 'mUvoqJxFIILMdfAW5iGSOW',
+    S: 'BUY',
+    o: 'LIMIT',
+    f: 'GTC',
+    q: '1.00000000',
+    p: '0.10264410',
+    P: '0.00000000',
+    F: '0.00000000',
+    g: -1,
+    C: 'null',
+    x: 'NEW',
+    X: 'NEW',
+    r: 'NONE',
+    i: 4293153,
+    l: '0.00000000',
+    z: '0.00000000',
+    L: '0.00000000',
+    n: '0',
+    N: null,
+    T: 1499405658657,
+    t: -1,
+    I: 8641984,
+    w: true,
+    m: false,
+    M: false,
+  }
+
+  t.deepEqual(userTransforms.executionReport(orderPayload), {
+    type: 'executionReport',
+    eventTime: 1499405658658,
+    symbol: 'ETHBTC',
+    newClientOrderId: 'mUvoqJxFIILMdfAW5iGSOW',
+    side: 'BUY',
+    orderType: 'LIMIT',
+    timeInForce: 'GTC',
+    quantity: '1.00000000',
+    price: '0.10264410',
+    executionType: 'NEW',
+    orderStatus: 'NEW',
+    orderRejectReason: 'NONE',
+    orderId: 4293153,
+    orderTime: 1499405658657,
+    lastTradeQuantity: '0.00000000',
+    totalTradeQuantity: '0.00000000',
+    priceLastTrade: '0.00000000',
+    commission: '0',
+    commissionAsset: null,
+    tradeId: -1,
+    isBuyerMaker: false,
+  })
+
+  const tradePayload = {
+    e: 'executionReport',
+    E: 1499406026404,
+    s: 'ETHBTC',
+    c: '1hRLKJhTRsXy2ilYdSzhkk',
+    S: 'BUY',
+    o: 'LIMIT',
+    f: 'GTC',
+    q: '22.42906458',
+    p: '0.10279999',
+    P: '0.00000000',
+    F: '0.00000000',
+    g: -1,
+    C: 'null',
+    x: 'TRADE',
+    X: 'FILLED',
+    r: 'NONE',
+    i: 4294220,
+    l: '17.42906458',
+    z: '22.42906458',
+    L: '0.10279999',
+    n: '0.00000001',
+    N: 'BNC',
+    T: 1499406026402,
+    t: 77517,
+    I: 8644124,
+    w: false,
+    m: false,
+    M: true,
+  }
+
+  t.deepEqual(userTransforms.executionReport(tradePayload), {
+    type: 'executionReport',
+    eventTime: 1499406026404,
+    symbol: 'ETHBTC',
+    newClientOrderId: '1hRLKJhTRsXy2ilYdSzhkk',
+    side: 'BUY',
+    orderType: 'LIMIT',
+    timeInForce: 'GTC',
+    quantity: '22.42906458',
+    price: '0.10279999',
+    executionType: 'TRADE',
+    orderStatus: 'FILLED',
+    orderRejectReason: 'NONE',
+    orderId: 4294220,
+    orderTime: 1499406026402,
+    lastTradeQuantity: '17.42906458',
+    totalTradeQuantity: '22.42906458',
+    priceLastTrade: '0.10279999',
+    commission: '0.00000001',
+    commissionAsset: 'BNC',
+    tradeId: 77517,
+    isBuyerMaker: false,
   })
 })
 
