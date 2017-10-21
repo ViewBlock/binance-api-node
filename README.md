@@ -55,7 +55,7 @@ Following examples will use the `await` form, but that's totally up to you.
     - [myTrades](#mytrades)
 - [Websockets](#websockets)
     - [depth](#depth)
-    - [candles](#candles)
+    - [candles](#candles-1)
     - [trades](#trades)
     - [user](#user)
 
