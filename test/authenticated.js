@@ -87,6 +87,28 @@ test.serial('[REST] accountInfo', async t => {
   t.truthy(account.balances.length)
 })
 
+test.serial('[REST] depositHistory', async t => {
+  const history = await client.depositHistory()
+  t.true(history.success)
+  t.truthy(history.depositList.length)
+})
+
+test.serial('[REST] withdrawHistory', async t => {
+  const history = await client.withdrawHistory()
+  t.true(history.success)
+  t.truthy(history.withdrawList.length)
+})
+
+// test.only('[REST] depositAddress', async t => {
+//   const out = await client.depositAddress({
+//     coin: 'NEO',
+//     sameAddress: false,
+//   })
+
+//   console.log(out)
+//   t.true(out)
+// })
+
 test.serial('[REST] myTrades', async t => {
   const trades = await client.myTrades({ symbol: 'ENGETH' })
   t.true(Array.isArray(trades))

@@ -53,6 +53,10 @@ Following examples will use the `await` form, but that's totally up to you.
     - [allOrders](#allorders)
     - [accountInfo](#accountinfo)
     - [myTrades](#mytrades)
+    - [depositHistory](#deposithistory)
+    - [withdrawHistory](#withdrawhistory)
+    - [widthdraw](#withdraw)
+    - [depositAddress](#depositaddress)
 - [Websockets](#websockets)
     - [depth](#depth)
     - [candles](#candles-1)
@@ -531,6 +535,122 @@ console.log(await client.myTrades({
 ```
 
 </details>
+
+#### depositHistory
+
+Get the account deposit history.
+
+```js
+console.log(await client.depositHistory())
+```
+
+|Param|Type|Required|Description|
+|--- |--- |--- |--- |
+|asset|String|false|
+|status|Number|false|0 (0: pending, 1: success)|
+|startTime|Number|false|
+|endTime|Number|false|
+|recvWindow|Number|false|
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "depositList": [
+    {
+      "insertTime": 1508198532000,
+      "amount": 0.04670582,
+      "asset": "ETH",
+      "status": 1
+    }
+  ],
+  "success": true
+}
+```
+
+</details>
+
+#### withdrawHistory
+
+Get the account withdraw history.
+
+```js
+console.log(await client.withdrawHistory())
+```
+
+|Param|Type|Required|Description|
+|--- |--- |--- |--- |
+|asset|String|false|
+|status|Number|false|0 (0: Email Sent, 1: Cancelled 2: Awaiting Approval, 3: Rejected, 4: Processing, 5: Failure, 6: Completed)|
+|startTime|Number|false|
+|endTime|Number|false|
+|recvWindow|Number|false|
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "withdrawList": [
+    {
+      "amount": 1,
+      "address": "0x6915f16f8791d0a1cc2bf47c13a6b2a92000504b",
+      "asset": "ETH",
+      "applyTime": 1508198532000
+      "status": 4
+    },
+  ],
+  "success": true
+}
+```
+
+</details>
+
+#### widthdraw
+
+Triggers the withdraw process (*untested for now*).
+
+```js
+console.log(await client.withdraw({
+  asset: 'ETH',
+  address: '0xfa97c22a03d8522988c709c24283c0918a59c795',
+  amount: 100,
+}))
+```
+
+|Param|Type|Required|Description|
+|--- |--- |--- |--- |
+|asset|String|true|
+|address|String|true|
+|amount|Number|true|
+|name|String|false|Description of the address|
+|recvWindow|Number|false|
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "msg": "success",
+  "success": true
+}
+```
+
+</details>
+
+#### depositAddress
+
+**Method not ready yet**
+
+Retrieve the account deposit address for a specific coin.
+
+```js
+console.log(await client.depositAddress({
+  coin: 'NEO',
+  sameAddress: false,
+}))
+```
 
 ### WebSockets
 

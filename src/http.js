@@ -3,7 +3,7 @@ import zip from 'lodash.zipobject'
 
 import 'isomorphic-fetch'
 
-const BASE = 'https://www.binance.com/api'
+const BASE = 'https://www.binance.com'
 
 /**
  * Build query string for uri encoded url based on json object
@@ -55,7 +55,7 @@ const checkParams = (name, payload, requires = []) => {
  */
 const publicCall = (path, data, method = 'GET') =>
   sendResult(
-    fetch(`${BASE}${path}${makeQueryString(data)}`, {
+    fetch(`${BASE}/api${path}${makeQueryString(data)}`, {
       method,
       json: true,
     }),
@@ -90,11 +90,16 @@ const privateCall = ({ apiKey, apiSecret }) => (
   const newData = noExtra ? data : { ...data, timestamp, signature }
 
   return sendResult(
-    fetch(`${BASE}${path}${noData ? '' : makeQueryString(newData)}`, {
-      method,
-      headers: { 'X-MBX-APIKEY': apiKey },
-      json: true,
-    }),
+    fetch(
+      `${BASE}${path.includes('/wapi') ? '' : '/api'}${path}${noData
+        ? ''
+        : makeQueryString(newData)}`,
+      {
+        method,
+        headers: { 'X-MBX-APIKEY': apiKey },
+        json: true,
+      },
+    ),
   )
 }
 
@@ -192,6 +197,11 @@ export default opts => {
 
     accountInfo: payload => pCall('/v3/account', payload),
     myTrades: payload => pCall('/v3/myTrades', payload),
+
+    withdraw: payload => pCall('/wapi/v1/withdraw.html', payload, 'POST'),
+    withdrawHistory: payload => pCall('/wapi/v1/getWithdrawHistory.html', payload, 'POST'),
+    depositHistory: payload => pCall('/wapi/v1/getDepositHistory.html', payload, 'POST'),
+    depositAddress: payload => pCall('/wapi/v1/getChargeAddress.html', payload, 'POST'),
 
     getDataStream: () => pCall('/v1/userDataStream', null, 'POST', true),
     keepDataStream: payload => pCall('/v1/userDataStream', payload, 'PUT', false, true),
