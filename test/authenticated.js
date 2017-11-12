@@ -96,7 +96,7 @@ test.serial('[REST] depositHistory', async t => {
 test.serial('[REST] withdrawHistory', async t => {
   const history = await client.withdrawHistory()
   t.true(history.success)
-  t.truthy(history.withdrawList.length)
+  t.is(typeof history.withdrawList.length, 'number')
 })
 
 // test.only('[REST] depositAddress', async t => {
