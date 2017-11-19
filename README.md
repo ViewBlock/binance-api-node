@@ -641,21 +641,29 @@ console.log(await client.withdraw({
 
 #### depositAddress
 
-*Method not ready yet*
-
-Retrieve the account deposit address for a specific coin.
+Retrieve the account deposit address for a specific asset.
 
 ```js
-console.log(await client.depositAddress({
-  coin: 'NEO',
-  sameAddress: false,
-}))
+console.log(await client.depositAddress({ asset: 'NEO' }))
 ```
 
 |Param|Type|Required|Description|
 |--- |--- |--- |--- |
-|coin|String|true|The coin name|
-|sameAddress|Boolean|true|If you want to regenerate an address|
+|asset|String|true|The asset name|
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  address: 'AM6ytPW78KYxQCmU2pHYGcee7GypZ7Yhhc',
+  addressTag: '',
+  asset: 'NEO',
+  success: true,
+}
+```
+
+</details>
 
 ### WebSockets
 

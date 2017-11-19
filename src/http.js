@@ -3,7 +3,7 @@ import zip from 'lodash.zipobject'
 
 import 'isomorphic-fetch'
 
-const BASE = 'https://www.binance.com'
+const BASE = 'https://api.binance.com'
 
 /**
  * Build query string for uri encoded url based on json object
@@ -198,10 +198,10 @@ export default opts => {
     accountInfo: payload => pCall('/v3/account', payload),
     myTrades: payload => pCall('/v3/myTrades', payload),
 
-    withdraw: payload => pCall('/wapi/v1/withdraw.html', payload, 'POST'),
-    withdrawHistory: payload => pCall('/wapi/v1/getWithdrawHistory.html', payload, 'POST'),
-    depositHistory: payload => pCall('/wapi/v1/getDepositHistory.html', payload, 'POST'),
-    depositAddress: payload => pCall('/wapi/v1/getChargeAddress.html', payload, 'POST'),
+    withdraw: payload => pCall('/wapi/v3/withdraw.html', payload, 'POST'),
+    withdrawHistory: payload => pCall('/wapi/v3/withdrawHistory.html', payload),
+    depositHistory: payload => pCall('/wapi/v3/depositHistory.html', payload),
+    depositAddress: payload => pCall('/wapi/v3/depositAddress.html', payload),
 
     getDataStream: () => pCall('/v1/userDataStream', null, 'POST', true),
     keepDataStream: payload => pCall('/v1/userDataStream', payload, 'PUT', false, true),

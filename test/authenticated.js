@@ -99,15 +99,12 @@ test.serial('[REST] withdrawHistory', async t => {
   t.is(typeof history.withdrawList.length, 'number')
 })
 
-// test.only('[REST] depositAddress', async t => {
-//   const out = await client.depositAddress({
-//     coin: 'NEO',
-//     sameAddress: false,
-//   })
-
-//   console.log(out)
-//   t.true(out)
-// })
+test.serial('[REST] depositAddress', async t => {
+  const out = await client.depositAddress({ asset: 'NEO' })
+  t.true(out.success)
+  t.is(out.asset, 'NEO')
+  t.truthy(out.address)
+})
 
 test.serial('[REST] myTrades', async t => {
   const trades = await client.myTrades({ symbol: 'ENGETH' })
