@@ -97,7 +97,7 @@ const privateCall = ({ apiKey, apiSecret }) => (
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
   }
 
-  const timestamp = getUtcDate(new Date())
+  const timestamp = getUtcDate(new Date()).getTime()
   const signature = crypto
     .createHmac('sha256', apiSecret)
     .update(makeQueryString({ ...data, timestamp }).substr(1))
