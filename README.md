@@ -26,8 +26,7 @@ const client2 = Binance({
   apiSecret: 'xxx',
 })
 
-client.time()
-  .then(time => console.log(time))
+client.time().then(time => console.log(time))
 ```
 
 Every REST method returns a Promise, making this library [async await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) ready.
