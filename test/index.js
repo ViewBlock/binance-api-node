@@ -232,7 +232,7 @@ test.serial('[WS] userEvents', t => {
 
   userEventHandler(res => {
     t.deepEqual(res, {
-      type: 'executionReport',
+      eventType: 'executionReport',
       eventTime: 1499405658658,
       symbol: 'ETHBTC',
       newClientOrderId: 'mUvoqJxFIILMdfAW5iGSOW',
