@@ -108,7 +108,7 @@ const userTransforms = {
     }, {}),
   }),
   executionReport: m => ({
-    type: 'executionReport',
+    eventType: 'executionReport',
     eventTime: m.E,
     symbol: m.s,
     newClientOrderId: m.c,
