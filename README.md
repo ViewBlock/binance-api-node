@@ -300,10 +300,10 @@ Creates a new order.
 
 ```js
 console.log(await client.order({
-  symbol: 'ETHBTC',
+  symbol: 'XLMETH',
   side: 'BUY',
-  quantity: 1,
-  price: 1,
+  quantity: 100,
+  price: 0.0002,
 }))
 ```
 
@@ -324,6 +324,19 @@ console.log(await client.order({
 <summary>Output</summary>
 
 ```js
+{
+  symbol: 'XLMETH',
+  orderId: 1740797,
+  clientOrderId: '1XZTVBTGS4K1e',
+  transactTime: 1514418413947,
+  price: '0.00020000',
+  origQty: '100.00000000',
+  executedQty: '0.00000000',
+  status: 'NEW',
+  timeInForce: 'GTC',
+  type: 'LIMIT',
+  side: 'BUY'
+}
 ```
 
 </details>
