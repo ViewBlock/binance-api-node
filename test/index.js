@@ -107,7 +107,6 @@ test.serial('[REST] Signed call without creds', async t => {
 test.serial('[WS] depth', t => {
   return new Promise(resolve => {
     client.ws.depth('ETHBTC', depth => {
-      t.is(depth, depth, 'ETHBTC')
       checkFields(t, depth, [
         'eventType',
         'eventTime',
@@ -116,6 +115,35 @@ test.serial('[WS] depth', t => {
         'bidDepth',
         'askDepth',
       ])
+      resolve()
+    })
+  })
+})
+
+test.serial('[WS] partial depth', t => {
+  return new Promise(resolve => {
+    client.ws.partialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {
+      checkFields(t, depth, ['lastUpdateId', 'bids', 'asks'])
+      resolve()
+    })
+  })
+})
+
+test.serial('[WS] ticker', t => {
+  return new Promise(resolve => {
+    client.ws.ticker('ETHBTC', ticker => {
+      checkFields(t, ticker, ['open', 'high', 'low', 'eventTime', 'symbol', 'volume'])
+      resolve()
+    })
+  })
+})
+
+test.serial('[WS] allTicker', t => {
+  return new Promise(resolve => {
+    client.ws.allTickers(tickers => {
+      t.truthy(Array.isArray(tickers))
+      t.is(tickers[0].eventType, '24hrTicker')
+      checkFields(t, tickers[0], ['symbol', 'priceChange', 'priceChangePercent'])
       resolve()
     })
   })

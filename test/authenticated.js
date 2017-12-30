@@ -117,5 +117,4 @@ test.serial('[WS] user', async t => {
   const clean = await client.ws.user()
   t.truthy(clean)
   t.true(typeof clean === 'function')
-  clean()
 })
