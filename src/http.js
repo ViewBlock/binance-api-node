@@ -16,6 +16,22 @@ const makeQueryString = q =>
     : ''
 
 /**
+ * Get UTC date based on current date time to avoid issues where the time
+ * does not match the time on the Binance server. This can happen when calling
+ * new Date() as the function uses the system timezone.
+ */
+const getUtcDate = now => {
+  return new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    now.getUTCHours(),
+    now.getUTCMinutes(),
+    now.getUTCSeconds()
+  ));
+}
+
+/**
  * Finalize APi response
  */
 const sendResult = call =>
@@ -81,7 +97,7 @@ const privateCall = ({ apiKey, apiSecret }) => (
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
   }
 
-  const timestamp = Date.now()
+  const timestamp = getUtcDate(new Date()).getTime()
   const signature = crypto
     .createHmac('sha256', apiSecret)
     .update(makeQueryString({ ...data, timestamp }).substr(1))
