@@ -58,6 +58,9 @@ Following examples will use the `await` form, but that's totally up to you.
     - [depositAddress](#depositaddress)
 - [Websockets](#websockets)
     - [depth](#depth)
+    - [partialDepth](#partialdepth)
+    - [ticker](#ticker)
+    - [allTickers](#alltickers)
     - [candles](#candles-1)
     - [trades](#trades)
     - [user](#user)
@@ -679,6 +682,18 @@ console.log(await client.depositAddress({ asset: 'NEO' }))
 
 ### WebSockets
 
+Every websocket utility returns a function you can call to close the opened
+connection and avoid memory issues.
+
+```js
+const clean = client.ws.depth('ETHBTC', depth => {
+  console.log(depth)
+})
+
+// After you're done
+clean()
+```
+
 #### depth
 
 Live depth market data feed. The first parameter can either
@@ -711,6 +726,89 @@ client.ws.depth('ETHBTC', depth => {
 ```
 
 </details>
+
+#### partialDepth
+
+Top levels bids and asks, pushed every second. Valid levels are 5, 10, or 20.
+Accepts an array of objects for multiple depths.
+
+```js
+client.ws.partialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {
+  console.log(depth)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  bids: [
+    { price: '0.04896500', quantity: '0.00000000' },
+    { price: '0.04891100', quantity: '15.00000000' },
+    { price: '0.04891000', quantity: '0.00000000' }
+  ],
+  asks: [
+    { price: '0.04910600', quantity: '0.00000000' },
+    { price: '0.04910700', quantity: '11.24900000' }
+  ]
+}
+```
+
+</details>
+
+#### ticker
+
+24hr Ticker statistics for a symbol pushed every second. Accepts an array of symbols.
+
+```js
+client.ws.ticker('HSRETH', ticker => {
+  console.log(ticker)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: '24hrTicker',
+  eventTime: 1514670820924,
+  symbol: 'HSRETH',
+  priceChange: '-0.00409700',
+  priceChangePercent: '-11.307',
+  weightedAvg: '0.03394946',
+  prevDayClose: '0.03623500',
+  curDayClose: '0.03213800',
+  closeTradeQuantity: '7.02000000',
+  bestBid: '0.03204200',
+  bestBidQnt: '78.00000000',
+  bestAsk: '0.03239800',
+  bestAskQnt: '7.00000000',
+  open: '0.03623500',
+  high: '0.03659900',
+  low: '0.03126000',
+  volume: '100605.15000000',
+  volumeQuote: '3415.49097353',
+  openTime: 1514584420922,
+  closeTime: 1514670820922,
+  firstTradeId: 344803,
+  lastTradeId: 351380,
+  totalTrades: 6578
+}
+```
+
+</details>
+
+#### allTickers
+
+Retrieves all the tickers.
+
+```js
+client.ws.partialDepth(tickers => {
+  console.log(tickers)
+})
+```
 
 #### candles
 
