@@ -743,6 +743,8 @@ client.ws.partialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {
 
 ```js
 {
+  symbol: 'ETHBTC',
+  level: 10,
   bids: [
     { price: '0.04896500', quantity: '0.00000000' },
     { price: '0.04891100', quantity: '15.00000000' },

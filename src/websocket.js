@@ -38,6 +38,8 @@ const partialDepth = (payload, cb) => {
     w.on('message', msg => {
       const { lastUpdateId, bids, asks } = JSON.parse(msg)
       cb({
+        symbol,
+        level,
         lastUpdateId,
         bids: bids.map(b => zip(['price', 'quantity'], b)),
         asks: asks.map(a => zip(['price', 'quantity'], a)),
