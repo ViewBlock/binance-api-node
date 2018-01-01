@@ -807,7 +807,7 @@ client.ws.ticker('HSRETH', ticker => {
 Retrieves all the tickers.
 
 ```js
-client.ws.partialDepth(tickers => {
+client.ws.allTickers(tickers => {
   console.log(tickers)
 })
 ```
