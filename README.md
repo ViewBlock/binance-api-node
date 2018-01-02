@@ -886,8 +886,7 @@ const clean = await client.ws.user(msg => {
 })
 ```
 
-Note that this method returns a promise returning a `clean` callback, that will clear
-the keep-alive interval and close the data stream.
+Note that this method returns a promise which will resolve the `clean` callback.
 
 <details>
 <summary>Output</summary>
