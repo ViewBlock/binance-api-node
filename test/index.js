@@ -20,6 +20,11 @@ test.serial('[REST] time', async t => {
   t.truthy(new Date(ts).getTime() > 0, 'The returned timestamp should be valid')
 })
 
+test.serial('[REST] exchangeInfo', async t => {
+  const res = await client.exchangeInfo()
+  checkFields(t, res, ['timezone', 'serverTime', 'rateLimits', 'symbols'])
+})
+
 test.serial('[REST] book', async t => {
   try {
     await client.book()

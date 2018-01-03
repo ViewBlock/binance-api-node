@@ -37,6 +37,7 @@ Following examples will use the `await` form, but that's totally up to you.
 - [Public REST Endpoints](#public-rest-endpoints)
     - [ping](#ping)
     - [time](#time)
+    - [exchangeInfo](#exchangeinfo)
     - [book](#book)
     - [candles](#candles)
     - [aggTrades](#aggtrades)
@@ -88,6 +89,68 @@ console.log(await client.time())
 
 ```js
 1508478457643
+```
+
+</details>
+
+#### exchangeInfo
+
+Get the current exchange trading rules and symbol information.
+
+```js
+console.log(await client.exchangeInfo())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "timezone": "UTC",
+  "serverTime": 1508631584636,
+  "rateLimits": [
+    {
+      "rateLimitType": "REQUESTS",
+      "interval": "MINUTE",
+      "limit": 1200
+    },
+    {
+      "rateLimitType": "ORDERS",
+      "interval": "SECOND",
+      "limit": 10
+    },
+    {
+      "rateLimitType": "ORDERS",
+      "interval": "DAY",
+      "limit": 100000
+    }
+  ],
+  "exchangeFilters": [],
+  "symbols": [{
+    "symbol": "ETHBTC",
+    "status": "TRADING",
+    "baseAsset": "ETH",
+    "baseAssetPrecision": 8,
+    "quoteAsset": "BTC",
+    "quotePrecision": 8,
+    "orderTypes": ["LIMIT", "MARKET"],
+    "icebergAllowed": false,
+    "filters": [{
+      "filterType": "PRICE_FILTER",
+      "minPrice": "0.00000100",
+      "maxPrice": "100000.00000000",
+      "tickSize": "0.00000100"
+    }, {
+      "filterType": "LOT_SIZE",
+      "minQty": "0.00100000",
+      "maxQty": "100000.00000000",
+      "stepSize": "0.00100000"
+    }, {
+      "filterType": "MIN_NOTIONAL",
+      "minNotional": "0.00100000"
+    }]
+  }]
+}
 ```
 
 </details>
