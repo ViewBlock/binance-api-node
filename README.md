@@ -7,8 +7,12 @@ want to add [a polyfill](https://github.com/stefanpenner/es6-promise) for them.
 
 ### Installation
 
+#### Using Yarn
     yarn add binance-api-node
 
+#### Using npm
+    npm install {github-repo}/binance-api-node //example: npm install dpollard-gva/binance-api-node
+    
 ### Getting started
 
 Import the module and create a new client. Passing api keys is optional only if
