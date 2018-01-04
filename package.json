@@ -9,8 +9,8 @@
     "cover": "nyc ava",
     "report": "npm run cover && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint src",
-    "preinstall": "npm install --ignore-scripts --only=dev || npm install",
-    "postinstall": "rm -rf dist && ./node_modules/.bin/babel src -d dist && npm prune --production"
+    "preinstall": "if [[ ${NODE_ENV} == \"production\" ]]; then npm install --ignore-scripts --only=dev || npm install && rm -rf dist; else echo 0; fi",
+    "postinstall": "./node_modules/.bin/babel src -d dist && if [[ ${NODE_ENV} == \"production\" ]]; then npm prune --production; else echo 0; fi"
   },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
