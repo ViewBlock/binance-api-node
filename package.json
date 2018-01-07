@@ -3,6 +3,7 @@
   "version": "0.4.3",
   "description": "A node API wrapper for Binance",
   "main": "dist",
+  "types": "types.d.ts",
   "scripts": {
     "build": "rm -rf dist && babel src -d dist",
     "test": "ava",
