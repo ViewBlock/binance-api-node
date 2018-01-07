@@ -2,7 +2,7 @@ declare module 'binance-api-node' {
   export default function(options?: { apiKey: string; apiSecret: string }): Binance
 
   export interface Account {
-    balances: Array<Balance>
+    balances: Array<AssetBalance>
     buyerCommission: number
     canDeposit: boolean
     canTrade: boolean
@@ -13,7 +13,7 @@ declare module 'binance-api-node' {
     updateTime: number
   }
 
-  export interface Balance {
+  export interface AssetBalance {
     asset: string
     free: string
     locked: string
