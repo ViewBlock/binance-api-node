@@ -4,7 +4,7 @@
   "description": "A node API wrapper for Binance",
   "main": "dist",
   "scripts": {
-    "build": "rm -rf dist && babel src -d dist",
+    "build": "rimraf dist && babel src -d dist",
     "test": "ava",
     "cover": "nyc ava",
     "report": "npm run cover && nyc report --reporter=text-lcov | coveralls",
@@ -29,7 +29,8 @@
     "eslint-config-prettier": "^2.6.0",
     "eslint-config-zavatta": "^6.0.1",
     "nyc": "^11.2.1",
-    "prettier": "^1.7.4"
+    "prettier": "^1.7.4",
+    "rimraf": "^2.6.2"
   },
   "ava": {
     "require": [
