@@ -1,7 +1,7 @@
 declare module 'binance-api-node' {
   export default function(options?: { apiKey: string; apiSecret: string }): Binance
 
-  export interface AccountInfo {
+  export interface Account {
     balances: Array<Balance>
     buyerCommission: number
     canDeposit: boolean
@@ -20,7 +20,7 @@ declare module 'binance-api-node' {
   }
 
   export interface Binance {
-    accountInfo(): Promise<AccountInfo>
+    accountInfo(): Promise<Account>
     order(options: NewOrder): Promise<Order>
     prices(): Promise<{ [index: string]: string }>
     time(): Promise<number>
