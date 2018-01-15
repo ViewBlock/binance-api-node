@@ -64,6 +64,16 @@ test.serial('[REST] allOrders / getOrder', async t => {
   checkFields(t, res, ['orderId', 'symbol', 'price', 'type', 'side'])
 })
 
+test.serial('[REST] getOrder with useServerTime', async t => {
+  const orders = await client.allOrders({
+    symbol: 'ENGETH',
+    useServerTime: true,
+  })
+
+  t.true(Array.isArray(orders))
+  t.truthy(orders.length)
+})
+
 test.serial('[REST] openOrders', async t => {
   const orders = await client.openOrders({
     symbol: 'ETHBTC',

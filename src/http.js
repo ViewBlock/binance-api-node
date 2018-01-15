@@ -70,7 +70,7 @@ const publicCall = (path, data, method = 'GET') =>
  * @param {object} headers
  * @returns {object} The api response
  */
-const privateCall = ({ apiKey, apiSecret }) => (
+const privateCall = ({ apiKey, apiSecret }) => async (
   path,
   data = {},
   method = 'GET',
@@ -81,7 +81,12 @@ const privateCall = ({ apiKey, apiSecret }) => (
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
   }
 
-  const timestamp = Date.now()
+  const timestamp = data.useServerTime
+    ? await publicCall('/v1/time').then(r => r.serverTime)
+    : Date.now()
+
+  delete data.useServerTime
+
   const signature = crypto
     .createHmac('sha256', apiSecret)
     .update(makeQueryString({ ...data, timestamp }).substr(1))

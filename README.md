@@ -360,6 +360,10 @@ console.log(await client.allBookTickers())
 
 ### Authenticated REST Endpoints
 
+Note that for all authenticated endpoints, you can pass an extra parameter
+`useServerTime` set to `true` in order to fetch the server time before making
+the request.
+
 #### order
 
 Creates a new order.
