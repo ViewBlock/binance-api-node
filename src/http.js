@@ -81,11 +81,12 @@ const privateCall = ({ apiKey, apiSecret }) => async (
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
   }
 
-  const timestamp = data.useServerTime
-    ? await publicCall('/v1/time').then(r => r.serverTime)
-    : Date.now()
+  const timestamp =
+    data && data.useServerTime ? await publicCall('/v1/time').then(r => r.serverTime) : Date.now()
 
-  delete data.useServerTime
+  if (data) {
+    delete data.useServerTime
+  }
 
   const signature = crypto
     .createHmac('sha256', apiSecret)
