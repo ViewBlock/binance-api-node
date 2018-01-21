@@ -390,6 +390,23 @@ console.log(await client.order({
 |icebergQty|Number|false||Used with iceberg orders|
 |recvWindow|Number|false|
 
+Additional mandatory parameters based on `type`:
+
+Type | Additional mandatory parameters
+------------ | ------------
+`LIMIT` | `timeInForce`, `quantity`, `price`
+`MARKET` | `quantity`
+`STOP_LOSS` | `quantity`, `stopPrice`
+`STOP_LOSS_LIMIT` | `timeInForce`, `quantity`,  `price`, `stopPrice`
+`TAKE_PROFIT` | `quantity`, `stopPrice`
+`TAKE_PROFIT_LIMIT` | `timeInForce`, `quantity`, `price`, `stopPrice`
+`LIMIT_MAKER` | `quantity`, `price`
+
+* `LIMIT_MAKER` are `LIMIT` orders that will be rejected if they would immediately match and trade as a taker.
+* `STOP_LOSS` and `TAKE_PROFIT` will execute a `MARKET` order when the `stopPrice` is reached.
+* Any `LIMIT` or `LIMIT_MAKER` type order can be made an iceberg order by sending an `icebergQty`.
+* Any order with an `icebergQty` MUST have `timeInForce` set to `GTC`.
+
 <details>
 <summary>Output</summary>
 

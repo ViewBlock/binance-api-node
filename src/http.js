@@ -137,9 +137,14 @@ const candles = payload =>
  * Create a new order wrapper for market order simplicity
  */
 const order = (pCall, payload = {}, url) => {
+  const newPayload =
+    ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type
+      ? { timeInForce: 'GTC', ...payload }
+      : payload
+
   return (
-    checkParams('order', payload, ['symbol', 'side', 'quantity']) &&
-    pCall(url, { type: 'LIMIT', ...payload }, 'POST')
+    checkParams('order', newPayload, ['symbol', 'side', 'quantity']) &&
+    pCall(url, { type: 'LIMIT', ...newPayload }, 'POST')
   )
 }
 
