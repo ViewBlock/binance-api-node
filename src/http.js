@@ -70,7 +70,7 @@ const publicCall = (path, data, method = 'GET') =>
  * @param {object} headers
  * @returns {object} The api response
  */
-const privateCall = ({ apiKey, apiSecret }) => async (
+const privateCall = ({ apiKey, apiSecret }) => (
   path,
   data = {},
   method = 'GET',
@@ -81,32 +81,34 @@ const privateCall = ({ apiKey, apiSecret }) => async (
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
   }
 
-  const timestamp =
-    data && data.useServerTime ? await publicCall('/v1/time').then(r => r.serverTime) : Date.now()
+  return (data && data.useServerTime
+    ? publicCall('/v1/time').then(r => r.serverTime)
+    : Promise.resolve(Date.now())
+  ).then(timestamp => {
+    if (data) {
+      delete data.useServerTime
+    }
 
-  if (data) {
-    delete data.useServerTime
-  }
+    const signature = crypto
+      .createHmac('sha256', apiSecret)
+      .update(makeQueryString({ ...data, timestamp }).substr(1))
+      .digest('hex')
 
-  const signature = crypto
-    .createHmac('sha256', apiSecret)
-    .update(makeQueryString({ ...data, timestamp }).substr(1))
-    .digest('hex')
+    const newData = noExtra ? data : { ...data, timestamp, signature }
 
-  const newData = noExtra ? data : { ...data, timestamp, signature }
-
-  return sendResult(
-    fetch(
-      `${BASE}${path.includes('/wapi') ? '' : '/api'}${path}${noData
-        ? ''
-        : makeQueryString(newData)}`,
-      {
-        method,
-        headers: { 'X-MBX-APIKEY': apiKey },
-        json: true,
-      },
-    ),
-  )
+    return sendResult(
+      fetch(
+        `${BASE}${path.includes('/wapi') ? '' : '/api'}${path}${noData
+          ? ''
+          : makeQueryString(newData)}`,
+        {
+          method,
+          headers: { 'X-MBX-APIKEY': apiKey },
+          json: true,
+        },
+      ),
+    )
+  })
 }
 
 export const candleFields = [
