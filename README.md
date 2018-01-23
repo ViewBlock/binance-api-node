@@ -32,7 +32,7 @@ client.time().then(time => console.log(time))
 Every REST method returns a Promise, making this library [async await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) ready.
 Following examples will use the `await` form, but that's totally up to you.
 
-### Table of Content
+### Table of Contents
 
 - [Public REST Endpoints](#public-rest-endpoints)
     - [ping](#ping)
@@ -55,7 +55,7 @@ Following examples will use the `await` form, but that's totally up to you.
     - [myTrades](#mytrades)
     - [depositHistory](#deposithistory)
     - [withdrawHistory](#withdrawhistory)
-    - [widthdraw](#withdraw)
+    - [withdraw](#withdraw)
     - [depositAddress](#depositaddress)
 - [Websockets](#websockets)
     - [depth](#depth)
@@ -706,7 +706,7 @@ console.log(await client.withdrawHistory())
 
 </details>
 
-#### widthdraw
+#### withdraw
 
 Triggers the withdraw process (*untested for now*).
 
