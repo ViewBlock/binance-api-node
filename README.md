@@ -29,8 +29,14 @@ const client2 = Binance({
 client.time().then(time => console.log(time))
 ```
 
+If you do not have an appropriate babel config, you will need to use the basic commonjs requires.
+
+```js
+const Binance = require('binance-api-node').default
+```
+
 Every REST method returns a Promise, making this library [async await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) ready.
-Following examples will use the `await` form, but that's totally up to you.
+Following examples will use the `await` form, which requires some configuration you will have to lookup.
 
 ### Table of Contents
 
