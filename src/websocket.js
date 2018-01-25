@@ -237,7 +237,7 @@ const user = opts => cb => {
     const w = new WebSocket(`${BASE}/${listenKey}`)
     w.on('message', userEventHandler(cb))
 
-    const int = setInterval(keepStreamAlive(keepDataStream, listenKey), 42e3)
+    const int = setInterval(keepStreamAlive(keepDataStream, listenKey), 50e3)
     keepStreamAlive(keepDataStream, listenKey)()
 
     return () => {
