@@ -438,7 +438,7 @@ Type | Additional mandatory parameters
 
 Test new order creation and signature/recvWindow. Creates and validates a new order but does not send it into the matching engine.
 
-Same API as above.
+Same API as above, but does not return any output on success.
 
 #### getOrder
 
