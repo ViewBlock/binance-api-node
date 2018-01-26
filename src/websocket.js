@@ -29,7 +29,7 @@ const depth = (payload, cb) => {
     })
   })
 
-  return () => cache.forEach(w => w.close())
+  return cache
 }
 
 const partialDepth = (payload, cb) => {
@@ -49,7 +49,7 @@ const partialDepth = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return cache
 }
 
 const candles = (payload, interval, cb) => {
@@ -104,7 +104,7 @@ const candles = (payload, interval, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return cache
 }
 
 const tickerTransform = m => ({
@@ -144,7 +144,7 @@ const ticker = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return cache
 }
 
 const allTickers = cb => {
@@ -155,7 +155,7 @@ const allTickers = cb => {
     cb(arr.map(m => tickerTransform(m)))
   })
 
-  return () => w.close()
+  return w
 }
 
 const trades = (payload, cb) => {
@@ -186,7 +186,7 @@ const trades = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return cache
 }
 
 const userTransforms = {
