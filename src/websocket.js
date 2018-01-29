@@ -175,15 +175,29 @@ const trades = (payload, cb) => {
 
 
 const createSocket = (path, cb) => {
-  const errorHandler = ()=> w = newSocket(path, cb, errorHandler)
-  let w = newSocket(path, cb, errorHandler)  
-  return () => w.close()
+  const onClose = ()=> {
+    if (!closedManually) {
+      w = newSocket(path, cb, onClose)
+    }
+  }
+  
+  let closedManually = false
+  let w = newSocket(path, cb, onClose)  
+  
+  return () => {
+    closedManually = true
+    w.close()
+  }
 }
 
-const newSocket = (path, cb, errorHandler) => {
+const newSocket = (path, cb, onClose) => {
   const w = new WebSocket(`${BASE}/${path}`)
+  const onDisconnect = () => setTimeout(onClose, RECONNECT_DELAY)
+  
   w.on('message', cb)
-  w.on('error', () => setTimeout(errorHandler, RECONNECT_DELAY))
+  w.on('error', onDisconnect)
+  w.on('close', onDisconnect)
+ 
   return w
 }
 
