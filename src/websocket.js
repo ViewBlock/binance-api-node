@@ -4,11 +4,11 @@ import zip from 'lodash.zipobject'
 import httpMethods from 'http'
 
 const BASE = 'wss://stream.binance.com:9443/ws'
+const RECONNECT_DELAY = 1000
 
 const depth = (payload, cb) => {
-  const cache = (Array.isArray(payload) ? payload : [payload]).forEach(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@depth`)
-    w.on('message', msg => {
+  const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
+    return createSocket(`${symbol.toLowerCase()}@depth`, msg => {
       const {
         e: eventType,
         E: eventTime,
@@ -29,13 +29,13 @@ const depth = (payload, cb) => {
     })
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(close => close())
 }
+
 
 const partialDepth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(({ symbol, level }) => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@depth${level}`)
-    w.on('message', msg => {
+    return createSocket(`${symbol.toLowerCase()}@depth${level}`, msg => {
       const { lastUpdateId, bids, asks } = JSON.parse(msg)
       cb({
         symbol,
@@ -45,11 +45,9 @@ const partialDepth = (payload, cb) => {
         asks: asks.map(a => zip(['price', 'quantity'], a)),
       })
     })
-
-    return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(close => close())
 }
 
 const candles = (payload, interval, cb) => {
@@ -58,8 +56,7 @@ const candles = (payload, interval, cb) => {
   }
 
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
-    w.on('message', msg => {
+    return createSocket(`${symbol.toLowerCase()}@kline_${interval}`, msg => {
       const { e: eventType, E: eventTime, s: symbol, k: tick } = JSON.parse(msg)
       const {
         t: startTime,
@@ -100,11 +97,9 @@ const candles = (payload, interval, cb) => {
         quoteBuyVolume,
       })
     })
-
-    return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(close => close())
 }
 
 const tickerTransform = m => ({
@@ -135,33 +130,24 @@ const tickerTransform = m => ({
 
 const ticker = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@ticker`)
-
-    w.on('message', msg => {
+    return createSocket(`${symbol.toLowerCase()}@ticker`, msg => {
       cb(tickerTransform(JSON.parse(msg)))
     })
-
-    return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(close => close())
 }
 
 const allTickers = cb => {
-  const w = new WebSocket(`${BASE}/!ticker@arr`)
-
-  w.on('message', msg => {
+  return createSocket(`!ticker@arr`, msg => {
     const arr = JSON.parse(msg)
     cb(arr.map(m => tickerTransform(m)))
   })
-
-  return () => w.close()
 }
 
 const trades = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@aggTrade`)
-    w.on('message', msg => {
+    return createSocket(`${symbol.toLowerCase()}@aggTrade`, msg => {
       const {
         e: eventType,
         E: eventTime,
@@ -182,11 +168,23 @@ const trades = (payload, cb) => {
         tradeId,
       })
     })
-
-    return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(close => close())
+}
+
+
+const createSocket = (path, cb) => {
+  const errorHandler = ()=> w = newSocket(path, cb, errorHandler)
+  let w = newSocket(path, cb, errorHandler)  
+  return () => w.close()
+}
+
+const newSocket = (path, cb, errorHandler) => {
+  const w = new WebSocket(`${BASE}/${path}`)
+  w.on('message', cb)
+  w.on('error', () => setTimeout(errorHandler, RECONNECT_DELAY))
+  return w
 }
 
 const userTransforms = {
