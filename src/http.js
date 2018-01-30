@@ -188,8 +188,7 @@ export default opts => {
     aggTrades,
     candles,
 
-    dailyStats: payload =>
-      checkParams('dailyStats', payload, ['symbol']) && publicCall('/v1/ticker/24hr', payload),
+    dailyStats: payload => publicCall('/v1/ticker/24hr', payload),
     prices: () =>
       publicCall('/v1/ticker/allPrices').then(r =>
         r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),

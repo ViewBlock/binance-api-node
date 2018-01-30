@@ -271,14 +271,14 @@ Note: If `frondId`, `startTime`, and `endTime` are not sent, the most recent agg
 
 #### dailyStats
 
-24 hour price change statistics.
+24 hour price change statistics, not providing a symbol will return all tickers and is resource-expensive.
 
 ```js
 console.log(await client.dailyStats({ symbol: 'ETHBTC' }))
 ```
 |Param|Type|Required|
 |--- |--- |--- |
-|symbol|String|true|
+|symbol|String|false|
 
 <details>
 <summary>Output</summary>
