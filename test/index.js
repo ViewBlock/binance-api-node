@@ -78,12 +78,6 @@ test.serial('[REST] aggTrades', async t => {
 })
 
 test.serial('[REST] dailyStats', async t => {
-  try {
-    await client.dailyStats({})
-  } catch (e) {
-    t.is(e.message, 'Method dailyStats requires symbol parameter.')
-  }
-
   const res = await client.dailyStats({ symbol: 'ETHBTC' })
   t.truthy(res)
   checkFields(t, res, ['highPrice', 'lowPrice', 'volume', 'priceChange'])
