@@ -47,6 +47,7 @@ Following examples will use the `await` form, which requires some configuration 
     - [book](#book)
     - [candles](#candles)
     - [aggTrades](#aggtrades)
+    - [trades](#trades)
     - [dailyStats](#dailystats)
     - [prices](#prices)
     - [allBookTickers](#allbooktickers)
@@ -59,6 +60,7 @@ Following examples will use the `await` form, which requires some configuration 
     - [allOrders](#allorders)
     - [accountInfo](#accountinfo)
     - [myTrades](#mytrades)
+    - [tradesHistory](#tradeshistory)
     - [depositHistory](#deposithistory)
     - [withdrawHistory](#withdrawhistory)
     - [withdraw](#withdraw)
@@ -269,6 +271,37 @@ Note: If `frondId`, `startTime`, and `endTime` are not sent, the most recent agg
 
 </details>
 
+#### trades
+
+Get recent trades of a symbol.
+
+```js
+console.log(await client.trades({ symbol: 'ETHBTC' }))
+```
+
+|Param|Type|Required|Default|Description|
+|--- |--- |--- |--- |--- |
+|symbol|String|true|
+|limit|Number|false|`500`|Max `500`|
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "id": 28457,
+    "price": "4.00000100",
+    "qty": "12.00000000",
+    "time": 1499865549590,
+    "isBuyerMaker": true,
+    "isBestMatch": true
+  }
+]
+```
+
+</details>
+
 #### dailyStats
 
 24 hour price change statistics, not providing a symbol will return all tickers and is resource-expensive.
@@ -276,6 +309,7 @@ Note: If `frondId`, `startTime`, and `endTime` are not sent, the most recent agg
 ```js
 console.log(await client.dailyStats({ symbol: 'ETHBTC' }))
 ```
+
 |Param|Type|Required|
 |--- |--- |--- |
 |symbol|String|false|
@@ -638,6 +672,38 @@ console.log(await client.myTrades({
   isMaker: false,
   isBestMatch: true
 }]
+```
+
+</details>
+
+#### tradesHistory
+
+Lookup symbol trades history.
+
+```js
+console.log(await client.tradesHistory({ symbol: 'ETHBTC' }))
+```
+
+|Param|Type|Required|Default|Description|
+|--- |--- |--- |--- |--- |
+|symbol|String|true|
+|limit|Number|false|`500`|Max `500`|
+|fromId|Number|false|`null`|TradeId to fetch from. Default gets most recent trades.|
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "id": 28457,
+      "price": "4.00000100",
+      "qty": "12.00000000",
+      "time": 1499865549590,
+      "isBuyerMaker": true,
+      "isBestMatch": true
+  }
+]
 ```
 
 </details>

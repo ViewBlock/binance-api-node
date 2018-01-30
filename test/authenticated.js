@@ -123,6 +123,11 @@ test.serial('[REST] myTrades', async t => {
   checkFields(t, trade, ['id', 'orderId', 'qty', 'commission', 'time'])
 })
 
+test.serial('[REST] tradesHistory', async t => {
+  const trades = await client.tradesHistory({ symbol: 'ETHBTC', fromId: 28457 })
+  t.is(trades.length, 500)
+})
+
 test.serial('[WS] user', async t => {
   const clean = await client.ws.user()
   t.truthy(clean)

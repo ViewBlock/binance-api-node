@@ -45,7 +45,7 @@ const checkParams = (name, payload, requires = []) => {
 }
 
 /**
- * Make public call against api
+ * Make public calls against the api
  *
  * @param {string} path Endpoint path
  * @param {object} data The payload to be sent
@@ -53,16 +53,35 @@ const checkParams = (name, payload, requires = []) => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const publicCall = (path, data, method = 'GET') =>
+const publicCall = (path, data, method = 'GET', headers = {}) =>
   sendResult(
     fetch(`${BASE}/api${path}${makeQueryString(data)}`, {
       method,
       json: true,
+      headers,
     }),
   )
 
 /**
- * Factory method for private calls against api
+ * Factory method for partial private calls against the api
+ *
+ * @param {string} path Endpoint path
+ * @param {object} data The payload to be sent
+ * @param {string} method HTTB VERB, GET by default
+ * @returns {object} The api response
+ */
+const keyCall = ({ apiKey }) => (path, data, method = 'GET') => {
+  if (!apiKey) {
+    throw new Error('You need to pass an API key to make this call.')
+  }
+
+  return publicCall(path, data, method, {
+    'X-MBX-APIKEY': apiKey,
+  })
+}
+
+/**
+ * Factory method for private calls against the api
  *
  * @param {string} path Endpoint path
  * @param {object} data The payload to be sent
@@ -178,6 +197,7 @@ const aggTrades = payload =>
 
 export default opts => {
   const pCall = privateCall(opts)
+  const kCall = keyCall(opts)
 
   return {
     ping: () => publicCall('/v1/ping').then(() => true),
@@ -187,6 +207,11 @@ export default opts => {
     book,
     aggTrades,
     candles,
+
+    trades: payload =>
+      checkParams('trades', payload, ['symbol']) && publicCall('/v1/trades', payload),
+    tradesHistory: payload =>
+      checkParams('tradesHitory', payload, ['symbol']) && kCall('/v1/historicalTrades', payload),
 
     dailyStats: payload => publicCall('/v1/ticker/24hr', payload),
     prices: () =>
