@@ -393,6 +393,7 @@ console.log(await client.order({
 |timeInForce|String|false|`GTC`|`GTC`, `IOC`|
 |newClientOrderId|String|false||A unique id for the order. Automatically generated if not sent.|
 |stopPrice|Number|false||Used with stop orders|
+|newOrderRespType|String|false|`RESULT`|Returns more complete info of the order. `ACK`, `RESULT`, or `FULL`|
 |icebergQty|Number|false||Used with iceberg orders|
 |recvWindow|Number|false|
 
