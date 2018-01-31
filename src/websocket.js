@@ -32,7 +32,6 @@ const depth = (payload, cb) => {
   return () => cache.forEach(close => close())
 }
 
-
 const partialDepth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(({ symbol, level }) => {
     return createSocket(`${symbol.toLowerCase()}@depth${level}`, msg => {
@@ -173,17 +172,16 @@ const trades = (payload, cb) => {
   return () => cache.forEach(close => close())
 }
 
-
 const createSocket = (path, cb) => {
-  const onClose = ()=> {
+  const onClose = () => {
     if (!closedManually) {
       w = newSocket(path, cb, onClose)
     }
   }
-  
+
   let closedManually = false
-  let w = newSocket(path, cb, onClose)  
-  
+  let w = newSocket(path, cb, onClose)
+
   return () => {
     closedManually = true
     w.close()
@@ -193,11 +191,11 @@ const createSocket = (path, cb) => {
 const newSocket = (path, cb, onClose) => {
   const w = new WebSocket(`${BASE}/${path}`)
   const onDisconnect = () => setTimeout(onClose, RECONNECT_DELAY)
-  
+
   w.on('message', cb)
   w.on('error', onDisconnect)
   w.on('close', onDisconnect)
- 
+
   return w
 }
 
