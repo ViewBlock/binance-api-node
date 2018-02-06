@@ -1,4 +1,6 @@
 // tslint:disable:interface-name
+import {OrderFill} from "binance-api-node";
+
 declare module 'binance-api-node' {
     export default function (options?: { apiKey: string; apiSecret: string }): Binance;
 
@@ -35,7 +37,7 @@ declare module 'binance-api-node' {
         allTickers: (callback: (tickers: Ticker[]) => void) => Function;
         candles: (pair: string, period: string, callback: (ticker: Candle) => void) => Function;
         trades: (pairs: string[], callback: (trade: Trade) => void) => Function;
-        user: ( callback: (msg: Message) => void) => Function;
+        user: ( callback: (msg: OutboundAccountInfo|ExecutionReport) => void) => Function;
     }
 
     export interface NewOrder {
@@ -49,6 +51,13 @@ declare module 'binance-api-node' {
         symbol: string;
         timeInForce?: TimeInForce;
         type: OrderType;
+    }
+
+    interface OrderFill {
+        price: string;
+        qty: string;
+        commission: string;
+        commissionAsset: string;
     }
 
     interface Order {
@@ -65,6 +74,7 @@ declare module 'binance-api-node' {
         timeInForce: TimeInForce;
         transactTime: number;
         type: OrderType;
+        fills?: OrderFill[];
     }
 
     export type OrderSide = 'BUY' | 'SELL';
@@ -87,7 +97,19 @@ declare module 'binance-api-node' {
         | 'TAKE_PROFIT'
         | 'TAKE_PROFIT_LIMIT';
 
-    export type TimeInForce = 'GTC' | 'IOC';
+    export type TimeInForce = 'GTC' | 'IOC' | 'FOK';
+
+    export type ExecutionType =
+        | 'NEW'
+        | 'CANCELED'
+        | 'REPLACED'
+        | 'REJECTED'
+        | 'TRADE'
+        | 'EXPIRED';
+
+    export type EventType =
+        | 'executionReport'
+        | 'account';
 
     interface Depth {
         eventType: string;
@@ -173,9 +195,8 @@ declare module 'binance-api-node' {
     }
 
     interface Message {
-        eventType: string;
+        eventType: EventType;
         eventTime: number;
-        balances: Balances;
     }
 
     interface Balances {
@@ -183,5 +204,43 @@ declare module 'binance-api-node' {
             available: string;
             locked: string;
         };
+    }
+
+    interface OutboundAccountInfo extends Message {
+        balances: Balances;
+        makerCommissionRate: number;
+        takerCommissionRate: number;
+        buyerCommissionRate: number;
+        sellerCommissionRate: number;
+        canTrade: boolean;
+        canWithdraw: boolean;
+        canDeposit: boolean;
+        lastAccountUpdate: number;
+    }
+
+    interface ExecutionReport extends Message {
+        symbol: string;
+        newClientOrderId: string;
+        originalClientOrderId: string;
+        side: OrderSide;
+        orderType: OrderType;
+        timeInForce: TimeInForce;
+        quantity: string;
+        price: string;
+        executionType: ExecutionType;
+        stopPrice: string;
+        icebergQuantity: string;
+        orderStatus: OrderStatus;
+        orderRejectReason: string;
+        orderId: number;
+        orderTime: number;
+        lastTradeQuantity: string;
+        totalTradeQuantity: string;
+        priceLastTrade: string;
+        commission: string;
+        commissionAsset: string;
+        tradeId: number;
+        isOrderWorking: boolean;
+        isBuyerMaker: boolean;
     }
 }

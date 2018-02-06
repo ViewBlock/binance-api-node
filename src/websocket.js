@@ -193,6 +193,14 @@ const userTransforms = {
   outboundAccountInfo: m => ({
     eventType: 'account',
     eventTime: m.E,
+    makerCommissionRate: m.m,
+    takerCommissionRate: m.t,
+    buyerCommissionRate: m.b,
+    sellerCommissionRate: m.s,
+    canTrade: m.T,
+    canWithdraw: m.W,
+    canDeposit: m.D,
+    lastAccountUpdate: m.u,
     balances: m.B.reduce((out, cur) => {
       out[cur.a] = { available: cur.f, locked: cur.l }
       return out
@@ -203,12 +211,15 @@ const userTransforms = {
     eventTime: m.E,
     symbol: m.s,
     newClientOrderId: m.c,
+    originalClientOrderId: m.C,
     side: m.S,
     orderType: m.o,
     timeInForce: m.f,
     quantity: m.q,
     price: m.p,
     executionType: m.x,
+    stopPrice: m.P,
+    icebergQuantity: m.F,
     orderStatus: m.X,
     orderRejectReason: m.r,
     orderId: m.i,
@@ -219,6 +230,7 @@ const userTransforms = {
     commission: m.n,
     commissionAsset: m.N,
     tradeId: m.t,
+    isOrderWorking: m.w,
     isBuyerMaker: m.m,
   }),
 }
