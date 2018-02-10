@@ -1,5 +1,6 @@
 import WebSocket from 'ws'
 import zip from 'lodash.zipobject'
+import * as wsc from './websocketreconnect.js'
 
 import httpMethods from 'http'
 
@@ -7,8 +8,10 @@ const BASE = 'wss://stream.binance.com:9443/ws'
 
 const depth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).forEach(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@depth`)
-    w.on('message', msg => {
+    const w = new WebSocketClient()
+    w.open(`${BASE}/${symbol.toLowerCase()}@depth`)
+
+    w.onmessage = msg => {
       const {
         e: eventType,
         E: eventTime,
@@ -26,7 +29,7 @@ const depth = (payload, cb) => {
         bidDepth: bidDepth.map(b => zip(['price', 'quantity'], b)),
         askDepth: askDepth.map(a => zip(['price', 'quantity'], a)),
       })
-    })
+    }
   })
 
   return () => cache.forEach(w => w.close())
@@ -34,8 +37,10 @@ const depth = (payload, cb) => {
 
 const partialDepth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(({ symbol, level }) => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@depth${level}`)
-    w.on('message', msg => {
+    const w = new WebSocketClient()
+    w.open(`${BASE}/${symbol.toLowerCase()}@depth${level}`)
+
+    w.onmessage = msg => {
       const { lastUpdateId, bids, asks } = JSON.parse(msg)
       cb({
         symbol,
@@ -44,7 +49,7 @@ const partialDepth = (payload, cb) => {
         bids: bids.map(b => zip(['price', 'quantity'], b)),
         asks: asks.map(a => zip(['price', 'quantity'], a)),
       })
-    })
+    }
 
     return w
   })
@@ -58,8 +63,10 @@ const candles = (payload, interval, cb) => {
   }
 
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
-    w.on('message', msg => {
+    const w = new wsc.WebSocketClient()
+    w.open(`${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
+
+    w.onmessage = msg => {
       const { e: eventType, E: eventTime, s: symbol, k: tick } = JSON.parse(msg)
       const {
         t: startTime,
@@ -99,7 +106,7 @@ const candles = (payload, interval, cb) => {
         buyVolume,
         quoteBuyVolume,
       })
-    })
+    }
 
     return w
   })
@@ -135,11 +142,12 @@ const tickerTransform = m => ({
 
 const ticker = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@ticker`)
+    const w = new WebSocketClient()
+    w.open(`${BASE}/${symbol.toLowerCase()}@ticker`)
 
-    w.on('message', msg => {
+    w.onmessage = msg => {
       cb(tickerTransform(JSON.parse(msg)))
-    })
+    }
 
     return w
   })
@@ -148,20 +156,23 @@ const ticker = (payload, cb) => {
 }
 
 const allTickers = cb => {
-  const w = new WebSocket(`${BASE}/!ticker@arr`)
+  const w = new WebSocketClient()
+  w.open(`${BASE}/!ticker@arr`)
 
-  w.on('message', msg => {
+  w.onmessage = msg => {
     const arr = JSON.parse(msg)
     cb(arr.map(m => tickerTransform(m)))
-  })
+  }
 
   return () => w.close()
 }
 
 const trades = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@aggTrade`)
-    w.on('message', msg => {
+    const w = new WebSocketClient()
+    w.open(`${BASE}/${symbol.toLowerCase()}@aggTrade`)
+
+    w.onmessage = msg => {
       const {
         e: eventType,
         E: eventTime,
@@ -181,7 +192,7 @@ const trades = (payload, cb) => {
         maker,
         tradeId,
       })
-    })
+    }
 
     return w
   })
@@ -246,8 +257,9 @@ const user = opts => cb => {
   const { getDataStream, keepDataStream, closeDataStream } = httpMethods(opts)
 
   return getDataStream().then(({ listenKey }) => {
-    const w = new WebSocket(`${BASE}/${listenKey}`)
-    w.on('message', userEventHandler(cb))
+    const w = new WebSocketClient()
+    w.open(`${BASE}/${listenKey}`)
+    w.onmessage = userEventHandler(cb)
 
     const int = setInterval(keepStreamAlive(keepDataStream, listenKey), 50e3)
     keepStreamAlive(keepDataStream, listenKey)()
