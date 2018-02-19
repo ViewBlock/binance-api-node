@@ -3,7 +3,6 @@
   "version": "0.5.5",
   "description": "A node API wrapper for Binance",
   "main": "dist",
-  "types": "types.d.ts",
   "scripts": {
     "build": "rimraf dist && babel src -d dist",
     "test": "ava",
