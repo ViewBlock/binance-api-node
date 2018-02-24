@@ -53,9 +53,9 @@ const depth = (payload, cb) => {
 
 const partialDepth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(({ symbol, level }) => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@depth${level}`)
-    w.on('message', msg => {
-      const { lastUpdateId, bids, asks } = JSON.parse(msg)
+    const w = openReconnectingWebSocket(() => `${BASE}/${symbol.toLowerCase()}@depth${level}`)
+    w.onmessage = msg => {
+      const { lastUpdateId, bids, asks } = JSON.parse(msg.data)
       cb({
         symbol,
         level,
@@ -63,12 +63,12 @@ const partialDepth = (payload, cb) => {
         bids: bids.map(b => zip(['price', 'quantity'], b)),
         asks: asks.map(a => zip(['price', 'quantity'], a)),
       })
-    })
+    }
 
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(w => w.close(1000, 'Close handle has been called.', {keepClosed: true}))
 }
 
 const candles = (payload, interval, cb) => {
