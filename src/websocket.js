@@ -6,7 +6,7 @@ import httpMethods from 'http'
 const BASE = 'wss://stream.binance.com:9443/ws'
 
 const depth = (payload, cb) => {
-  const cache = (Array.isArray(payload) ? payload : [payload]).forEach(symbol => {
+  const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
     const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@depth`)
     w.on('message', msg => {
       const {
