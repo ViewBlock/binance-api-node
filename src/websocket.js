@@ -179,8 +179,8 @@ const allTickers = cb => {
 
 const trades = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@aggTrade`)
-    w.on('message', msg => {
+    const w = openReconnectingWebSocket(() => `${BASE}/${symbol.toLowerCase()}@aggTrade`)
+    w.onmessage = msg => {
       const {
         e: eventType,
         E: eventTime,
@@ -189,7 +189,7 @@ const trades = (payload, cb) => {
         q: quantity,
         m: maker,
         a: tradeId,
-      } = JSON.parse(msg)
+      } = JSON.parse(msg.data)
 
       cb({
         eventType,
@@ -200,12 +200,12 @@ const trades = (payload, cb) => {
         maker,
         tradeId,
       })
-    })
+    }
 
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(w => w.close(1000, 'Close handle has been called.', {keepClosed: true}))
 }
 
 const userTransforms = {
