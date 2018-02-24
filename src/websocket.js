@@ -167,14 +167,14 @@ const ticker = (payload, cb) => {
 }
 
 const allTickers = cb => {
-  const w = new WebSocket(`${BASE}/!ticker@arr`)
+  const w = new openReconnectingWebSocket(() => `${BASE}/!ticker@arr`)
 
-  w.on('message', msg => {
-    const arr = JSON.parse(msg)
+  w.onmessage = msg => {
+    const arr = JSON.parse(msg.data)
     cb(arr.map(m => tickerTransform(m)))
-  })
+  }
 
-  return () => w.close()
+  return () => w.close(1000, 'Close handle has been called.', {keepClosed: true})
 }
 
 const trades = (payload, cb) => {
