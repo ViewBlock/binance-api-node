@@ -17,7 +17,6 @@ const openReconnectingWebSocket = (wsAddressBuilder) => {
       maxReconnectionDelay: 10000,
       maxRetries: Infinity,
       minReconnectionDelay: 4000,
-      reconnectionDelayGrowFactor: 1.3,
     }
   );
 }
