@@ -154,16 +154,16 @@ const tickerTransform = m => ({
 
 const ticker = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@ticker`)
+    const w = openReconnectingWebSocket(() => `${BASE}/${symbol.toLowerCase()}@ticker`)
 
-    w.on('message', msg => {
-      cb(tickerTransform(JSON.parse(msg)))
-    })
+    w.onmessage = msg => {
+      cb(tickerTransform(JSON.parse(msg.data)))
+    }
 
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(w => w.close(1000, 'Close handle has been called.', {keepClosed: true}))
 }
 
 const allTickers = cb => {
