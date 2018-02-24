@@ -23,9 +23,9 @@ const openReconnectingWebSocket = (wsAddressBuilder) => {
 }
 
 const depth = (payload, cb) => {
-  const cache = (Array.isArray(payload) ? payload : [payload]).forEach(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@depth`)
-    w.on('message', msg => {
+  const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
+    const w = openReconnectingWebSocket(() => `${BASE}/${symbol.toLowerCase()}@depth`)
+    w.onmessage = msg => {
       const {
         e: eventType,
         E: eventTime,
@@ -33,7 +33,7 @@ const depth = (payload, cb) => {
         u: updateId,
         b: bidDepth,
         a: askDepth,
-      } = JSON.parse(msg)
+      } = JSON.parse(msg.data)
 
       cb({
         eventType,
@@ -43,10 +43,12 @@ const depth = (payload, cb) => {
         bidDepth: bidDepth.map(b => zip(['price', 'quantity'], b)),
         askDepth: askDepth.map(a => zip(['price', 'quantity'], a)),
       })
-    })
+    }
+
+    return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(w => w.close(1000, 'Close handle has been called.', {keepClosed: true}))
 }
 
 const partialDepth = (payload, cb) => {
