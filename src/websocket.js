@@ -1,9 +1,26 @@
+import Html5WebSocket from 'html5-websocket'
+import httpMethods from 'http'
+import ReconnectingWebSocket from 'reconnecting-websocket'
 import WebSocket from 'ws'
 import zip from 'lodash.zipobject'
 
-import httpMethods from 'http'
-
 const BASE = 'wss://stream.binance.com:9443/ws'
+
+const openReconnectingWebSocket = (wsAddressBuilder) => {
+  return new ReconnectingWebSocket(
+    wsAddressBuilder,
+    undefined,
+    {
+      connectionTimeout: 4000,
+      constructor: typeof window !== 'undefined' ? WebSocket : Html5WebSocket,
+      debug: false,
+      maxReconnectionDelay: 10000,
+      maxRetries: Infinity,
+      minReconnectionDelay: 4000,
+      reconnectionDelayGrowFactor: 1.3,
+    }
+  );
+}
 
 const depth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).forEach(symbol => {
@@ -58,9 +75,9 @@ const candles = (payload, interval, cb) => {
   }
 
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
-    w.on('message', msg => {
-      const { e: eventType, E: eventTime, s: symbol, k: tick } = JSON.parse(msg)
+    const w = openReconnectingWebSocket(() => `${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
+    w.onmessage = msg => {
+      const { e: eventType, E: eventTime, s: symbol, k: tick } = JSON.parse(msg.data)
       const {
         t: startTime,
         T: closeTime,
@@ -99,12 +116,12 @@ const candles = (payload, interval, cb) => {
         buyVolume,
         quoteBuyVolume,
       })
-    })
+    }
 
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(w => w.close(1000, 'Close handle has been called.', {keepClosed: true}))
 }
 
 const tickerTransform = m => ({
