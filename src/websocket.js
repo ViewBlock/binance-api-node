@@ -27,6 +27,8 @@ const depth = (payload, cb) => {
         askDepth: askDepth.map(a => zip(['price', 'quantity'], a)),
       })
     })
+
+    return w
   })
 
   return () => cache.forEach(w => w.close())
