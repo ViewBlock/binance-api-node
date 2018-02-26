@@ -24,6 +24,8 @@ declare module 'binance-api-node' {
 
     export interface Binance {
         accountInfo(): Promise<Account>;
+        book(options: { symbol: string, limit?: number }): Promise<OrderBook>;
+        exchangeInfo(): Promise<ExchangeInfo>;
         order(options: NewOrder): Promise<Order>;
         prices(): Promise<{ [index: string]: string }>;
         time(): Promise<number>;
@@ -38,6 +40,99 @@ declare module 'binance-api-node' {
         candles: (pair: string, period: string, callback: (ticker: Candle) => void) => Function;
         trades: (pairs: string[], callback: (trade: Trade) => void) => Function;
         user: ( callback: (msg: OutboundAccountInfo|ExecutionReport) => void) => Function;
+    }
+
+    export type RateLimitType =
+        | 'REQUESTS'
+        | 'ORDERS';
+
+    export type RateLimitInterval =
+        | 'SECOND'
+        | 'MINUTE'
+        | 'DAY';
+
+    export interface ExchangeInfoRateLimit {
+        rateLimitType: RateLimitType;
+        interval: RateLimitInterval;
+        limit: number;
+    }
+
+    export type ExchangeFilterType =
+        | 'EXCHANGE_MAX_NUM_ORDERS'
+        | 'EXCHANGE_MAX_ALGO_ORDERS';
+
+    export interface ExchangeFilter {
+        filterType: ExchangeFilterType;
+        limit: number;
+    }
+
+    export type SymbolFilterType =
+        | 'PRICE_FILTER'
+        | 'LOT_SIZE'
+        | 'MIN_NOTIONAL'
+        | 'MAX_NUM_ORDERS'
+        | 'MAX_ALGO_ORDERS';
+
+    export interface SymbolPriceFilter {
+        filterType: SymbolFilterType,
+        minPrice: string;
+        maxPrice: string;
+        tickSize: string;
+    }
+
+    export interface SymbolLotSizeFilter {
+        filterType: SymbolFilterType,
+        minQty: string;
+        maxQty: string;
+        stepSize: string;
+    }
+
+    export interface SymbolMinNotionalFilter {
+        filterType: SymbolFilterType;
+        minNotional: string;
+    }
+
+    export interface SymbolMaxNumOrdersFilter {
+        filterType: SymbolFilterType;
+        limit: number;
+    }
+
+    export interface SymbolMaxAlgoOrdersFilter {
+        filterType: SymbolFilterType;
+        limit: number;
+    }
+
+    export type SymbolFilter =
+        | SymbolPriceFilter
+        | SymbolLotSizeFilter
+        | SymbolMinNotionalFilter
+        | SymbolMaxNumOrdersFilter
+        | SymbolMaxAlgoOrdersFilter;
+
+    interface Symbol {
+        symbol: string;
+        status: string;
+        baseAsset: string;
+        baseAssetPrecision: number;
+        quoteAsset: string;
+        quotePrecision: number;
+        orderTypes: OrderType[];
+        icebergAllowed: boolean;
+        filters: SymbolFilter[];
+    }
+
+    export interface ExchangeInfo {
+        timezone: string;
+        serverTime: number;
+        rateLimits: ExchangeInfoRateLimit[];
+        exchangeFilters: ExchangeFilter[];
+        symbols: Symbol[];
+    }
+
+    export interface OrderBook {
+        lastUpdateId: number;
+        asks: Bid[];
+        bids: Bid[];
     }
 
     export interface NewOrder {
