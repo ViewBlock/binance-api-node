@@ -114,7 +114,8 @@ test.serial('[WS] depth', t => {
       checkFields(t, depth, [
         'eventType',
         'eventTime',
-        'updateId',
+        'firstUpdateId',
+        'finalUpdateId',
         'symbol',
         'bidDepth',
         'askDepth',
