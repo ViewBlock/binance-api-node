@@ -115,7 +115,8 @@ declare module 'binance-api-node' {
         eventType: string;
         eventTime: number;
         symbol: string;
-        updateId: number;
+        firstUpdateId: number;
+        finalUpdateId: number;
         bidDepth: BidDepth[];
         askDepth: BidDepth[];
     }
