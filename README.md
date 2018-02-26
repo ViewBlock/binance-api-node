@@ -870,7 +870,8 @@ client.ws.depth('ETHBTC', depth => {
   eventType: 'depthUpdate',
   eventTime: 1508612956950,
   symbol: 'ETHBTC',
-  updateId: 18331140,
+  firstUpdateId: 18331140,
+  finalUpdateId: 18331145,
   bidDepth: [
     { price: '0.04896500', quantity: '0.00000000' },
     { price: '0.04891100', quantity: '15.00000000' },
