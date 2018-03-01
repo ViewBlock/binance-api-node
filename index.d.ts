@@ -109,7 +109,7 @@ declare module 'binance-api-node' {
         | SymbolMaxNumOrdersFilter
         | SymbolMaxAlgoOrdersFilter;
 
-    interface Symbol {
+    export interface Symbol {
         symbol: string;
         status: string;
         baseAsset: string;
