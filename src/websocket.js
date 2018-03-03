@@ -1,29 +1,12 @@
-import Html5WebSocket from 'html5-websocket'
 import httpMethods from 'http'
-import ReconnectingWebSocket from 'reconnecting-websocket'
-import WebSocket from 'ws'
+import openWebSocket from 'open-websocket'
 import zip from 'lodash.zipobject'
 
 const BASE = 'wss://stream.binance.com:9443/ws'
 
-const openReconnectingWebSocket = (wsAddressBuilder) => {
-  return new ReconnectingWebSocket(
-    wsAddressBuilder,
-    undefined,
-    {
-      connectionTimeout: 4000,
-      constructor: typeof window !== 'undefined' ? WebSocket : Html5WebSocket,
-      debug: false,
-      maxReconnectionDelay: 10000,
-      maxRetries: Infinity,
-      minReconnectionDelay: 4000,
-    }
-  );
-}
-
 const depth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openReconnectingWebSocket(() => `${BASE}/${symbol.toLowerCase()}@depth`)
+    const w = openWebSocket(() => `${BASE}/${symbol.toLowerCase()}@depth`)
     w.onmessage = msg => {
       const {
         e: eventType,
@@ -52,7 +35,7 @@ const depth = (payload, cb) => {
 
 const partialDepth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(({ symbol, level }) => {
-    const w = openReconnectingWebSocket(() => `${BASE}/${symbol.toLowerCase()}@depth${level}`)
+    const w = openWebSocket(() => `${BASE}/${symbol.toLowerCase()}@depth${level}`)
     w.onmessage = msg => {
       const { lastUpdateId, bids, asks } = JSON.parse(msg.data)
       cb({
@@ -76,7 +59,7 @@ const candles = (payload, interval, cb) => {
   }
 
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openReconnectingWebSocket(() => `${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
+    const w = openWebSocket(() => `${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
     w.onmessage = msg => {
       const { e: eventType, E: eventTime, s: symbol, k: tick } = JSON.parse(msg.data)
       const {
@@ -153,7 +136,7 @@ const tickerTransform = m => ({
 
 const ticker = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openReconnectingWebSocket(() => `${BASE}/${symbol.toLowerCase()}@ticker`)
+    const w = openWebSocket(() => `${BASE}/${symbol.toLowerCase()}@ticker`)
 
     w.onmessage = msg => {
       cb(tickerTransform(JSON.parse(msg.data)))
@@ -166,7 +149,7 @@ const ticker = (payload, cb) => {
 }
 
 const allTickers = cb => {
-  const w = new openReconnectingWebSocket(() => `${BASE}/!ticker@arr`)
+  const w = new openWebSocket(() => `${BASE}/!ticker@arr`)
 
   w.onmessage = msg => {
     const arr = JSON.parse(msg.data)
@@ -178,7 +161,7 @@ const allTickers = cb => {
 
 const trades = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openReconnectingWebSocket(() => `${BASE}/${symbol.toLowerCase()}@aggTrade`)
+    const w = openWebSocket(() => `${BASE}/${symbol.toLowerCase()}@aggTrade`)
     w.onmessage = msg => {
       const {
         e: eventType,
@@ -264,7 +247,7 @@ const user = opts => cb => {
   const { getDataStream, keepDataStream, closeDataStream } = httpMethods(opts)
 
   return getDataStream().then(({ listenKey }) => {
-    const w = openReconnectingWebSocket(() => `${BASE}/${listenKey}`)
+    const w = openWebSocket(() => `${BASE}/${listenKey}`)
     w.onmessage = () => (userEventHandler(cb))
 
     const int = setInterval(keepStreamAlive(keepDataStream, listenKey), 50e3)
