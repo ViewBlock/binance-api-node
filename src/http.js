@@ -16,7 +16,7 @@ const makeQueryString = q =>
     : ''
 
 /**
- * Finalize APi response
+ * Finalize API response
  */
 const sendResult = call =>
   call.then(res => Promise.all([res, res.json()])).then(([res, json]) => {
