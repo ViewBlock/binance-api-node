@@ -30,6 +30,10 @@ declare module 'binance-api-node' {
         prices(): Promise<{ [index: string]: string }>;
         time(): Promise<number>;
         ws: WebSocket;
+        myTrades(options: { symbol: string, limit?: number, fromId?: number }): Promise<MyTrade[]>;
+        getOrder(options: { symbol: string; orderId: number }): Promise<QueryOrderResult>;
+        cancelOrder(options: { symbol: string; orderId: number }): Promise<CancelOrderResult>;
+        openOrders(options: { symbol: string }): Promise<QueryOrderResult[]>;
     }
 
     export interface WebSocket {
@@ -338,5 +342,42 @@ declare module 'binance-api-node' {
         tradeId: number;
         isOrderWorking: boolean;
         isBuyerMaker: boolean;
+    }
+
+    interface MyTrade {
+        id: number;
+        orderId: number;
+        price: string;
+        qty: string;
+        commission: string;
+        commissionAsset: string;
+        time: number;
+        isBuyer: boolean;
+        isMaker: boolean;
+        isBestMatch: boolean;
+    }
+
+    interface QueryOrderResult {
+        symbol: string;
+        orderId: number;
+        clientOrderId: string;
+        price: string;
+        origQty: string;
+        executedQty: string;
+        status: OrderStatus;
+        timeInForce: string;
+        type: string;
+        side: string;
+        stopPrice: string;
+        icebergQty: string;
+        time: number;
+        isWorking: boolean;
+    }
+
+    interface CancelOrderResult {
+        symbol: string;
+        origClientOrderId: string;
+        orderId: number;
+        clientOrderId: string;
     }
 }
