@@ -138,7 +138,7 @@ export const candleFields = [
   'close',
   'volume',
   'closeTime',
-  'quoteAssetVolume',
+  'quoteVolume',
   'trades',
   'baseAssetVolume',
   'quoteAssetVolume',
