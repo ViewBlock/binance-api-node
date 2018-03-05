@@ -30,7 +30,7 @@ const depth = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close(1000, 'Close handle was called', {keepClosed: true}))
+  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
 }
 
 const partialDepth = (payload, cb) => {
@@ -50,7 +50,7 @@ const partialDepth = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close(1000, 'Close handle was called', {keepClosed: true}))
+  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
 }
 
 const candles = (payload, interval, cb) => {
@@ -105,7 +105,7 @@ const candles = (payload, interval, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close(1000, 'Close handle was called', {keepClosed: true}))
+  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
 }
 
 const tickerTransform = m => ({
@@ -145,7 +145,7 @@ const ticker = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close(1000, 'Close handle was called', {keepClosed: true}))
+  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
 }
 
 const allTickers = cb => {
@@ -156,7 +156,7 @@ const allTickers = cb => {
     cb(arr.map(m => tickerTransform(m)))
   }
 
-  return () => w.close(1000, 'Close handle was called', {keepClosed: true})
+  return () => w.close(1000, 'Close handle was called', { keepClosed: true })
 }
 
 const trades = (payload, cb) => {
@@ -187,7 +187,7 @@ const trades = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close(1000, 'Close handle was called', {keepClosed: true}))
+  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
 }
 
 const userTransforms = {
@@ -256,7 +256,7 @@ const user = opts => cb => {
     return () => {
       clearInterval(int)
       closeDataStream({ listenKey })
-      w.close(1000, 'Close handle was called', {keepClosed: true})
+      w.close(1000, 'Close handle was called', { keepClosed: true })
     }
   })
 }
