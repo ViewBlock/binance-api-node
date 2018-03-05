@@ -4,18 +4,14 @@ import openWebSocket from 'open-websocket'
 
 const TEST_SERVER_PORT = 8080
 
-test.beforeEach(t => {
-  const server = new WebSocket.Server({ port: TEST_SERVER_PORT })
-  server.on('connection', ws => {
-    ws.on('message', () => server.clients.forEach(client => client.send('test')))
-  })
-
-  t.context.server = server
+const server = new WebSocket.Server({ port: TEST_SERVER_PORT })
+server.on('connection', ws => {
+  ws.on('message', () => server.clients.forEach(client => client.send('test')))
 })
 
-test.afterEach.always(t => {
+test.after.always('guaranteed cleanup', () => {
   return new Promise(resolve => {
-    t.context.server.close(() => {
+    server.close(() => {
       resolve()
     })
   })
