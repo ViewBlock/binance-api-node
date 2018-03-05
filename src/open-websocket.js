@@ -4,11 +4,11 @@ import WebSocket from 'ws'
 
 export default wsAddressBuilder => {
   return new ReconnectingWebSocket(wsAddressBuilder, undefined, {
-    connectionTimeout: 4000,
+    connectionTimeout: 4E3,
     constructor: typeof window !== 'undefined' ? WebSocket : Html5WebSocket,
     debug: false,
-    maxReconnectionDelay: 10000,
+    maxReconnectionDelay: 10E3,
     maxRetries: Infinity,
-    minReconnectionDelay: 4000,
+    minReconnectionDelay: 4E3,
   })
 }
