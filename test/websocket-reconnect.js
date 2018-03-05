@@ -1,6 +1,6 @@
 import WebSocket from 'ws'
 import test from 'ava'
-import openWebSocket from '../src/open-websocket'
+import openWebSocket from 'open-websocket'
 
 const TEST_SERVER_PORT = 8080
 
