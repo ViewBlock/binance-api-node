@@ -9,7 +9,7 @@ server.on('connection', ws => {
   ws.on('message', () => server.clients.forEach(client => client.send('test')))
 })
 
-test.after.always('guaranteed cleanup', () => {
+test.after.always('cleanup', () => {
   return new Promise(resolve => {
     server.close(() => {
       resolve()
