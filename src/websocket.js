@@ -1,14 +1,14 @@
-import WebSocket from 'ws'
 import zip from 'lodash.zipobject'
 
 import httpMethods from 'http'
+import openWebSocket from 'open-websocket'
 
 const BASE = 'wss://stream.binance.com:9443/ws'
 
 const depth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@depth`)
-    w.on('message', msg => {
+    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@depth`)
+    w.onmessage = msg => {
       const {
         e: eventType,
         E: eventTime,
@@ -17,7 +17,7 @@ const depth = (payload, cb) => {
         u: finalUpdateId,
         b: bidDepth,
         a: askDepth,
-      } = JSON.parse(msg)
+      } = JSON.parse(msg.data)
 
       cb({
         eventType,
@@ -28,19 +28,19 @@ const depth = (payload, cb) => {
         bidDepth: bidDepth.map(b => zip(['price', 'quantity'], b)),
         askDepth: askDepth.map(a => zip(['price', 'quantity'], a)),
       })
-    })
+    }
 
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
 }
 
 const partialDepth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(({ symbol, level }) => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@depth${level}`)
-    w.on('message', msg => {
-      const { lastUpdateId, bids, asks } = JSON.parse(msg)
+    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@depth${level}`)
+    w.onmessage = msg => {
+      const { lastUpdateId, bids, asks } = JSON.parse(msg.data)
       cb({
         symbol,
         level,
@@ -48,12 +48,12 @@ const partialDepth = (payload, cb) => {
         bids: bids.map(b => zip(['price', 'quantity'], b)),
         asks: asks.map(a => zip(['price', 'quantity'], a)),
       })
-    })
+    }
 
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
 }
 
 const candles = (payload, interval, cb) => {
@@ -62,9 +62,9 @@ const candles = (payload, interval, cb) => {
   }
 
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
-    w.on('message', msg => {
-      const { e: eventType, E: eventTime, s: symbol, k: tick } = JSON.parse(msg)
+    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
+    w.onmessage = msg => {
+      const { e: eventType, E: eventTime, s: symbol, k: tick } = JSON.parse(msg.data)
       const {
         t: startTime,
         T: closeTime,
@@ -103,12 +103,12 @@ const candles = (payload, interval, cb) => {
         buyVolume,
         quoteBuyVolume,
       })
-    })
+    }
 
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
 }
 
 const tickerTransform = m => ({
@@ -139,33 +139,33 @@ const tickerTransform = m => ({
 
 const ticker = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@ticker`)
+    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@ticker`)
 
-    w.on('message', msg => {
-      cb(tickerTransform(JSON.parse(msg)))
-    })
+    w.onmessage = msg => {
+      cb(tickerTransform(JSON.parse(msg.data)))
+    }
 
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
 }
 
 const allTickers = cb => {
-  const w = new WebSocket(`${BASE}/!ticker@arr`)
+  const w = new openWebSocket(`${BASE}/!ticker@arr`)
 
-  w.on('message', msg => {
-    const arr = JSON.parse(msg)
+  w.onmessage = msg => {
+    const arr = JSON.parse(msg.data)
     cb(arr.map(m => tickerTransform(m)))
-  })
+  }
 
-  return () => w.close()
+  return () => w.close(1000, 'Close handle was called', { keepClosed: true })
 }
 
 const trades = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = new WebSocket(`${BASE}/${symbol.toLowerCase()}@aggTrade`)
-    w.on('message', msg => {
+    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@aggTrade`)
+    w.onmessage = msg => {
       const {
         e: eventType,
         E: eventTime,
@@ -174,7 +174,7 @@ const trades = (payload, cb) => {
         q: quantity,
         m: maker,
         a: tradeId,
-      } = JSON.parse(msg)
+      } = JSON.parse(msg.data)
 
       cb({
         eventType,
@@ -185,12 +185,12 @@ const trades = (payload, cb) => {
         maker,
         tradeId,
       })
-    })
+    }
 
     return w
   })
 
-  return () => cache.forEach(w => w.close())
+  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
 }
 
 const userTransforms = {
@@ -250,8 +250,8 @@ const user = opts => cb => {
   const { getDataStream, keepDataStream, closeDataStream } = httpMethods(opts)
 
   return getDataStream().then(({ listenKey }) => {
-    const w = new WebSocket(`${BASE}/${listenKey}`)
-    w.on('message', userEventHandler(cb))
+    const w = openWebSocket(`${BASE}/${listenKey}`)
+    w.onmessage = () => (userEventHandler(cb))
 
     const int = setInterval(keepStreamAlive(keepDataStream, listenKey), 50e3)
     keepStreamAlive(keepDataStream, listenKey)()
@@ -259,7 +259,7 @@ const user = opts => cb => {
     return () => {
       clearInterval(int)
       closeDataStream({ listenKey })
-      w.close()
+      w.close(1000, 'Close handle was called', { keepClosed: true })
     }
   })
 }

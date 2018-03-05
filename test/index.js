@@ -373,3 +373,5 @@ test.serial('[WS] userEvents', t => {
 if (process.env.API_KEY) {
   require('./authenticated')
 }
+
+require('./websocket-reconnect')
