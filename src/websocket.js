@@ -1,6 +1,7 @@
+import zip from 'lodash.zipobject'
+
 import httpMethods from 'http'
 import openWebSocket from 'open-websocket'
-import zip from 'lodash.zipobject'
 
 const BASE = 'wss://stream.binance.com:9443/ws'
 
