@@ -134,7 +134,7 @@ test.serial('[REST] error code', async t => {
       symbol: 'TRXETH',
       side: 'SELL',
       type: 'LIMIT',
-      quantity: '1337.00000000',
+      quantity: '-1337.00000000',
       price: '1.00000000',
     })
   } catch (e) {
