@@ -128,6 +128,20 @@ test.serial('[REST] tradesHistory', async t => {
   t.is(trades.length, 500)
 })
 
+test.serial('[REST] error code', async t => {
+  try {
+    await client.orderTest({
+      symbol: 'TRXETH',
+      side: 'SELL',
+      type: 'LIMIT',
+      quantity: '-1337.00000000',
+      price: '1.00000000',
+    })
+  } catch (e) {
+    t.is(e.code, -1100)
+  }
+})
+
 test.serial('[WS] user', async t => {
   const clean = await client.ws.user()
   t.truthy(clean)

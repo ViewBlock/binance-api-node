@@ -21,7 +21,9 @@ const makeQueryString = q =>
 const sendResult = call =>
   call.then(res => Promise.all([res, res.json()])).then(([res, json]) => {
     if (!res.ok) {
-      throw new Error(json.msg || `${res.status} ${res.statusText}`)
+      const error = new Error(json.msg || `${res.status} ${res.statusText}`)
+      error.code = json.code
+      throw error
     }
 
     return json
