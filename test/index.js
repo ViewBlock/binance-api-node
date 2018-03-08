@@ -1,7 +1,7 @@
 import test from 'ava'
 import dotenv from 'dotenv'
 
-import Binance from 'index'
+import Binance, { ErrorCodes } from 'index'
 import { candleFields } from 'http'
 import { userEventHandler } from 'websocket'
 
@@ -10,6 +10,11 @@ import { checkFields } from './utils'
 dotenv.load()
 
 const client = Binance()
+
+test.serial('[MISC] Some error codes are defined', t => {
+  t.truthy(ErrorCodes, 'The map is there')
+  t.truthy(ErrorCodes.TOO_MANY_ORDERS, 'And we have this')
+})
 
 test.serial('[REST] ping', async t => {
   t.truthy(await client.ping(), 'A simple ping should work')

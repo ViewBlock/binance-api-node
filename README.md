@@ -73,6 +73,7 @@ Following examples will use the `await` form, which requires some configuration 
     - [candles](#candles-1)
     - [trades](#trades)
     - [user](#user)
+- [ErrorCodes](#errorcodes)
 
 ### Public REST Endpoints
 
@@ -1062,3 +1063,14 @@ Note that this method returns a promise which will resolve the `clean` callback.
 ```
 
 </details>
+
+### ErrorCodes
+
+An utility error code map is also being exported by the package in order for you to make readable
+conditionals upon specific errors that could occur while using the API.
+
+```js
+import Binance, { ErrorCodes } from 'binance-api-node'
+
+console.log(ErrorCodes.INVALID_ORDER_TYPE) // -1116
+```
