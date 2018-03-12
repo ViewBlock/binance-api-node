@@ -36,6 +36,11 @@ declare module 'binance-api-node' {
         openOrders(options: { symbol: string }): Promise<QueryOrderResult[]>;
     }
 
+    export interface HttpError extends Error {
+        code: number;
+        message: string;
+    }
+
     export interface WebSocket {
         depth: (pair: string, callback: (depth: Depth) => void) => Function;
         partialDepth: (options: { symbol: string, level: number }, callback: (depth: PartialDepth) => void) => Function;
