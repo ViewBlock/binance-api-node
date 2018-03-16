@@ -240,7 +240,7 @@ const userTransforms = {
 }
 
 export const userEventHandler = cb => msg => {
-  const { e: type, ...rest } = JSON.parse(msg)
+  const { e: type, ...rest } = JSON.parse(msg.data)
   cb(userTransforms[type] ? userTransforms[type](rest) : { type, ...rest })
 }
 
@@ -251,7 +251,7 @@ const user = opts => cb => {
 
   return getDataStream().then(({ listenKey }) => {
     const w = openWebSocket(`${BASE}/${listenKey}`)
-    w.onmessage = () => (userEventHandler(cb))
+    w.onmessage = (msg) => (userEventHandler(cb)(msg))
 
     const int = setInterval(keepStreamAlive(keepDataStream, listenKey), 50e3)
     keepStreamAlive(keepDataStream, listenKey)()
