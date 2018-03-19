@@ -9,7 +9,7 @@ const client = Binance({
   apiSecret: process.env.API_SECRET,
 })
 
-test.serial('[REST] order', async t => {
+test('[REST] order', async t => {
   await client.orderTest({
     symbol: 'ETHBTC',
     side: 'BUY',
@@ -27,7 +27,7 @@ test.serial('[REST] order', async t => {
   t.pass()
 })
 
-test.serial('[REST] allOrders / getOrder', async t => {
+test('[REST] allOrders / getOrder', async t => {
   try {
     await client.getOrder({ symbol: 'ETHBTC' })
   } catch (e) {
@@ -64,7 +64,7 @@ test.serial('[REST] allOrders / getOrder', async t => {
   checkFields(t, res, ['orderId', 'symbol', 'price', 'type', 'side'])
 })
 
-test.serial('[REST] getOrder with useServerTime', async t => {
+test('[REST] getOrder with useServerTime', async t => {
   const orders = await client.allOrders({
     symbol: 'ENGETH',
     useServerTime: true,
@@ -74,7 +74,7 @@ test.serial('[REST] getOrder with useServerTime', async t => {
   t.truthy(orders.length)
 })
 
-test.serial('[REST] openOrders', async t => {
+test('[REST] openOrders', async t => {
   const orders = await client.openOrders({
     symbol: 'ETHBTC',
   })
@@ -82,7 +82,7 @@ test.serial('[REST] openOrders', async t => {
   t.true(Array.isArray(orders))
 })
 
-test.serial('[REST] cancelOrder', async t => {
+test('[REST] cancelOrder', async t => {
   try {
     await client.cancelOrder({ symbol: 'ETHBTC', orderId: 1 })
   } catch (e) {
@@ -90,45 +90,45 @@ test.serial('[REST] cancelOrder', async t => {
   }
 })
 
-test.serial('[REST] accountInfo', async t => {
+test('[REST] accountInfo', async t => {
   const account = await client.accountInfo()
   t.truthy(account)
   checkFields(t, account, ['makerCommission', 'takerCommission', 'balances'])
   t.truthy(account.balances.length)
 })
 
-test.serial('[REST] depositHistory', async t => {
+test('[REST] depositHistory', async t => {
   const history = await client.depositHistory()
   t.true(history.success)
   t.truthy(history.depositList.length)
 })
 
-test.serial('[REST] withdrawHistory', async t => {
+test('[REST] withdrawHistory', async t => {
   const history = await client.withdrawHistory()
   t.true(history.success)
   t.is(typeof history.withdrawList.length, 'number')
 })
 
-test.serial('[REST] depositAddress', async t => {
+test('[REST] depositAddress', async t => {
   const out = await client.depositAddress({ asset: 'NEO' })
   t.true(out.success)
   t.is(out.asset, 'NEO')
   t.truthy(out.address)
 })
 
-test.serial('[REST] myTrades', async t => {
+test('[REST] myTrades', async t => {
   const trades = await client.myTrades({ symbol: 'ENGETH' })
   t.true(Array.isArray(trades))
   const [trade] = trades
   checkFields(t, trade, ['id', 'orderId', 'qty', 'commission', 'time'])
 })
 
-test.serial('[REST] tradesHistory', async t => {
+test('[REST] tradesHistory', async t => {
   const trades = await client.tradesHistory({ symbol: 'ETHBTC', fromId: 28457 })
   t.is(trades.length, 500)
 })
 
-test.serial('[REST] error code', async t => {
+test('[REST] error code', async t => {
   try {
     await client.orderTest({
       symbol: 'TRXETH',
@@ -142,7 +142,7 @@ test.serial('[REST] error code', async t => {
   }
 })
 
-test.serial('[WS] user', async t => {
+test('[WS] user', async t => {
   const clean = await client.ws.user()
   t.truthy(clean)
   t.true(typeof clean === 'function')
