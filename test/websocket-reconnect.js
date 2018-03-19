@@ -18,7 +18,7 @@ test.after.always('cleanup', () => {
   })
 })
 
-test.serial('[WS] reconnect', t => {
+test('[WS] reconnect', t => {
   return new Promise(resolve => {
     let isReconnect = false
     const url = () => `ws://localhost:${TEST_SERVER_PORT}`
