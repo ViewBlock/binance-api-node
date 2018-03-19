@@ -107,7 +107,7 @@ test.serial('[REST] allBookTickers', async t => {
 
 test.serial('[REST] Signed call without creds', async t => {
   try {
-    await client.order({ symbol: 'ETHBTC', side: 'BUY', quantity: 1 })
+    await client.accountInfo()
   } catch (e) {
     t.is(e.message, 'You need to pass an API key and secret to make authenticated calls.')
   }
