@@ -320,26 +320,27 @@ console.log(await client.dailyStats({ symbol: 'ETHBTC' }))
 
 ```js
 {
-  priceChange: '-0.00076000',
-  priceChangePercent: '-1.385',
-  weightedAvgPrice: '0.05419050',
-  prevClosePrice: '0.05487700',
-  lastPrice: '0.05411800',
-  lastQty: '0.02000000',
-  bidPrice: '0.05387600',
-  bidQty: '20.04700000',
-  askPrice: '0.05411700',
-  askQty: '19.29100000',
-  openPrice: '0.05487800',
-  highPrice: '0.05527800',
-  lowPrice: '0.05320000',
-  volume: '25577.41900000',
-  quoteVolume: '1386.05320965',
-  openTime: 1508394436102,
-  closeTime: 1508480836102,
-  firstId: 2192355,
-  lastId: 2215941,
-  count: 23584
+  symbol: 'ETHBTC',
+  priceChange: '-0.00112000',
+  priceChangePercent: '-1.751',
+  weightedAvgPrice: '0.06324784',
+  prevClosePrice: '0.06397400',
+  lastPrice: '0.06285500',
+  lastQty: '0.63500000',
+  bidPrice: '0.06285500',
+  bidQty: '0.81900000',
+  askPrice: '0.06291900',
+  askQty: '2.93800000',
+  openPrice: '0.06397500',
+  highPrice: '0.06419100',
+  lowPrice: '0.06205300',
+  volume: '126240.37200000',
+  quoteVolume: '7984.43091340',
+  openTime: 1521622289427,
+  closeTime: 1521708689427,
+  firstId: 45409308, // First tradeId
+  lastId: 45724293, // Last tradeId
+  count: 314986 // Trade count
 }
 ```
 
