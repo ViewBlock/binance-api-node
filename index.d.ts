@@ -34,6 +34,7 @@ declare module 'binance-api-node' {
         getOrder(options: { symbol: string; orderId: number }): Promise<QueryOrderResult>;
         cancelOrder(options: { symbol: string; orderId: number }): Promise<CancelOrderResult>;
         openOrders(options: { symbol: string }): Promise<QueryOrderResult[]>;
+        dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
     }
 
     export interface HttpError extends Error {
@@ -401,5 +402,29 @@ declare module 'binance-api-node' {
         origClientOrderId: string;
         orderId: number;
         clientOrderId: string;
+    }
+
+    export interface DailyStatsResult {
+        symbol: string;
+        priceChange: string;
+        priceChangePercent: string;
+        weightedAvgPrice: string;
+        prevClosePrice: string;
+        lastPrice: string;
+        lastQty: string;
+        bidPrice: string;
+        bidQty: string;
+        askPrice: string;
+        askQty: string;
+        openPrice: string;
+        highPrice: string;
+        lowPrice: string;
+        volume: string;
+        quoteVolume: string;
+        openTime: number;
+        closeTime: number;
+        firstId: number; // First tradeId
+        lastId: number; // Last tradeId
+        count: number; // Trade count
     }
 }
