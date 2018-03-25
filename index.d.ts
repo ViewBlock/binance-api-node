@@ -391,7 +391,7 @@ declare module 'binance-api-node' {
         status: OrderStatus;
         timeInForce: string;
         type: string;
-        side: string;
+        side: OrderSide;
         stopPrice: string;
         icebergQty: string;
         time: number;
