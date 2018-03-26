@@ -35,6 +35,7 @@ declare module 'binance-api-node' {
         cancelOrder(options: { symbol: string; orderId: number }): Promise<CancelOrderResult>;
         openOrders(options: { symbol: string }): Promise<QueryOrderResult[]>;
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
+        candles(options: CandlesOptions): Promise<CandleChartResult[]>;
     }
 
     export interface HttpError extends Error {
@@ -390,7 +391,7 @@ declare module 'binance-api-node' {
         status: OrderStatus;
         timeInForce: string;
         type: string;
-        side: string;
+        side: OrderSide;
         stopPrice: string;
         icebergQty: string;
         time: number;
@@ -426,5 +427,27 @@ declare module 'binance-api-node' {
         firstId: number; // First tradeId
         lastId: number; // Last tradeId
         count: number; // Trade count
+    }
+
+    export interface CandlesOptions {
+        symbol: string;
+        interval: CandleChartInterval;
+        limit?: number;
+        startTime?: number;
+        endTime?: number;
+    }
+
+    export interface CandleChartResult {
+        openTime: number;
+        open: string;
+        high: string;
+        low: string;
+        close: string;
+        volume: string;
+        closeTime: number;
+        quoteVolume: string;
+        trades: number;
+        baseAssetVolume: string;
+        quoteAssetVolume: string;
     }
 }
