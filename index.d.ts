@@ -29,6 +29,7 @@ declare module 'binance-api-node' {
         order(options: NewOrder): Promise<Order>;
         prices(): Promise<{ [index: string]: string }>;
         time(): Promise<number>;
+        trades(options: { symbol: string, limit?: number }): Promise<TradeResult[]>;
         ws: WebSocket;
         myTrades(options: { symbol: string, limit?: number, fromId?: number }): Promise<MyTrade[]>;
         getOrder(options: { symbol: string; orderId: number }): Promise<QueryOrderResult>;
@@ -366,6 +367,15 @@ declare module 'binance-api-node' {
         tradeId: number;
         isOrderWorking: boolean;
         isBuyerMaker: boolean;
+    }
+
+    export interface TradeResult {
+        id: number;
+        price: string;
+        qty: string;
+        time: number;
+        isBuyerMaker: boolean;
+        isBestMatch: boolean;
     }
 
     interface MyTrade {
