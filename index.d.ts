@@ -45,7 +45,7 @@ declare module 'binance-api-node' {
     }
 
     export interface WebSocket {
-        depth: (pair: string, callback: (depth: Depth) => void) => Function;
+        depth: (pair: string | string[], callback: (depth: Depth) => void) => Function;
         partialDepth: (options: { symbol: string, level: number }, callback: (depth: PartialDepth) => void) => Function;
         ticker: (pair: string, callback: (ticker: Ticker) => void) => Function;
         allTickers: (callback: (tickers: Ticker[]) => void) => Function;
