@@ -541,6 +541,12 @@ console.log(await client.cancelOrder({
 <summary>Output</summary>
 
 ```js
+{
+  symbol: 'ETHBTC',
+  origClientOrderId: 'bnAoRHgI18gRD80FJmsfNP',
+  orderId: 1,
+  clientOrderId: 'RViSsQPTp1v3WmLYpeKT11'
+}
 ```
 
 </details>
