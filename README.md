@@ -557,7 +557,7 @@ Get all open orders on a symbol.
 
 ```js
 console.log(await client.openOrders({
-  symbol: 'ETHBTC',
+  symbol: 'XLMBTC',
 }))
 ```
 
@@ -570,6 +570,22 @@ console.log(await client.openOrders({
 <summary>Output</summary>
 
 ```js
+[{
+  symbol: 'XLMBTC',
+  orderId: 11271740,
+  clientOrderId: 'ekHkROfW98gBN80LTfufQZ',
+  price: '0.00001081',
+  origQty: '1331.00000000',
+  executedQty: '0.00000000',
+  status: 'NEW',
+  timeInForce: 'GTC',
+  type: 'LIMIT',
+  side: 'BUY',
+  stopPrice: '0.00000000',
+  icebergQty: '0.00000000',
+  time: 1522682290485,
+  isWorking: true
+}]
 ```
 
 </details>
