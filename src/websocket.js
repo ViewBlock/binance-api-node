@@ -33,7 +33,7 @@ const depth = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
+  return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
 const partialDepth = (payload, cb) => {
@@ -53,7 +53,7 @@ const partialDepth = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
+  return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
 const candles = (payload, interval, cb) => {
@@ -108,7 +108,7 @@ const candles = (payload, interval, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
+  return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
 const tickerTransform = m => ({
@@ -148,7 +148,7 @@ const ticker = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
+  return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
 const allTickers = cb => {
@@ -159,7 +159,7 @@ const allTickers = cb => {
     cb(arr.map(m => tickerTransform(m)))
   }
 
-  return () => w.close(1000, 'Close handle was called', { keepClosed: true })
+  return (options) => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
 }
 
 const trades = (payload, cb) => {
@@ -190,7 +190,7 @@ const trades = (payload, cb) => {
     return w
   })
 
-  return () => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true }))
+  return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
 const userTransforms = {
@@ -256,10 +256,10 @@ const user = opts => cb => {
     const int = setInterval(keepStreamAlive(keepDataStream, listenKey), 50e3)
     keepStreamAlive(keepDataStream, listenKey)()
 
-    return () => {
+    return (options) => {
       clearInterval(int)
       closeDataStream({ listenKey })
-      w.close(1000, 'Close handle was called', { keepClosed: true })
+      w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
     }
   })
 }
