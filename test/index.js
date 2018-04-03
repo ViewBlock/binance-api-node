@@ -244,7 +244,7 @@ test('[WS] userEvents', t => {
         NEO: { available: '0.00000000', locked: '0.00000000' },
       },
     })
-  })(JSON.stringify(accountPayload))
+  })({ data: JSON.stringify(accountPayload) })
 
   const orderPayload = {
     e: 'executionReport',
@@ -305,7 +305,7 @@ test('[WS] userEvents', t => {
       isOrderWorking: true,
       isBuyerMaker: false,
     })
-  })(JSON.stringify(orderPayload))
+  })({ data: JSON.stringify(orderPayload) })
 
   const tradePayload = {
     e: 'executionReport',
@@ -366,13 +366,13 @@ test('[WS] userEvents', t => {
       isOrderWorking: false,
       isBuyerMaker: false,
     })
-  })(JSON.stringify(tradePayload))
+  })({ data: JSON.stringify(tradePayload) })
 
   const newEvent = { e: 'totallyNewEvent', yolo: 42 }
 
   userEventHandler(res => {
     t.deepEqual(res, { type: 'totallyNewEvent', yolo: 42 })
-  })(JSON.stringify(newEvent))
+  })({ data: JSON.stringify(newEvent) })
 })
 
 if (process.env.API_KEY) {

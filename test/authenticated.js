@@ -43,9 +43,9 @@ test('[REST] allOrders / getOrder', async t => {
     t.is(e.message, 'Order does not exist.')
   }
 
-  // Note that this test will fail if you don't have any ENG order in your account ;)
+  // Note that this test will fail if you don't have any AST order in your account
   const orders = await client.allOrders({
-    symbol: 'ENGETH',
+    symbol: 'ASTETH',
   })
 
   t.true(Array.isArray(orders))
@@ -56,7 +56,7 @@ test('[REST] allOrders / getOrder', async t => {
   checkFields(t, order, ['orderId', 'symbol', 'price', 'type', 'side'])
 
   const res = await client.getOrder({
-    symbol: 'ENGETH',
+    symbol: 'ASTETH',
     orderId: order.orderId,
   })
 
@@ -66,7 +66,7 @@ test('[REST] allOrders / getOrder', async t => {
 
 test('[REST] getOrder with useServerTime', async t => {
   const orders = await client.allOrders({
-    symbol: 'ENGETH',
+    symbol: 'ASTETH',
     useServerTime: true,
   })
 
@@ -117,7 +117,7 @@ test('[REST] depositAddress', async t => {
 })
 
 test('[REST] myTrades', async t => {
-  const trades = await client.myTrades({ symbol: 'ENGETH' })
+  const trades = await client.myTrades({ symbol: 'ASTETH' })
   t.true(Array.isArray(trades))
   const [trade] = trades
   checkFields(t, trade, ['id', 'orderId', 'qty', 'commission', 'time'])
