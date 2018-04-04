@@ -1,6 +1,4 @@
 // tslint:disable:interface-name
-import {OrderFill} from "binance-api-node";
-
 declare module 'binance-api-node' {
     export default function (options?: { apiKey: string; apiSecret: string }): Binance;
 
@@ -23,18 +21,19 @@ declare module 'binance-api-node' {
     }
 
     export interface Binance {
-        accountInfo(): Promise<Account>;
+        accountInfo(options?: { useServerTime: boolean }): Promise<Account>;
         book(options: { symbol: string, limit?: number }): Promise<OrderBook>;
         exchangeInfo(): Promise<ExchangeInfo>;
         order(options: NewOrder): Promise<Order>;
+        orderTest(options: NewOrder): Promise<Order>;
         prices(): Promise<{ [index: string]: string }>;
         time(): Promise<number>;
         trades(options: { symbol: string, limit?: number }): Promise<TradeResult[]>;
         ws: WebSocket;
-        myTrades(options: { symbol: string, limit?: number, fromId?: number }): Promise<MyTrade[]>;
-        getOrder(options: { symbol: string; orderId: number }): Promise<QueryOrderResult>;
-        cancelOrder(options: { symbol: string; orderId: number }): Promise<CancelOrderResult>;
-        openOrders(options: { symbol: string }): Promise<QueryOrderResult[]>;
+        myTrades(options: { symbol: string, limit?: number, fromId?: number, useServerTime?: boolean }): Promise<MyTrade[]>;
+        getOrder(options: { symbol: string; orderId: number, useServerTime?: boolean }): Promise<QueryOrderResult>;
+        cancelOrder(options: { symbol: string; orderId: number, useServerTime?: boolean }): Promise<CancelOrderResult>;
+        openOrders(options: { symbol: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
         candles(options: CandlesOptions): Promise<CandleChartResult[]>;
     }
@@ -174,6 +173,7 @@ declare module 'binance-api-node' {
         stopPrice?: string;
         symbol: string;
         timeInForce?: TimeInForce;
+        useServerTime?: boolean;
         type: OrderType;
     }
 
