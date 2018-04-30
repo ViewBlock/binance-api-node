@@ -13,6 +13,17 @@ declare module 'binance-api-node' {
         takerCommission: number;
         updateTime: number;
     }
+    
+    export interface AggregatedTrade {
+        aggId: number;
+        price: string;
+        quantity: string;
+        firstId: number;
+        lastId: number;
+        timestamp: number;
+        isBuyerMaker: boolean;
+        wasBestPrice: boolean;
+    }
 
     export interface AssetBalance {
         asset: string;
@@ -22,6 +33,7 @@ declare module 'binance-api-node' {
 
     export interface Binance {
         accountInfo(options?: { useServerTime: boolean }): Promise<Account>;
+        aggTrades(options?: { symbol: string, fromId?: string, startTime?: number, endTime?: number, limit?: number }): Promise<AggregatedTrade>;
         book(options: { symbol: string, limit?: number }): Promise<OrderBook>;
         exchangeInfo(): Promise<ExchangeInfo>;
         order(options: NewOrder): Promise<Order>;
