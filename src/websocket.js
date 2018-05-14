@@ -173,6 +173,7 @@ const trades = (payload, cb) => {
         p: price,
         q: quantity,
         m: maker,
+        M: isBuyerMaker,
         a: tradeId,
       } = JSON.parse(msg.data)
 
@@ -183,6 +184,7 @@ const trades = (payload, cb) => {
         price,
         quantity,
         maker,
+        isBuyerMaker,
         tradeId,
       })
     }

@@ -328,6 +328,7 @@ declare module 'binance-api-node' {
         price: string;
         quantity: string;
         maker: boolean;
+        isBuyerMaker: boolean;
         tradeId: number;
     }
 
