@@ -426,7 +426,7 @@ console.log(await client.order({
 |type|String|false|`LIMIT`|`LIMIT`, `MARKET`|
 |quantity|Number|true|
 |price|Number|true||Optional for `MARKET` orders|
-|timeInForce|String|false|`GTC`|`GTC`, `FOK`, `IOC`|
+|timeInForce|String|false|`GTC`|`FOK`, `GTC`, `IOC`|
 |newClientOrderId|String|false||A unique id for the order. Automatically generated if not sent.|
 |stopPrice|Number|false||Used with stop orders|
 |newOrderRespType|String|false|`RESULT`|Returns more complete info of the order. `ACK`, `RESULT`, or `FULL`|
