@@ -71,7 +71,8 @@ Following examples will use the `await` form, which requires some configuration 
     - [ticker](#ticker)
     - [allTickers](#alltickers)
     - [candles](#candles-1)
-    - [trades](#trades)
+    - [aggTrades](#aggtrades-1)
+    - [trades](#trades-1)
     - [user](#user)
 - [ErrorCodes](#errorcodes)
 
@@ -1031,10 +1032,37 @@ client.ws.candles('ETHBTC', '1m', candle => {
 
 #### trades
 
-Live trade data feed. Pass either a single symbol string or an array of symbols.
+Live trade data feed. Pass either a single symbol string or an array of symbols. The trade streams push raw trade information; each trade has a unique buyer and seller.
 
 ```js
 client.ws.trades(['ETHBTC', 'BNBBTC'], trade => {
+  console.log(trade)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'trade',
+  eventTime: 1508614495052,
+  symbol: 'ETHBTC',
+  price: '0.04923600',
+  quantity: '3.43500000',
+  maker: false,
+  tradeId: 2148226
+}
+```
+
+</details>
+
+#### aggTrades
+
+Live trade data feed. Pass either a single symbol string or an array of symbols. The aggregate trade streams push trade information that is aggregated for a single taker order.
+
+```js
+client.ws.aggTrades(['ETHBTC', 'BNBBTC'], trade => {
   console.log(trade)
 })
 ```

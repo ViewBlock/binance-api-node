@@ -62,6 +62,7 @@ declare module 'binance-api-node' {
         allTickers: (callback: (tickers: Ticker[]) => void) => Function;
         candles: (pair: string, period: string, callback: (ticker: Candle) => void) => Function;
         trades: (pairs: string[], callback: (trade: Trade) => void) => Function;
+        aggTrades: (pairs: string[], callback: (trade: Trade) => void) => Function;
         user: ( callback: (msg: OutboundAccountInfo|ExecutionReport) => void) => Function;
     }
 
