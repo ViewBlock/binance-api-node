@@ -36,6 +36,38 @@ const depth = (payload, cb) => {
   return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
+const bulkDepth = (payload, cb) => {
+  const _BASE = BASE.replace(/ws$/gi, 'stream');
+  const streams = (Array.isArray(payload) ? payload : [payload])
+    .map(symbol => `${symbol}@depth`)
+    .join('/');
+
+  const w = openWebSocket(`${_BASE}?streams=${streams.toLowerCase()}`);
+  w.onmessage = msg => {
+    const {
+      e: eventType,
+      E: eventTime,
+      s: symbol,
+      U: firstUpdateId,
+      u: finalUpdateId,
+      b: bidDepth,
+      a: askDepth,
+    } = JSON.parse(msg.data).data
+
+    cb({
+      eventType,
+      eventTime,
+      symbol,
+      firstUpdateId,
+      finalUpdateId,
+      bidDepth: bidDepth.map(b => zip(['price', 'quantity'], b)),
+      askDepth: askDepth.map(a => zip(['price', 'quantity'], a)),
+    });
+  }
+
+  return (options) => w.close(1000, 'Close handle was called', { keepClosed: true, ...options });
+}
+
 const partialDepth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(({ symbol, level }) => {
     const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@depth${level}`)
@@ -272,6 +304,7 @@ const user = opts => cb => {
 
 export default opts => ({
   depth,
+  bulkDepth,
   partialDepth,
   candles,
   trades,
