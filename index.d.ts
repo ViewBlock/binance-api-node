@@ -34,6 +34,7 @@ declare module 'binance-api-node' {
     export interface Binance {
         accountInfo(options?: { useServerTime: boolean }): Promise<Account>;
         aggTrades(options?: { symbol: string, fromId?: string, startTime?: number, endTime?: number, limit?: number }): Promise<AggregatedTrade>;
+        allBookTickers(): { [key: string]: Ticker };
         book(options: { symbol: string, limit?: number }): Promise<OrderBook>;
         exchangeInfo(): Promise<ExchangeInfo>;
         order(options: NewOrder): Promise<Order>;
