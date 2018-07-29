@@ -50,6 +50,7 @@ declare module 'binance-api-node' {
         openOrders(options: { symbol: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
         candles(options: CandlesOptions): Promise<CandleChartResult[]>;
+        tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<Trade[]>;
     }
 
     export interface HttpError extends Error {
