@@ -39,6 +39,7 @@ declare module 'binance-api-node' {
         exchangeInfo(): Promise<ExchangeInfo>;
         order(options: NewOrder): Promise<Order>;
         orderTest(options: NewOrder): Promise<Order>;
+        ping(): Promise<boolean>;
         prices(): Promise<{ [index: string]: string }>;
         time(): Promise<number>;
         trades(options: { symbol: string, limit?: number }): Promise<TradeResult[]>;
