@@ -242,6 +242,8 @@ const userTransforms = {
     tradeId: m.t,
     isOrderWorking: m.w,
     isBuyerMaker: m.m,
+    creationTime: m.O,
+    totalQuoteTradeQuantity: m.Z,
   }),
 }
 
