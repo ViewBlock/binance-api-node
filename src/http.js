@@ -237,6 +237,7 @@ export default opts => {
     myTrades: payload => pCall('/v3/myTrades', payload),
 
     withdraw: payload => pCall('/wapi/v3/withdraw.html', payload, 'POST'),
+    withdrawFee: payload => pCall('/wapi/v3/withdrawFee.html', payload),
     withdrawHistory: payload => pCall('/wapi/v3/withdrawHistory.html', payload),
     depositHistory: payload => pCall('/wapi/v3/depositHistory.html', payload),
     depositAddress: payload => pCall('/wapi/v3/depositAddress.html', payload),

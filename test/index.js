@@ -183,6 +183,15 @@ test('[WS] trades', t => {
   })
 })
 
+test('[WS] aggregate trades', t => {
+  return new Promise(resolve => {
+    client.ws.aggTrades(['BNBBTC', 'ETHBTC', 'BNTBTC'], trade => {
+      checkFields(t, trade, ['eventType', 'tradeId', 'quantity', 'price', 'symbol'])
+      resolve()
+    })
+  })
+})
+
 test('[WS] userEvents', t => {
   const accountPayload = {
     e: 'outboundAccountInfo',
@@ -275,6 +284,8 @@ test('[WS] userEvents', t => {
     w: true,
     m: false,
     M: false,
+    O: 1499405658657,
+    Z: '0.00000000',
   }
 
   userEventHandler(res => {
@@ -304,6 +315,8 @@ test('[WS] userEvents', t => {
       tradeId: -1,
       isOrderWorking: true,
       isBuyerMaker: false,
+      creationTime: 1499405658657,
+      totalQuoteTradeQuantity: '0.00000000',
     })
   })({ data: JSON.stringify(orderPayload) })
 
@@ -336,6 +349,8 @@ test('[WS] userEvents', t => {
     w: false,
     m: false,
     M: true,
+    O: 1499405658657,
+    Z: '2.30570761',
   }
 
   userEventHandler(res => {
@@ -365,6 +380,8 @@ test('[WS] userEvents', t => {
       tradeId: 77517,
       isOrderWorking: false,
       isBuyerMaker: false,
+      creationTime: 1499405658657,
+      totalQuoteTradeQuantity: '2.30570761',
     })
   })({ data: JSON.stringify(tradePayload) })
 

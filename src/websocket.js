@@ -162,9 +162,9 @@ const allTickers = cb => {
   return (options) => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
 }
 
-const trades = (payload, cb) => {
+const tradesInternal = (payload, streamName, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@aggTrade`)
+    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@${streamName}`)
     w.onmessage = msg => {
       const {
         e: eventType,
@@ -194,6 +194,10 @@ const trades = (payload, cb) => {
 
   return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
+
+const aggTrades = (payload, cb) => tradesInternal(payload, 'aggTrade', cb)
+
+const trades = (payload, cb) => tradesInternal(payload, 'trade', cb)
 
 const userTransforms = {
   outboundAccountInfo: m => ({
@@ -238,6 +242,8 @@ const userTransforms = {
     tradeId: m.t,
     isOrderWorking: m.w,
     isBuyerMaker: m.m,
+    creationTime: m.O,
+    totalQuoteTradeQuantity: m.Z,
   }),
 }
 
@@ -256,7 +262,7 @@ const user = opts => cb => {
     w.onmessage = (msg) => (userEventHandler(cb)(msg))
 
     const int = setInterval(() => {
-      keepStreamAlive(keepDataStream, listenKey)()
+      keepStreamAlive(keepDataStream, listenKey)
     }, 50e3)
     keepStreamAlive(keepDataStream, listenKey)()
 
@@ -273,6 +279,7 @@ export default opts => ({
   partialDepth,
   candles,
   trades,
+  aggTrades,
   ticker,
   allTickers,
   user: user(opts),

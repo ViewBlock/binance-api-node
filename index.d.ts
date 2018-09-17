@@ -33,11 +33,13 @@ declare module 'binance-api-node' {
 
     export interface Binance {
         accountInfo(options?: { useServerTime: boolean }): Promise<Account>;
-        aggTrades(options?: { symbol: string, fromId?: string, startTime?: number, endTime?: number, limit?: number }): Promise<AggregatedTrade>;
+        aggTrades(options?: { symbol: string, fromId?: string, startTime?: number, endTime?: number, limit?: number }): Promise<AggregatedTrade[]>;
+        allBookTickers(): Promise<{ [key: string]: Ticker }>;
         book(options: { symbol: string, limit?: number }): Promise<OrderBook>;
         exchangeInfo(): Promise<ExchangeInfo>;
         order(options: NewOrder): Promise<Order>;
         orderTest(options: NewOrder): Promise<Order>;
+        ping(): Promise<boolean>;
         prices(): Promise<{ [index: string]: string }>;
         time(): Promise<number>;
         trades(options: { symbol: string, limit?: number }): Promise<TradeResult[]>;
@@ -48,6 +50,7 @@ declare module 'binance-api-node' {
         openOrders(options: { symbol: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
         candles(options: CandlesOptions): Promise<CandleChartResult[]>;
+        tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<Trade[]>;
     }
 
     export interface HttpError extends Error {
@@ -62,6 +65,7 @@ declare module 'binance-api-node' {
         allTickers: (callback: (tickers: Ticker[]) => void) => Function;
         candles: (pair: string, period: string, callback: (ticker: Candle) => void) => Function;
         trades: (pairs: string[], callback: (trade: Trade) => void) => Function;
+        aggTrades: (pairs: string[], callback: (trade: Trade) => void) => Function;
         user: ( callback: (msg: OutboundAccountInfo|ExecutionReport) => void) => Function;
     }
 
