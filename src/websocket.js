@@ -256,7 +256,7 @@ const user = opts => cb => {
     w.onmessage = (msg) => (userEventHandler(cb)(msg))
 
     const int = setInterval(() => {
-      keepStreamAlive(keepDataStream, listenKey)
+      keepStreamAlive(keepDataStream, listenKey)()
     }, 50e3)
     keepStreamAlive(keepDataStream, listenKey)()
 
