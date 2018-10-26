@@ -33,7 +33,8 @@ const depth = (payload, cb) => {
     return w
   })
 
-  return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+  return options =>
+    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
 const partialDepth = (payload, cb) => {
@@ -53,7 +54,8 @@ const partialDepth = (payload, cb) => {
     return w
   })
 
-  return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+  return options =>
+    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
 const candles = (payload, interval, cb) => {
@@ -108,7 +110,8 @@ const candles = (payload, interval, cb) => {
     return w
   })
 
-  return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+  return options =>
+    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
 const tickerTransform = m => ({
@@ -148,7 +151,8 @@ const ticker = (payload, cb) => {
     return w
   })
 
-  return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+  return options =>
+    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
 const allTickers = cb => {
@@ -159,7 +163,7 @@ const allTickers = cb => {
     cb(arr.map(m => tickerTransform(m)))
   }
 
-  return (options) => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
+  return options => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
 }
 
 const tradesInternal = (payload, streamName, cb) => {
@@ -192,7 +196,8 @@ const tradesInternal = (payload, streamName, cb) => {
     return w
   })
 
-  return (options) => cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+  return options =>
+    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
 const aggTrades = (payload, cb) => tradesInternal(payload, 'aggTrade', cb)
@@ -252,23 +257,24 @@ export const userEventHandler = cb => msg => {
   cb(userTransforms[type] ? userTransforms[type](rest) : { type, ...rest })
 }
 
-export const keepStreamAlive = (method, listenKey) => () => method({ listenKey })
+export const keepStreamAlive = (method, listenKey) => method({ listenKey }).catch(f => f)
 
 const user = opts => cb => {
   const { getDataStream, keepDataStream, closeDataStream } = httpMethods(opts)
 
   return getDataStream().then(({ listenKey }) => {
     const w = openWebSocket(`${BASE}/${listenKey}`)
-    w.onmessage = (msg) => (userEventHandler(cb)(msg))
+    w.onmessage = msg => userEventHandler(cb)(msg)
 
     const int = setInterval(() => {
-      keepStreamAlive(keepDataStream, listenKey)()
+      keepStreamAlive(keepDataStream, listenKey)
     }, 50e3)
-    keepStreamAlive(keepDataStream, listenKey)()
 
-    return (options) => {
+    keepStreamAlive(keepDataStream, listenKey)
+
+    return options => {
       clearInterval(int)
-      closeDataStream({ listenKey })
+      closeDataStream({ listenKey }).catch(f => f)
       w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
     }
   })
