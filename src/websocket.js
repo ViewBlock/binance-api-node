@@ -277,7 +277,7 @@ const user = opts => cb => {
      if (currentListenKey) {
        clearInterval(int)
        
-       const p = closeDataStream({ currentListenKey })
+       const p = closeDataStream({ listenKey: currentListenKey })
        
        if (catch_errors) {
          p.catch((err) => (0))
