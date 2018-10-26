@@ -256,22 +256,60 @@ export const keepStreamAlive = (method, listenKey) => () => method({ listenKey }
 
 const user = opts => cb => {
   const { getDataStream, keepDataStream, closeDataStream } = httpMethods(opts)
-
-  return getDataStream().then(({ listenKey }) => {
-    const w = openWebSocket(`${BASE}/${listenKey}`)
-    w.onmessage = (msg) => (userEventHandler(cb)(msg))
-
-    const int = setInterval(() => {
-      keepStreamAlive(keepDataStream, listenKey)
-    }, 50e3)
-    keepStreamAlive(keepDataStream, listenKey)()
-
-    return (options) => {
-      clearInterval(int)
-      closeDataStream({ listenKey })
-      w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
+  let currentListenKey = null, int = null, w = null
+  
+  const keep_alive = (is_reconnecting) => {
+    if (currentListenKey) {
+      keepStreamAlive(keepDataStream, currentListenKey)()
+        .catch((err) => {          
+          close_stream({}, true)
+                
+          if (is_reconnecting) {
+            setTimeout(() => make_stream(true), 30e3)
+          } else {
+            make_stream(true)
+          }
+        })      
     }
-  })
+  }
+  
+  const close_stream = (options, catch_errors) => {
+     if (currentListenKey) {
+       clearInterval(int)
+       
+       const p = closeDataStream({ currentListenKey })
+       
+       if (catch_errors) {
+         p.catch((err) => (0))
+       }
+       
+       w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
+       currentListenKey = null
+     }
+  }
+  
+  const make_stream = (is_reconnecting) => {
+    return getDataStream().then(({ listenKey }) => {
+       w = openWebSocket(`${BASE}/${listenKey}`)
+       w.onmessage = (msg) => (userEventHandler(cb)(msg))
+
+       currentListenKey = listenKey; 
+
+       int = setInterval(() => keep_alive(false), 50e3)
+     
+       keep_alive(true)
+
+       return (options) => close_stream(options)
+     }).catch ((err) => {       
+       if (is_reconnecting) {
+         setTimeout(() => make_stream(true), 30e3)
+       } else {
+         throw err
+       }
+     })
+  }
+
+  return make_stream(false)
 }
 
 export default opts => ({
