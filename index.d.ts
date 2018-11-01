@@ -416,7 +416,7 @@ declare module 'binance-api-node' {
         origQty: string;
         executedQty: string;
         status: OrderStatus;
-        timeInForce: string;
+        timeInForce: TimeInForce;
         type: string;
         side: OrderSide;
         stopPrice: string;
