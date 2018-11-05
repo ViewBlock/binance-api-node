@@ -87,7 +87,7 @@ declare module 'binance-api-node' {
         | '1M';
 
     export type RateLimitType =
-        | 'REQUESTS_WEIGHT'
+        | 'REQUEST_WEIGHT'
         | 'ORDERS';
 
     export type RateLimitInterval =
