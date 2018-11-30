@@ -98,10 +98,10 @@ test('[REST] accountInfo', async t => {
 })
 
 test('[REST] tradeFee', async t => {
-    const tfee = await client.tradeFee()
-    t.truthy(tfee)
-    checkFields(t, tfee, ['symbol', 'maker', 'taker'])
-    t.truthy(tfee.length)
+  const tfee = await client.tradeFee()
+  t.truthy(tfee)
+  checkFields(t, tfee, ['symbol', 'maker', 'taker'])
+  t.truthy(tfee.length)
 })
 
 test('[REST] depositHistory', async t => {
