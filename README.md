@@ -864,6 +864,7 @@ console.log(await client.depositAddress({ asset: 'NEO' }))
 ```
 
 </details>
+
 #### tradeFee
 
 Retrieve the account trade Fee per asset.
