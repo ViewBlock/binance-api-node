@@ -67,6 +67,7 @@ Following examples will use the `await` form, which requires some configuration 
     - [withdrawHistory](#withdrawhistory)
     - [withdraw](#withdraw)
     - [depositAddress](#depositaddress)
+    - [tradeFee](#tradefee)
 - [Websockets](#websockets)
     - [depth](#depth)
     - [partialDepth](#partialdepth)
@@ -863,6 +864,34 @@ console.log(await client.depositAddress({ asset: 'NEO' }))
 ```
 
 </details>
+
+#### tradeFee
+
+Retrieve the account trade Fee per asset.
+
+```js
+console.log(await client.tradeFee())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[{
+  symbol: 'BTC',
+  maker: 0.0001,
+  taker: 0.0001,
+}, 
+{
+  symbol: 'LTC',
+  maker: 0.0001,
+  taker: 0.0001,
+}
+...]
+```
+
+</details>
+
 
 ### WebSockets
 
