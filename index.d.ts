@@ -442,6 +442,11 @@ declare module 'binance-api-node' {
         clientOrderId: string;
     }
 
+    export interface AvgPriceResult {
+        mins: number;
+        price: string;
+    }
+
     export interface DailyStatsResult {
         symbol: string;
         priceChange: string;
