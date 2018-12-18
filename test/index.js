@@ -99,6 +99,12 @@ test('[REST] prices', async t => {
   t.truthy(prices.ETHBTC)
 })
 
+test('[REST] avgPrice', async t => {
+  const res = await client.avgPrice({ symbol: 'ETHBTC' })
+  t.truthy(res)
+  checkFields(t, res, ['mins', 'price'])
+})
+
 test('[REST] allBookTickers', async t => {
   const tickers = await client.allBookTickers()
   t.truthy(tickers)
