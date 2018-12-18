@@ -51,6 +51,7 @@ Following examples will use the `await` form, which requires some configuration 
     - [aggTrades](#aggtrades)
     - [trades](#trades)
     - [dailyStats](#dailystats)
+    - [avgPrice](#avgPrice)
     - [prices](#prices)
     - [allBookTickers](#allbooktickers)
 - [Authenticated REST Endpoints](#authenticated-rest-endpoints)
@@ -345,6 +346,30 @@ console.log(await client.dailyStats({ symbol: 'ETHBTC' }))
   firstId: 45409308, // First tradeId
   lastId: 45724293, // Last tradeId
   count: 314986 // Trade count
+}
+```
+
+</details>
+
+#### avgPrice
+
+Current average price for a symbol.
+
+```js
+console.log(await client.avgPrice({ symbol: 'ETHBTC' }))
+```
+
+| Param  | Type   | Required |
+| ------ | ------ | -------- |
+| symbol | String | true     |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "mins": 5,
+  "price": "9.35751834"
 }
 ```
 
