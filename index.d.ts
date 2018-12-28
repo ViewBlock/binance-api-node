@@ -52,10 +52,52 @@ declare module 'binance-api-node' {
         success: boolean;
     }
 
+    export enum DepositStatus {
+        PENDING = 0,
+        SUCCESS = 1,
+    }
+
+    export interface DepositHistoryResponse {
+        depositList:
+        {
+            insertTime: number,
+            amount: number;
+            asset: string;
+            address: string;
+            txId: string;
+            status: DepositStatus;
+        }[];
+        success: boolean,
+    }
+
+    export enum WithdrawStatus {
+        EMAIL_SENT = 0,
+        CANCELLED = 1,
+        AWAITING_APPROVAL = 2,
+        REJECTED = 3,
+        PROCESSING = 4,
+        FAILURE = 5,
+        COMPLETED = 6,
+    }
+
+    export interface WithdrawHistoryResponse {
+        withdrawList:
+        {
+            id: string;
+            amount: number;
+            address: string;
+            asset: string;
+            txId: string;
+            applyTime: number;
+            status: WithdrawStatus;
+        }[];
+        success: boolean,
+    }
+
     export interface AssetDetail {
         success: boolean,
         assetDetail: {
-            [asset: string] : {
+            [asset: string]: {
                 minWithdrawAmount: string;
                 depositStatus: boolean;
                 withdrawFee: number;
@@ -90,6 +132,8 @@ declare module 'binance-api-node' {
         depositAddress(options: { asset: string }): Promise<DepositAddress>;
         withdraw(options: { asset: string, address: string, amount: number; name?: string }): Promise<WithrawResponse>;
         assetDetail(): Promise<AssetDetail>;
+        withdrawHistory(options: { asset?: string, status?: number, startTime?: number, endTime?: number }): Promise<WithdrawHistoryResponse>;
+        depositHistory(options: { asset?: string, status?: number, startTime?: number, endTime?: number }): Promise<DepositHistoryResponse>;
     }
 
     export interface HttpError extends Error {
@@ -105,7 +149,7 @@ declare module 'binance-api-node' {
         candles: (pair: string, period: string, callback: (ticker: Candle) => void) => Function;
         trades: (pairs: string[], callback: (trade: Trade) => void) => Function;
         aggTrades: (pairs: string[], callback: (trade: Trade) => void) => Function;
-        user: ( callback: (msg: OutboundAccountInfo|ExecutionReport) => void) => Function;
+        user: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
     }
 
     export type CandleChartInterval =
