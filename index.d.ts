@@ -39,6 +39,32 @@ declare module 'binance-api-node' {
         locked: string;
     }
 
+    export interface DepositAddress {
+        address: string,
+        addressTag: string,
+        asset: string,
+        success: boolean,
+    }
+
+    export interface WithrawResponse {
+        id: string;
+        msg: string;
+        success: boolean;
+    }
+
+    export interface AssetDetail {
+        success: boolean,
+        assetDetail: {
+            [asset: string] : {
+                minWithdrawAmount: string;
+                depositStatus: boolean;
+                withdrawFee: number;
+                withdrawStatus: boolean;
+                depositTip: string;
+            }
+        }
+    }
+
     export interface Binance {
         accountInfo(options?: { useServerTime: boolean }): Promise<Account>;
         tradeFee(): Promise<TradeFeeResult>;
@@ -61,6 +87,9 @@ declare module 'binance-api-node' {
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
         candles(options: CandlesOptions): Promise<CandleChartResult[]>;
         tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<Trade[]>;
+        depositAddress(options: { asset: string }): Promise<DepositAddress>;
+        withdraw(options: { asset: string, address: string, amount: number; name?: string }): Promise<WithrawResponse>;
+        assetDetail(): Promise<AssetDetail>;
     }
 
     export interface HttpError extends Error {
