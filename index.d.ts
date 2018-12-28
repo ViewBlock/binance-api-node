@@ -132,8 +132,8 @@ declare module 'binance-api-node' {
         depositAddress(options: { asset: string }): Promise<DepositAddress>;
         withdraw(options: { asset: string, address: string, amount: number; name?: string }): Promise<WithrawResponse>;
         assetDetail(): Promise<AssetDetail>;
-        withdrawHistory(options: { asset?: string, status?: number, startTime?: number, endTime?: number }): Promise<WithdrawHistoryResponse>;
-        depositHistory(options: { asset?: string, status?: number, startTime?: number, endTime?: number }): Promise<DepositHistoryResponse>;
+        withdrawHistory(options: { asset: string, status?: number, startTime?: number, endTime?: number }): Promise<WithdrawHistoryResponse>;
+        depositHistory(options: { asset: string, status?: number, startTime?: number, endTime?: number }): Promise<DepositHistoryResponse>;
     }
 
     export interface HttpError extends Error {
