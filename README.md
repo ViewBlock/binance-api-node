@@ -906,7 +906,7 @@ console.log(await client.tradeFee())
   symbol: 'BTC',
   maker: 0.0001,
   taker: 0.0001,
-}, 
+},
 {
   symbol: 'LTC',
   maker: 0.0001,
