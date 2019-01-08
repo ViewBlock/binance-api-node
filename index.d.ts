@@ -258,6 +258,8 @@ declare module 'binance-api-node' {
     }
 
     export interface SymbolMinNotionalFilter {
+        applyToMarket: boolean;
+        avgPriceMins: number;
         filterType: SymbolFilterType;
         minNotional: string;
     }
