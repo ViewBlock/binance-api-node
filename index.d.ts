@@ -537,20 +537,22 @@ declare module 'binance-api-node' {
     }
 
     interface QueryOrderResult {
-        symbol: string;
-        orderId: number;
         clientOrderId: string;
-        price: string;
-        origQty: string;
+        cummulativeQuoteQty: string,
         executedQty: string;
+        icebergQty: string;
+        isWorking: boolean;
+        orderId: number;
+        origQty: string;
+        price: string;
+        side: OrderSide;
         status: OrderStatus;
+        stopPrice: string;
+        symbol: string;
+        time: number;
         timeInForce: TimeInForce;
         type: string;
-        side: OrderSide;
-        stopPrice: string;
-        icebergQty: string;
-        time: number;
-        isWorking: boolean;
+        updateTime: number;
     }
 
     interface CancelOrderResult {
