@@ -2,6 +2,49 @@
 declare module 'binance-api-node' {
     export default function (options?: { apiKey: string; apiSecret: string }): Binance;
 
+    export enum ErrorCodes {
+        UNKNOWN = -1000,
+        DISCONNECTED = -1001,
+        UNAUTHORIZED = -1002,
+        TOO_MANY_REQUESTS = -1003,
+        UNEXPECTED_RESP = -1006,
+        TIMEOUT = -1007,
+        INVALID_MESSAGE = -1013,
+        UNKNOWN_ORDER_COMPOSITION = -1014,
+        TOO_MANY_ORDERS = -1015,
+        SERVICE_SHUTTING_DOWN = -1016,
+        UNSUPPORTED_OPERATION = -1020,
+        INVALID_TIMESTAMP = -1021,
+        INVALID_SIGNATURE = -1022,
+        ILLEGAL_CHARS = -1100,
+        TOO_MANY_PARAMETERS = -1101,
+        MANDATORY_PARAM_EMPTY_OR_MALFORMED = -1102,
+        UNKNOWN_PARAM = -1103,
+        UNREAD_PARAMETERS = -1104,
+        PARAM_EMPTY = -1105,
+        PARAM_NOT_REQUIRED = -1106,
+        NO_DEPTH = -1112,
+        TIF_NOT_REQUIRED = -1114,
+        INVALID_TIF = -1115,
+        INVALID_ORDER_TYPE = -1116,
+        INVALID_SIDE = -1117,
+        EMPTY_NEW_CL_ORD_ID = -1118,
+        EMPTY_ORG_CL_ORD_ID = -1119,
+        BAD_INTERVAL = -1120,
+        BAD_SYMBOL = -1121,
+        INVALID_LISTEN_KEY = -1125,
+        MORE_THAN_XX_HOURS = -1127,
+        OPTIONAL_PARAMS_BAD_COMBO = -1128,
+        INVALID_PARAMETER = -1130,
+        BAD_API_ID = -2008,
+        DUPLICATE_API_KEY_DESC = -2009,
+        INSUFFICIENT_BALANCE = -2010,
+        CANCEL_ALL_FAIL = -2012,
+        NO_SUCH_ORDER = -2013,
+        BAD_API_KEY_FMT = -2014,
+        REJECTED_MBX_KEY = -2015,
+    }
+
     export interface Account {
         balances: AssetBalance[];
         buyerCommission: number;
@@ -39,6 +82,74 @@ declare module 'binance-api-node' {
         locked: string;
     }
 
+    export interface DepositAddress {
+        address: string,
+        addressTag: string,
+        asset: string,
+        success: boolean,
+    }
+
+    export interface WithrawResponse {
+        id: string;
+        msg: string;
+        success: boolean;
+    }
+
+    export enum DepositStatus {
+        PENDING = 0,
+        SUCCESS = 1,
+    }
+
+    export interface DepositHistoryResponse {
+        depositList:
+        {
+            insertTime: number,
+            amount: number;
+            asset: string;
+            address: string;
+            txId: string;
+            status: DepositStatus;
+        }[];
+        success: boolean,
+    }
+
+    export enum WithdrawStatus {
+        EMAIL_SENT = 0,
+        CANCELLED = 1,
+        AWAITING_APPROVAL = 2,
+        REJECTED = 3,
+        PROCESSING = 4,
+        FAILURE = 5,
+        COMPLETED = 6,
+    }
+
+    export interface WithdrawHistoryResponse {
+        withdrawList:
+        {
+            id: string;
+            amount: number;
+            address: string;
+            asset: string;
+            txId: string;
+            applyTime: number;
+            status: WithdrawStatus;
+        }[];
+        success: boolean,
+    }
+
+    export interface AssetDetail {
+        success: boolean,
+        assetDetail: {
+            [asset: string]: {
+                minWithdrawAmount: string;
+                depositStatus: boolean;
+                withdrawFee: number;
+                withdrawStatus: boolean;
+                depositTip: string;
+            }
+        }
+    }
+
     export interface Binance {
         accountInfo(options?: { useServerTime: boolean }): Promise<Account>;
         tradeFee(): Promise<TradeFeeResult>;
@@ -61,6 +172,11 @@ declare module 'binance-api-node' {
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
         candles(options: CandlesOptions): Promise<CandleChartResult[]>;
         tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<Trade[]>;
+        depositAddress(options: { asset: string }): Promise<DepositAddress>;
+        withdraw(options: { asset: string, address: string, amount: number; name?: string }): Promise<WithrawResponse>;
+        assetDetail(): Promise<AssetDetail>;
+        withdrawHistory(options: { asset: string, status?: number, startTime?: number, endTime?: number }): Promise<WithdrawHistoryResponse>;
+        depositHistory(options: { asset: string, status?: number, startTime?: number, endTime?: number }): Promise<DepositHistoryResponse>;
     }
 
     export interface HttpError extends Error {
@@ -76,7 +192,7 @@ declare module 'binance-api-node' {
         candles: (pair: string, period: string, callback: (ticker: Candle) => void) => Function;
         trades: (pairs: string[], callback: (trade: Trade) => void) => Function;
         aggTrades: (pairs: string[], callback: (trade: Trade) => void) => Function;
-        user: ( callback: (msg: OutboundAccountInfo|ExecutionReport) => void) => Function;
+        user: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
     }
 
     export type CandleChartInterval =
@@ -142,6 +258,8 @@ declare module 'binance-api-node' {
     }
 
     export interface SymbolMinNotionalFilter {
+        applyToMarket: boolean;
+        avgPriceMins: number;
         filterType: SymbolFilterType;
         minNotional: string;
     }
@@ -419,20 +537,22 @@ declare module 'binance-api-node' {
     }
 
     interface QueryOrderResult {
-        symbol: string;
-        orderId: number;
         clientOrderId: string;
-        price: string;
-        origQty: string;
+        cummulativeQuoteQty: string,
         executedQty: string;
+        icebergQty: string;
+        isWorking: boolean;
+        orderId: number;
+        origQty: string;
+        price: string;
+        side: OrderSide;
         status: OrderStatus;
+        stopPrice: string;
+        symbol: string;
+        time: number;
         timeInForce: TimeInForce;
         type: string;
-        side: OrderSide;
-        stopPrice: string;
-        icebergQty: string;
-        time: number;
-        isWorking: boolean;
+        updateTime: number;
     }
 
     interface CancelOrderResult {

@@ -512,8 +512,8 @@ Check an order's status.
 
 ```js
 console.log(await client.getOrder({
-  symbol: 'ETHBTC',
-  orderId: 1,
+  symbol: 'BNBETH',
+  orderId: 50167927,
 }))
 ```
 
@@ -529,20 +529,24 @@ console.log(await client.getOrder({
 
 ```js
 {
-  symbol: 'ENGETH',
-  orderId: 191938,
-  clientOrderId: '1XZTVBTGS4K1e',
-  price: '0.00138000',
-  origQty: '1.00000000',
-  executedQty: '1.00000000',
+  clientOrderId: 'NkQnNkdBV1RGjUALLhAzNy',
+  cummulativeQuoteQty: '0.16961580',
+  executedQty: '3.91000000',
+  icebergQty: '0.00000000',
+  isWorking: true,
+  orderId: 50167927,
+  origQty: '3.91000000',
+  price: '0.04338000',
+  side: 'SELL',
   status: 'FILLED',
+  stopPrice: '0.00000000',
+  symbol: 'BNBETH',
+  time: 1547075007821,
   timeInForce: 'GTC',
   type: 'LIMIT',
-  side: 'SELL',
-  stopPrice: '0.00000000',
-  icebergQty: '0.00000000',
-  time: 1508611114735
+  updateTime: 1547075016737
 }
+
 ```
 
 </details>
@@ -906,7 +910,7 @@ console.log(await client.tradeFee())
   symbol: 'BTC',
   maker: 0.0001,
   taker: 0.0001,
-}, 
+},
 {
   symbol: 'LTC',
   maker: 0.0001,

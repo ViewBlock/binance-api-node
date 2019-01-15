@@ -243,7 +243,8 @@ export default opts => {
     withdrawHistory: payload => pCall('/wapi/v3/withdrawHistory.html', payload),
     depositHistory: payload => pCall('/wapi/v3/depositHistory.html', payload),
     depositAddress: payload => pCall('/wapi/v3/depositAddress.html', payload),
-    tradeFee: payload => pCall('/wapi/v3/tradeFee.html', payload),
+    tradeFee: payload => pCall('/wapi/v3/tradeFee.html', payload).then(res => res.tradeFee),
+    assetDetail: payload => pCall('/wapi/v3/assetDetail.html', payload),
 
     getDataStream: () => pCall('/v1/userDataStream', null, 'POST', true),
     keepDataStream: payload => pCall('/v1/userDataStream', payload, 'PUT', false, true),
