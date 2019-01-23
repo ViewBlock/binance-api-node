@@ -5,10 +5,10 @@
   "main": "dist",
   "scripts": {
     "build": "rimraf dist && babel src -d dist",
-    "prepare": "npm run build",
-    "test": "ava",
+    "prepare": "yarn build",
+    "test": "ava --timeout=10s",
     "cover": "nyc ava",
-    "report": "npm run cover && nyc report --reporter=text-lcov | coveralls",
+    "report": "yarn cover && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint src"
   },
   "dependencies": {
@@ -33,6 +33,9 @@
     "nyc": "^11.2.1",
     "prettier": "^1.7.4",
     "rimraf": "^2.6.2"
+  },
+  "engines": {
+    "yarn": ">= 1.0.0"
   },
   "ava": {
     "require": [
