@@ -187,11 +187,11 @@ declare module 'binance-api-node' {
     export interface WebSocket {
         depth: (pair: string | string[], callback: (depth: Depth) => void) => Function;
         partialDepth: (options: { symbol: string, level: number } | { symbol: string, level: number }[], callback: (depth: PartialDepth) => void) => Function;
-        ticker: (pair: string, callback: (ticker: Ticker) => void) => Function;
+        ticker: (pair: string | string[], callback: (ticker: Ticker) => void) => Function;
         allTickers: (callback: (tickers: Ticker[]) => void) => Function;
-        candles: (pair: string, period: string, callback: (ticker: Candle) => void) => Function;
-        trades: (pairs: string[], callback: (trade: Trade) => void) => Function;
-        aggTrades: (pairs: string[], callback: (trade: Trade) => void) => Function;
+        candles: (pair: string | string[], period: string, callback: (ticker: Candle) => void) => Function;
+        trades: (pairs: string | string[], callback: (trade: Trade) => void) => Function;
+        aggTrades: (pairs: string | string[], callback: (trade: Trade) => void) => Function;
         user: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
     }
 
