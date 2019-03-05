@@ -5,6 +5,8 @@ import 'isomorphic-fetch'
 
 const BASE = 'https://api.binance.com'
 
+const defaultGetTime = () => Date.now()
+
 /**
  * Build query string for uri encoded url based on json object
  */
@@ -91,7 +93,7 @@ const keyCall = ({ apiKey }) => (path, data, method = 'GET') => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const privateCall = ({ apiKey, apiSecret }) => (
+const privateCall = ({ apiKey, apiSecret, getTime = defaultGetTime }) => (
   path,
   data = {},
   method = 'GET',
@@ -104,7 +106,7 @@ const privateCall = ({ apiKey, apiSecret }) => (
 
   return (data && data.useServerTime
     ? publicCall('/v1/time').then(r => r.serverTime)
-    : Promise.resolve(Date.now())
+    : Promise.resolve(getTime())
   ).then(timestamp => {
     if (data) {
       delete data.useServerTime

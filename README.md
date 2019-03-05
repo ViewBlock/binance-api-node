@@ -26,6 +26,7 @@ const client = Binance()
 const client2 = Binance({
   apiKey: 'xxx',
   apiSecret: 'xxx',
+  getTime: xxx // time generator function, optional, defaults to () => Date.now()
 })
 
 client.time().then(time => console.log(time))
