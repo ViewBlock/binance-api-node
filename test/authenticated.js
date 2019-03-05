@@ -121,9 +121,9 @@ test('[REST] withdrawHistory', async t => {
 })
 
 test('[REST] depositAddress', async t => {
-  const out = await client.depositAddress({ asset: 'NEO' })
+  const out = await client.depositAddress({ asset: 'ETH' })
   t.true(out.success)
-  t.is(out.asset, 'NEO')
+  t.is(out.asset, 'ETH')
   t.truthy(out.address)
 })
 
