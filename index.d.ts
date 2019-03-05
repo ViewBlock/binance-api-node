@@ -1,6 +1,6 @@
 // tslint:disable:interface-name
 declare module 'binance-api-node' {
-    export default function (options?: { apiKey: string; apiSecret: string, timeOffset?: number }): Binance;
+    export default function (options?: { apiKey: string; apiSecret: string, getTime?: () => number }): Binance;
 
     export enum ErrorCodes {
         UNKNOWN = -1000,
