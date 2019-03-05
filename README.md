@@ -26,6 +26,7 @@ const client = Binance()
 const client2 = Binance({
   apiKey: 'xxx',
   apiSecret: 'xxx',
+  timeOffset: xxx // difference between local time and server time, optional, defaults to 0
 })
 
 client.time().then(time => console.log(time))
