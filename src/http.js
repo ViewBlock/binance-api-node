@@ -93,7 +93,7 @@ const keyCall = ({ apiKey }) => (path, data, method = 'GET') => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const privateCall = ({ apiKey, apiSecret, getTime }) => (
+const privateCall = ({ apiKey, apiSecret, getTime = defaultGetTime }) => (
   path,
   data = {},
   method = 'GET',
@@ -106,7 +106,7 @@ const privateCall = ({ apiKey, apiSecret, getTime }) => (
 
   return (data && data.useServerTime
     ? publicCall('/v1/time').then(r => r.serverTime)
-    : Promise.resolve(typeof getTime === 'function' ? getTime() : defaultGetTime())
+    : Promise.resolve(getTime())
   ).then(timestamp => {
     if (data) {
       delete data.useServerTime
