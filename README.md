@@ -658,7 +658,8 @@ console.log(await client.allOrders({
   side: 'SELL',
   stopPrice: '0.00000000',
   icebergQty: '0.00000000',
-  time: 1508611114735
+  time: 1508611114735,
+  isWorking: true
 }]
 ```
 
