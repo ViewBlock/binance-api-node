@@ -169,6 +169,7 @@ declare module 'binance-api-node' {
         getOrder(options: { symbol: string; orderId: number, useServerTime?: boolean }): Promise<QueryOrderResult>;
         cancelOrder(options: { symbol: string; orderId: number, useServerTime?: boolean }): Promise<CancelOrderResult>;
         openOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
+        allOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
         candles(options: CandlesOptions): Promise<CandleChartResult[]>;
         tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<Trade[]>;
