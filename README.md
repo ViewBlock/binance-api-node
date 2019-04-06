@@ -125,7 +125,7 @@ console.log(await client.exchangeInfo())
   "serverTime": 1508631584636,
   "rateLimits": [
     {
-      "rateLimitType": "REQUESTS",
+      "rateLimitType": "REQUEST_WEIGHT",
       "interval": "MINUTE",
       "intervalNum": 1,
       "limit": 1200
