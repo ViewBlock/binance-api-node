@@ -127,16 +127,19 @@ console.log(await client.exchangeInfo())
     {
       "rateLimitType": "REQUESTS",
       "interval": "MINUTE",
+      "intervalNum": 1,
       "limit": 1200
     },
     {
       "rateLimitType": "ORDERS",
       "interval": "SECOND",
+      "intervalNum": 1,
       "limit": 10
     },
     {
       "rateLimitType": "ORDERS",
       "interval": "DAY",
+      "intervalNum": 1,
       "limit": 100000
     }
   ],
