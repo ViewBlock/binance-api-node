@@ -225,6 +225,7 @@ declare module 'binance-api-node' {
     export interface ExchangeInfoRateLimit {
         rateLimitType: RateLimitType;
         interval: RateLimitInterval;
+        intervalNum: number;
         limit: number;
     }
 
