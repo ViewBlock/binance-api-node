@@ -257,27 +257,67 @@ export const userEventHandler = cb => msg => {
   cb(userTransforms[type] ? userTransforms[type](rest) : { type, ...rest })
 }
 
-export const keepStreamAlive = (method, listenKey) => method({ listenKey }).catch(f => f)
+export const keepStreamAlive = (method, listenKey) => method({ listenKey })
 
 const user = opts => cb => {
   const { getDataStream, keepDataStream, closeDataStream } = httpMethods(opts)
+  let currentListenKey = null
+  let int = null
+  let w = null
 
-  return getDataStream().then(({ listenKey }) => {
-    const w = openWebSocket(`${BASE}/${listenKey}`)
-    w.onmessage = msg => userEventHandler(cb)(msg)
+  const keepAlive = isReconnecting => {
+    if (currentListenKey) {
+      keepStreamAlive(keepDataStream, currentListenKey).catch(() => {
+        closeStream({}, true)
 
-    const int = setInterval(() => {
-      keepStreamAlive(keepDataStream, listenKey)
-    }, 50e3)
-
-    keepStreamAlive(keepDataStream, listenKey)
-
-    return options => {
-      clearInterval(int)
-      closeDataStream({ listenKey }).catch(f => f)
-      w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
+        if (isReconnecting) {
+          setTimeout(() => makeStream(true), 30e3)
+        } else {
+          makeStream(true)
+        }
+      })
     }
-  })
+  }
+
+  const closeStream = (options, catchErrors) => {
+    if (currentListenKey) {
+      clearInterval(int)
+
+      const p = closeDataStream({ listenKey: currentListenKey })
+
+      if (catchErrors) {
+        p.catch(f => f)
+      }
+
+      w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
+      currentListenKey = null
+    }
+  }
+
+  const makeStream = isReconnecting => {
+    return getDataStream()
+      .then(({ listenKey }) => {
+        w = openWebSocket(`${BASE}/${listenKey}`)
+        w.onmessage = msg => userEventHandler(cb)(msg)
+
+        currentListenKey = listenKey
+
+        int = setInterval(() => keepAlive(false), 50e3)
+
+        keepAlive(true)
+
+        return options => closeStream(options)
+      })
+      .catch(err => {
+        if (isReconnecting) {
+          setTimeout(() => makeStream(true), 30e3)
+        } else {
+          throw err
+        }
+      })
+  }
+
+  return makeStream(false)
 }
 
 export default opts => ({

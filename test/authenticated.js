@@ -90,7 +90,7 @@ test('[REST] cancelOrder', async t => {
   try {
     await client.cancelOrder({ symbol: 'ETHBTC', orderId: 1 })
   } catch (e) {
-    t.is(e.message, 'UNKNOWN_ORDER')
+    t.is(e.message, 'Unknown order sent.')
   }
 })
 
