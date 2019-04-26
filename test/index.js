@@ -2,10 +2,10 @@ import test from 'ava'
 import dotenv from 'dotenv'
 
 import Binance, { ErrorCodes } from 'index'
-import { candleFields } from 'http'
+import { candleFields } from 'http-client'
 import { userEventHandler } from 'websocket'
 
-import { checkFields } from './utils'
+import { checkFields, createHttpServer } from './utils'
 
 dotenv.load()
 
@@ -124,6 +124,51 @@ test('[REST] Signed call without creds - attempt getting tradeFee', async t => {
     await client.tradeFee()
   } catch (e) {
     t.is(e.message, 'You need to pass an API key and secret to make authenticated calls.')
+  }
+})
+
+test('[REST] Server-side JSON error', async t => {
+  const server = createHttpServer((req, res) => {
+    res.statusCode = 500;
+    res.write(JSON.stringify({
+      msg: 'Server unkown error',
+      code: -1337,
+    }))
+    res.end()
+  })
+  const localClient = Binance({ httpBase: server.url });
+
+  try {
+    await server.start();
+    await localClient.ping()
+    t.fail('did not throw');
+  } catch (e) {
+    t.is(e.message, 'Server unkown error')
+    t.is(e.code, -1337)
+  } finally {
+    await server.stop();
+  }
+})
+
+test('[REST] Server-side HTML error', async t => {
+  const serverReponse = '<html>Server Internal Error</html>'
+  const server = createHttpServer((req, res) => {
+    res.statusCode = 500
+    res.write(serverReponse)
+    res.end()
+  });
+  const localClient = Binance({ httpBase: server.url });
+
+  try {
+    await server.start();
+    await localClient.ping()
+    t.fail('did not throw');
+  } catch (e) {
+    t.is(e.message, `500 Internal Server Error ${serverReponse}`)
+    t.truthy(e.response)
+    t.is(e.responseText, serverReponse)
+  } finally {
+    await server.stop();
   }
 })
 
