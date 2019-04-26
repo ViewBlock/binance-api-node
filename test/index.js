@@ -2,7 +2,7 @@ import test from 'ava'
 import dotenv from 'dotenv'
 
 import Binance, { ErrorCodes } from 'index'
-import { candleFields } from 'http'
+import { candleFields } from 'http-client'
 import { userEventHandler } from 'websocket'
 
 import { checkFields } from './utils'

@@ -1,4 +1,4 @@
-import httpMethods from 'http'
+import httpMethods from 'http-client'
 import wsMethods from 'websocket'
 
 export default (opts = {}) => ({
