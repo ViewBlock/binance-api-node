@@ -57,9 +57,9 @@ const checkParams = (name, payload, requires = []) => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const publicCall = (path, data, method = 'GET', headers = {}) =>
+const publicCall = ({ base }) => (path, data, method = 'GET', headers = {}) =>
   sendResult(
-    fetch(`${BASE}/api${path}${makeQueryString(data)}`, {
+    fetch(`${base}/api${path}${makeQueryString(data)}`, {
       method,
       json: true,
       headers,
@@ -74,12 +74,12 @@ const publicCall = (path, data, method = 'GET', headers = {}) =>
  * @param {string} method HTTB VERB, GET by default
  * @returns {object} The api response
  */
-const keyCall = ({ apiKey }) => (path, data, method = 'GET') => {
+const keyCall = ({ apiKey, pubCall }) => (path, data, method = 'GET') => {
   if (!apiKey) {
     throw new Error('You need to pass an API key to make this call.')
   }
 
-  return publicCall(path, data, method, {
+  return pubCall(path, data, method, {
     'X-MBX-APIKEY': apiKey,
   })
 }
@@ -93,7 +93,7 @@ const keyCall = ({ apiKey }) => (path, data, method = 'GET') => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const privateCall = ({ apiKey, apiSecret, getTime = defaultGetTime }) => (
+const privateCall = ({ apiKey, apiSecret, base, getTime = defaultGetTime, pubCall }) => (
   path,
   data = {},
   method = 'GET',
@@ -105,7 +105,7 @@ const privateCall = ({ apiKey, apiSecret, getTime = defaultGetTime }) => (
   }
 
   return (data && data.useServerTime
-    ? publicCall('/v1/time').then(r => r.serverTime)
+    ? pubCall('/v1/time').then(r => r.serverTime)
     : Promise.resolve(getTime())
   ).then(timestamp => {
     if (data) {
@@ -121,7 +121,7 @@ const privateCall = ({ apiKey, apiSecret, getTime = defaultGetTime }) => (
 
     return sendResult(
       fetch(
-        `${BASE}${path.includes('/wapi') ? '' : '/api'}${path}${noData
+        `${base}${path.includes('/wapi') ? '' : '/api'}${path}${noData
           ? ''
           : makeQueryString(newData)}`,
         {
@@ -152,16 +152,16 @@ export const candleFields = [
  * Get candles for a specific pair and interval and convert response
  * to a user friendly collection.
  */
-const candles = payload =>
+const candles = (pubCall, payload) =>
   checkParams('candles', payload, ['symbol']) &&
-  publicCall('/v1/klines', { interval: '5m', ...payload }).then(candles =>
+  pubCall('/v1/klines', { interval: '5m', ...payload }).then(candles =>
     candles.map(candle => zip(candleFields, candle)),
   )
 
 /**
  * Create a new order wrapper for market order simplicity
  */
-const order = (pCall, payload = {}, url) => {
+const order = (privCall, payload = {}, url) => {
   const newPayload =
     ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type
       ? { timeInForce: 'GTC', ...payload }
@@ -169,24 +169,24 @@ const order = (pCall, payload = {}, url) => {
 
   return (
     checkParams('order', newPayload, ['symbol', 'side', 'quantity']) &&
-    pCall(url, { type: 'LIMIT', ...newPayload }, 'POST')
+    privCall(url, { type: 'LIMIT', ...newPayload }, 'POST')
   )
 }
 
 /**
  * Zip asks and bids reponse from order book
  */
-const book = payload =>
+const book = (pubCall, payload) =>
   checkParams('book', payload, ['symbol']) &&
-  publicCall('/v1/depth', payload).then(({ lastUpdateId, asks, bids }) => ({
+  pubCall('/v1/depth', payload).then(({ lastUpdateId, asks, bids }) => ({
     lastUpdateId,
     asks: asks.map(a => zip(['price', 'quantity'], a)),
     bids: bids.map(b => zip(['price', 'quantity'], b)),
   }))
 
-const aggTrades = payload =>
+const aggTrades = (pubCall, payload) =>
   checkParams('aggTrades', payload, ['symbol']) &&
-  publicCall('/v1/aggTrades', payload).then(trades =>
+  pubCall('/v1/aggTrades', payload).then(trades =>
     trades.map(trade => ({
       aggId: trade.a,
       price: trade.p,
@@ -200,56 +200,58 @@ const aggTrades = payload =>
   )
 
 export default opts => {
-  const pCall = privateCall(opts)
-  const kCall = keyCall(opts)
+  const base = opts && opts.httpBase || BASE;
+  const pubCall = publicCall({ ...opts, base })
+  const privCall = privateCall({ ...opts, base, pubCall })
+  const kCall = keyCall({ ...opts, pubCall })
 
   return {
-    ping: () => publicCall('/v1/ping').then(() => true),
-    time: () => publicCall('/v1/time').then(r => r.serverTime),
-    exchangeInfo: () => publicCall('/v1/exchangeInfo'),
+    ping: () => pubCall('/v1/ping').then(() => true),
+    time: () => pubCall('/v1/time').then(r => r.serverTime),
+    exchangeInfo: () => pubCall('/v1/exchangeInfo'),
 
-    book,
-    aggTrades,
-    candles,
+    book: payload => book(pubCall, payload),
+    aggTrades: payload => aggTrades(pubCall, payload),
+    candles: payload => candles(pubCall, payload),
 
     trades: payload =>
-      checkParams('trades', payload, ['symbol']) && publicCall('/v1/trades', payload),
+      checkParams('trades', payload, ['symbol']) && pubCall('/v1/trades', payload),
     tradesHistory: payload =>
       checkParams('tradesHitory', payload, ['symbol']) && kCall('/v1/historicalTrades', payload),
 
-    dailyStats: payload => publicCall('/v1/ticker/24hr', payload),
+    dailyStats: payload => pubCall('/v1/ticker/24hr', payload),
     prices: () =>
-      publicCall('/v1/ticker/allPrices').then(r =>
+      pubCall('/v1/ticker/allPrices').then(r =>
         r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
     
-    avgPrice: payload => publicCall('/v3/avgPrice', payload),
+    avgPrice: payload => pubCall('/v3/avgPrice', payload),
 
     allBookTickers: () =>
-      publicCall('/v1/ticker/allBookTickers').then(r =>
+      pubCall('/v1/ticker/allBookTickers').then(r =>
         r.reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
       ),
 
-    order: payload => order(pCall, payload, '/v3/order'),
-    orderTest: payload => order(pCall, payload, '/v3/order/test'),
-    getOrder: payload => pCall('/v3/order', payload),
-    cancelOrder: payload => pCall('/v3/order', payload, 'DELETE'),
+    order: payload => order(privCall, payload, '/v3/order'),
+    orderTest: payload => order(privCall, payload, '/v3/order/test'),
+    getOrder: payload => privCall('/v3/order', payload),
+    cancelOrder: payload => privCall('/v3/order', payload, 'DELETE'),
 
-    openOrders: payload => pCall('/v3/openOrders', payload),
-    allOrders: payload => pCall('/v3/allOrders', payload),
+    openOrders: payload => privCall('/v3/openOrders', payload),
+    allOrders: payload => privCall('/v3/allOrders', payload),
 
-    accountInfo: payload => pCall('/v3/account', payload),
-    myTrades: payload => pCall('/v3/myTrades', payload),
+    accountInfo: payload => privCall('/v3/account', payload),
+    myTrades: payload => privCall('/v3/myTrades', payload),
 
-    withdraw: payload => pCall('/wapi/v3/withdraw.html', payload, 'POST'),
-    withdrawHistory: payload => pCall('/wapi/v3/withdrawHistory.html', payload),
-    depositHistory: payload => pCall('/wapi/v3/depositHistory.html', payload),
-    depositAddress: payload => pCall('/wapi/v3/depositAddress.html', payload),
-    tradeFee: payload => pCall('/wapi/v3/tradeFee.html', payload).then(res => res.tradeFee),
-    assetDetail: payload => pCall('/wapi/v3/assetDetail.html', payload),
+    withdraw: payload => privCall('/wapi/v3/withdraw.html', payload, 'POST'),
+    withdrawHistory: payload => privCall('/wapi/v3/withdrawHistory.html', payload),
+    depositHistory: payload => privCall('/wapi/v3/depositHistory.html', payload),
+    depositAddress: payload => privCall('/wapi/v3/depositAddress.html', payload),
+    tradeFee: payload => privCall('/wapi/v3/tradeFee.html', payload).then(res => res.tradeFee),
+    assetDetail: payload => privCall('/wapi/v3/assetDetail.html', payload),
 
-    getDataStream: () => pCall('/v1/userDataStream', null, 'POST', true),
-    keepDataStream: payload => pCall('/v1/userDataStream', payload, 'PUT', false, true),
-    closeDataStream: payload => pCall('/v1/userDataStream', payload, 'DELETE', false, true),
+    getDataStream: () => privCall('/v1/userDataStream', null, 'POST', true),
+    keepDataStream: payload => privCall('/v1/userDataStream', payload, 'PUT', false, true),
+    closeDataStream: payload => privCall('/v1/userDataStream', payload, 'DELETE', false, true),
   }
 }
