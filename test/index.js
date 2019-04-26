@@ -164,7 +164,9 @@ test('[REST] Server-side HTML error', async t => {
     await localClient.ping()
     t.fail('did not throw');
   } catch (e) {
-    t.is(e.message, '500 Internal Server Error')
+    t.is(e.message, `500 Internal Server Error ${serverReponse}`)
+    t.truthy(e.response)
+    t.is(e.responseText, serverReponse)
   } finally {
     await server.stop();
   }

@@ -21,14 +21,30 @@ const makeQueryString = q =>
  * Finalize API response
  */
 const sendResult = call =>
-  call.then(res => Promise.all([res, res.json()])).then(([res, json]) => {
-    if (!res.ok) {
-      const error = new Error(json.msg || `${res.status} ${res.statusText}`)
-      error.code = json.code
-      throw error
+  call.then(res => {
+    // If response is ok, we can safely asume it is valid JSON
+    if (res.ok) {
+      return res.json()
     }
 
-    return json
+    // Errors might come from the API itself or the proxy Binance is using.
+    // For API errors the response will be valid JSON,but for proxy errors
+    // it will be HTML
+    return res.text().then(text => {
+      let error;
+      try {
+        const json = JSON.parse(text)
+        // The body was JSON parseable, assume it is an API response error
+        error = new Error(json.msg || `${res.status} ${res.statusText}`)
+        error.code = json.code
+      } catch (e) {
+        // The body was not JSON parseable, assume it is proxy error
+        error = new Error(`${res.status} ${res.statusText} ${text}`)
+        error.response = res
+        error.responseText = text
+      }
+      throw error
+    })
   })
 
 /**
