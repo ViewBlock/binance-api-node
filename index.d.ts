@@ -240,6 +240,7 @@ declare module 'binance-api-node' {
 
     export type SymbolFilterType =
         | 'PRICE_FILTER'
+        | 'PERCENT_PRICE'
         | 'LOT_SIZE'
         | 'MIN_NOTIONAL'
         | 'MAX_NUM_ORDERS'
@@ -250,6 +251,13 @@ declare module 'binance-api-node' {
         minPrice: string;
         maxPrice: string;
         tickSize: string;
+    }
+
+    export interface SymbolPercentPriceFilter {
+        filterType: SymbolFilterType,
+        multiplierDown: string;
+        multiplierUp: string;
+        avgPriceMins: number;
     }
 
     export interface SymbolLotSizeFilter {
@@ -278,6 +286,7 @@ declare module 'binance-api-node' {
 
     export type SymbolFilter =
         | SymbolPriceFilter
+        | SymbolPercentPriceFilter
         | SymbolLotSizeFilter
         | SymbolMinNotionalFilter
         | SymbolMaxNumOrdersFilter
