@@ -321,6 +321,7 @@ declare module 'binance-api-node' {
         timeInForce?: TimeInForce;
         useServerTime?: boolean;
         type: OrderType;
+        newOrderRespType?: NewOrderRespType;
     }
 
     interface OrderFill {
@@ -366,6 +367,8 @@ declare module 'binance-api-node' {
         | 'STOP_LOSS_LIMIT'
         | 'TAKE_PROFIT'
         | 'TAKE_PROFIT_LIMIT';
+
+    export type NewOrderRespType = 'ACK' | 'RESULT' | 'FULL';
 
     export type TimeInForce = 'GTC' | 'IOC' | 'FOK';
 
