@@ -3,6 +3,7 @@
   "version": "0.9.1",
   "description": "A node API wrapper for Binance",
   "main": "dist",
+  "files": ["dist", "index.d.ts"],
   "scripts": {
     "build": "rimraf dist && babel src -d dist",
     "prepare": "yarn build",
