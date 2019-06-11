@@ -542,6 +542,7 @@ declare module 'binance-api-node' {
         orderId: number;
         price: string;
         qty: string;
+        quoteQty: string;
         commission: string;
         commissionAsset: string;
         time: number;
