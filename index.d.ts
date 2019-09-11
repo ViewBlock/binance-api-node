@@ -543,6 +543,7 @@ declare module 'binance-api-node' {
     interface MyTrade {
         id: number;
         orderId: number;
+        orderListId: number;
         price: string;
         qty: string;
         quoteQty: string;
