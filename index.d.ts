@@ -1,5 +1,5 @@
 // tslint:disable:interface-name
-declare module 'binance-api-node' {
+declare module 'binance-client' {
     export default function (options?: { apiKey: string; apiSecret: string, getTime?: () => number | Promise<number> }): Binance;
 
     export enum ErrorCodes {
@@ -71,10 +71,20 @@ declare module 'binance-api-node' {
         quantity: string;
         firstId: number;
         lastId: number;
-        timestamp: number;
+        time: number;
         isBuyerMaker: boolean;
-        wasBestPrice: boolean;
+        isBestMatch: boolean;
     }
+
+    interface Trade {
+        id: number,
+        price: number,
+        qty: number,
+        quoteQty: number,
+        time: number,
+        isBuyerMaker: boolean,
+        isBestMatch: boolean
+    } 
 
     export interface AssetBalance {
         asset: string;
@@ -166,10 +176,10 @@ declare module 'binance-api-node' {
         trades(options: { symbol: string, limit?: number }): Promise<TradeResult[]>;
         ws: WebSocket;
         myTrades(options: { symbol: string, limit?: number, fromId?: number, useServerTime?: boolean }): Promise<MyTrade[]>;
-        getOrder(options: { symbol: string, orderId: number, origClientOrderId?: string, recvWindow?: number }): Promise<QueryOrderResult>;
-        cancelOrder(options: { symbol: string; orderId: number, origClientOrderId?: string, newClientOrderId?: string, recvWindow?: number }): Promise<CancelOrderResult>;
-        openOrders(options: { symbol?: string, recvWindow?: number }): Promise<QueryOrderResult[]>;
-        allOrders(options: { symbol?: string, orderId?: number, limit?: number, recvWindow?: number }): Promise<QueryOrderResult[]>;
+        getOrder(options: { symbol: string, orderId: number, origClientOrderId?: string, recvWindow?: number, useServerTime?: boolean }): Promise<QueryOrderResult>;
+        cancelOrder(options: { symbol: string; orderId: number, origClientOrderId?: string, newClientOrderId?: string, recvWindow?: number, useServerTime?: boolean }): Promise<CancelOrderResult>;
+        openOrders(options: { symbol?: string, recvWindow?: number, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
+        allOrders(options: { symbol?: string, orderId?: number, limit?: number, recvWindow?: number, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
         candles(options: CandlesOptions): Promise<CandleChartResult[]>;
         tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<Trade[]>;
@@ -191,8 +201,8 @@ declare module 'binance-api-node' {
         ticker: (pair: string | string[], callback: (ticker: Ticker) => void) => Function;
         allTickers: (callback: (tickers: Ticker[]) => void) => Function;
         candles: (pair: string | string[], period: string, callback: (ticker: Candle) => void) => Function;
-        trades: (pairs: string | string[], callback: (trade: Trade) => void) => Function;
-        aggTrades: (pairs: string | string[], callback: (trade: Trade) => void) => Function;
+        trades: (pairs: string | string[], callback: (trade: WsTrade) => void) => Function;
+        aggTrades: (pairs: string | string[], callback: (trade: WsAggregatedTrade) => void) => Function;
         user: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
     }
 
@@ -467,20 +477,6 @@ declare module 'binance-api-node' {
         quoteBuyVolume: string;
     }
 
-    interface Trade {
-        eventType: string;
-        eventTime: number;
-        symbol: string;
-        tradeId: number;
-        price: string;
-        quantity: string;
-        buyerOrderId: number;
-        sellerOrderId: number;
-        tradeTime: number;
-        maker: boolean;
-        isBuyerMaker: boolean;
-    }
-
     interface Message {
         eventType: EventType;
         eventTime: number;
@@ -539,6 +535,8 @@ declare module 'binance-api-node' {
         isBuyerMaker: boolean;
         isBestMatch: boolean;
     }
+
+    
 
     interface MyTrade {
         id: number;
@@ -630,4 +628,33 @@ declare module 'binance-api-node' {
         baseAssetVolume: string;
         quoteAssetVolume: string;
     }
+}
+
+
+interface WsTrade {
+    eventType: string;
+    eventTime: number;
+    symbol: string;
+    tradeId: number;
+    price: string;
+    quantity: string;
+    buyerOrderId: number;
+    sellerOrderId: number;
+    tradeTime: number;
+    isBuyerMaker: boolean;
+    isBestMatch: boolean;
+}
+
+interface WsAggregatedTrade {
+    eventType: string;
+    eventTime: number;
+    symbol: string;
+    aggId: number;
+    price: string;
+    quantity: string;
+    firstTradeId: number;
+    lastTradeId: number;
+    tradeTime: number;
+    isBuyerMaker: boolean;
+    isBestMatch: boolean;
 }

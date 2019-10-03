@@ -209,9 +209,9 @@ const aggTrades = (pubCall, payload) =>
       quantity: trade.q,
       firstId: trade.f,
       lastId: trade.l,
-      timestamp: trade.T,
+      time: trade.T,
       isBuyerMaker: trade.m,
-      wasBestPrice: trade.M,
+      isBestMatch: trade.M,
     })),
   )
 
