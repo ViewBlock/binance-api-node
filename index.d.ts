@@ -471,11 +471,14 @@ declare module 'binance-api-node' {
         eventType: string;
         eventTime: number;
         symbol: string;
+        tradeId: number;
         price: string;
         quantity: string;
+        buyerOrderId: number;
+        sellerOrderId: number;
+        tradeTime: number;
         maker: boolean;
         isBuyerMaker: boolean;
-        tradeId: number;
     }
 
     interface Message {
