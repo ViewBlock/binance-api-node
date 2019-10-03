@@ -170,26 +170,20 @@ const tradesInternal = (payload, streamName, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
     const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@${streamName}`)
     w.onmessage = msg => {
-      const {
-        e: eventType,
-        E: eventTime,
-        s: symbol,
-        p: price,
-        q: quantity,
-        m: maker,
-        M: isBuyerMaker,
-        a: tradeId,
-      } = JSON.parse(msg.data)
+      const d = JSON.parse(msg.data)
 
       cb({
-        eventType,
-        eventTime,
-        symbol,
-        price,
-        quantity,
-        maker,
-        isBuyerMaker,
-        tradeId,
+        eventType: d.e,
+        eventTime: d.E,
+        symbol: d.s,
+        tradeId: streamName === 'trade'? d.t: d.a, 
+        price: d.p,
+        quantity: d.q,
+        buyerOrderId: d.b,
+        sellerOrderId: d.a,
+        tradeTime: d.T,
+        maker: d.m,
+        isBuyerMaker: d.M
       })
     }
 
