@@ -632,33 +632,32 @@ declare module 'binance-api-node' {
         baseAssetVolume: string;
         quoteAssetVolume: string;
     }
-}
 
+    interface WsTrade {
+        eventType: string;
+        eventTime: number;
+        symbol: string;
+        tradeId: number;
+        price: string;
+        quantity: string;
+        buyerOrderId: number;
+        sellerOrderId: number;
+        tradeTime: number;
+        isBuyerMaker: boolean;
+        isBestMatch: boolean;
+    }
 
-interface WsTrade {
-    eventType: string;
-    eventTime: number;
-    symbol: string;
-    tradeId: number;
-    price: string;
-    quantity: string;
-    buyerOrderId: number;
-    sellerOrderId: number;
-    tradeTime: number;
-    isBuyerMaker: boolean;
-    isBestMatch: boolean;
-}
-
-interface WsAggregatedTrade {
-    eventType: string;
-    eventTime: number;
-    symbol: string;
-    aggId: number;
-    price: string;
-    quantity: string;
-    firstTradeId: number;
-    lastTradeId: number;
-    tradeTime: number;
-    isBuyerMaker: boolean;
-    isBestMatch: boolean;
+    interface WsAggregatedTrade {
+        eventType: string;
+        eventTime: number;
+        symbol: string;
+        aggId: number;
+        price: string;
+        quantity: string;
+        firstTradeId: number;
+        lastTradeId: number;
+        tradeTime: number;
+        isBuyerMaker: boolean;
+        isBestMatch: boolean;
+    }
 }
