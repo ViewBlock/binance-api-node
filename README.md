@@ -1100,7 +1100,7 @@ client.ws.candles('ETHBTC', '1m', candle => {
 Live trade data feed. Pass either a single symbol string or an array of symbols. The trade streams push raw trade information; each trade has a unique buyer and seller.
 
 ```js
-client.ws.trades(['ETHBTC', 'BNBBTC'], trade => {
+client.ws.trades(['BTCUSDT', 'ETHBTC'], trade => {
   console.log(trade)
 })
 ```
@@ -1109,19 +1109,34 @@ client.ws.trades(['ETHBTC', 'BNBBTC'], trade => {
 <summary>Output</summary>
 
 ```js
+......
 {
   eventType: 'trade',
-  eventTime: 1570085814247,
-  symbol: 'BTCUSDT',
-  tradeId: 185788284,
-  price: '8270.00000000',
-  quantity: '0.05862300',
-  buyerOrderId: 682332684,
-  sellerOrderId: 682341941,
-  tradeTime: 1570085814244,
-  isBuyerMaker: true,
+  eventTime: 1570196993155,
+  symbol: 'ETHBTC',
+  tradeId: 145470107,
+  price: '0.02142700',
+  quantity: '0.06300000',
+  buyerOrderId: 498249081,
+  sellerOrderId: 498249078,
+  tradeTime: 1570196993151,
+  isBuyerMaker: false,
   isBestMatch: true
 }
+{
+  eventType: 'trade',
+  eventTime: 1570196993376,
+  symbol: 'BTCUSDT',
+  tradeId: 186166622,
+  price: '8138.30000000',
+  quantity: '0.01722700',
+  buyerOrderId: 684614964,
+  sellerOrderId: 684614991,
+  tradeTime: 1570196993372,
+  isBuyerMaker: true,
+  isBestMatch: true
+},
+.....
 ```
 
 </details>
@@ -1131,7 +1146,7 @@ client.ws.trades(['ETHBTC', 'BNBBTC'], trade => {
 Live trade data feed. Pass either a single symbol string or an array of symbols. The aggregate trade streams push trade information that is aggregated for a single taker order.
 
 ```js
-client.ws.aggTrades(['ETHBTC', 'BNBBTC'], trade => {
+client.ws.aggTrades(['BTCUSDT', 'ETHBTC'], trade => {
   console.log(trade)
 })
 ```
@@ -1140,19 +1155,34 @@ client.ws.aggTrades(['ETHBTC', 'BNBBTC'], trade => {
 <summary>Output</summary>
 
 ```js
+.....
 {
   eventType: 'aggTrade',
-  eventTime: 1570085637532,
-  symbol: 'BTCUSDT',
-  aggId: 167929650,
-  price: '8283.38000000',
-  quantity: '0.15655200',
-  firstTradeId: 185787780,
-  lastTradeId: 185787780,
-  tradeTime: 1570085637527,
+  eventTime: 1570197286258,
+  symbol: 'ETHBTC',
+  aggId: 132178432,
+  price: '0.02144000',
+  quantity: '0.42500000',
+  firstTradeId: 145470333,
+  lastTradeId: 145470333,
+  tradeTime: 1570197286254,
   isBuyerMaker: true,
   isBestMatch: true
 }
+{
+  eventType: 'aggTrade',
+  eventTime: 1570197286697,
+  symbol: 'BTCUSDT',
+  aggId: 168291934,
+  price: '8160.04000000',
+  quantity: '0.40000000',
+  firstTradeId: 186167448,
+  lastTradeId: 186167448,
+  tradeTime: 1570197286693,
+  isBuyerMaker: true,
+  isBestMatch: true
+}
+....
 ```
 
 </details>
