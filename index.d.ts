@@ -529,6 +529,7 @@ declare module 'binance-api-node' {
         tradeId: number;
         isOrderWorking: boolean;
         isBuyerMaker: boolean;
+        totalQuoteTradeQuantity: string;
     }
 
     export interface TradeResult {
