@@ -141,7 +141,7 @@ declare module 'binance-api-node' {
         success: boolean,
         assetDetail: {
             [asset: string]: {
-                minWithdrawAmount: string;
+                minWithdrawAmount: number;
                 depositStatus: boolean;
                 withdrawFee: number;
                 withdrawStatus: boolean;
