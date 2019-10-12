@@ -145,7 +145,7 @@ declare module 'binance-api-node' {
                 depositStatus: boolean;
                 withdrawFee: number;
                 withdrawStatus: boolean;
-                depositTip: string;
+                depositTip?: string;
             }
         }
     }
