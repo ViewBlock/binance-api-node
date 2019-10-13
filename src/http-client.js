@@ -137,7 +137,7 @@ const privateCall = ({ apiKey, apiSecret, base, getTime = defaultGetTime, pubCal
 
     return sendResult(
       fetch(
-        `${base}${path.includes('/wapi') ? '' : '/api'}${path}${noData
+        `${base}${path.includes('/wapi') || path.includes('/sapi') ? '' : '/api'}${path}${noData
           ? ''
           : makeQueryString(newData)}`,
         {
@@ -269,5 +269,16 @@ export default opts => {
     getDataStream: () => privCall('/v1/userDataStream', null, 'POST', true),
     keepDataStream: payload => privCall('/v1/userDataStream', payload, 'PUT', false, true),
     closeDataStream: payload => privCall('/v1/userDataStream', payload, 'DELETE', false, true),
+
+    marginGetDataStream: () => privCall('/sapi/v1/userDataStream', null, 'POST', true),
+    marginKeepDataStream: payload => privCall('/sapi/v1/userDataStream', payload, 'PUT', false, true),
+    marginCloseDataStream: payload => privCall('/sapi/v1/userDataStream', payload, 'DELETE', false, true),
+
+    marginAllOrders: payload => privCall('/sapi/v1/margin/allOrders', payload),
+    marginOrder: payload => order(privCall, payload, '/sapi/v1/margin/order'),
+    marginCancelOrder: payload => privCall('/sapi/v1/margin/order', payload, 'DELETE'),
+    marginOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload),
+    marginAccountInfo: payload => privCall('/sapi/v1/margin/account', payload),
+    marginMyTrades: payload => privCall('/sapi/v1/margin/myTrades', payload),
   }
 }
