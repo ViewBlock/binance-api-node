@@ -262,9 +262,9 @@ export const keepStreamAlive = (method, listenKey) => method({ listenKey })
 const user = (opts, margin) => cb => {
   const methods = httpMethods(opts)
 
-  const getDataStream = margin === false ? methods.getDataStream : methods.marginGetDataStream
-  const keepDataStream = margin === false ? methods.keepDataStream : methods.marginKeepDataStream
-  const closeDataStream = margin === false ? methods.closeDataStream : methods.marginCloseDataStream
+  const getDataStream = margin ? methods.marginGetDataStream :  methods.getDataStream
+  const keepDataStream = margin ? methods.marginKeepDataStream : methods.keepDataStream
+  const closeDataStream = margin ? methods.marginCloseDataStream : methods.closeDataStream
 
   let currentListenKey = null
   let int = null
