@@ -240,7 +240,7 @@ export default opts => {
       pubCall('/v1/ticker/allPrices').then(r =>
         r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
-    
+
     avgPrice: payload => pubCall('/v3/avgPrice', payload),
 
     allBookTickers: () =>

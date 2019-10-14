@@ -260,11 +260,11 @@ export const userEventHandler = cb => msg => {
 export const keepStreamAlive = (method, listenKey) => method({ listenKey })
 
 const user = (opts, margin) => cb => {
-  const httpMethods = httpMethods(opts)
+  const methods = httpMethods(opts)
 
-  const getDataStream = margin === false ? httpMethods.getDataStream : httpMethods.marginGetDataStream
-  const keepDataStream = margin === false ? httpMethods.keepDataStream : httpMethods.marginKeepDataStream
-  const closeDataStream = margin === false ? httpMethods.closeDataStream : httpMethods.marginCloseDataStream
+  const getDataStream = margin === false ? methods.getDataStream : methods.marginGetDataStream
+  const keepDataStream = margin === false ? methods.keepDataStream : methods.marginKeepDataStream
+  const closeDataStream = margin === false ? methods.closeDataStream : methods.marginCloseDataStream
 
   let currentListenKey = null
   let int = null
