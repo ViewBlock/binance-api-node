@@ -831,7 +831,7 @@ console.log(await client.withdrawHistory())
       "amount": 1,
       "address": "0x6915f16f8791d0a1cc2bf47c13a6b2a92000504b",
       "asset": "ETH",
-      "applyTime": 1508198532000
+      "applyTime": 1508198532000,
       "status": 4
     },
   ],
@@ -1184,7 +1184,7 @@ Note that this methods returns a promise which will resolve the `clean` callback
     '123': { available: '0.00000000', locked: '0.00000000' },
     '456': { available: '0.00000000', locked: '0.00000000' },
     BTC: { available: '0.00000000', locked: '0.00000000' },
-  ]
+  }
 }
 ```
 
