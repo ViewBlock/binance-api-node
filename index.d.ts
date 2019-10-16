@@ -194,6 +194,7 @@ declare module 'binance-api-node' {
         trades: (pairs: string | string[], callback: (trade: Trade) => void) => ReconnectingWebSocketHandler;
         aggTrades: (pairs: string | string[], callback: (trade: Trade) => void) => ReconnectingWebSocketHandler;
         user: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
+        marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
     }
 
     export type ReconnectingWebSocketHandler = (options?: {keepClosed: boolean, fastClose: boolean, delay: number}) => void
