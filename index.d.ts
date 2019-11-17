@@ -297,15 +297,21 @@ declare module 'binance-api-node' {
         | SymbolMaxAlgoOrdersFilter;
 
     export interface Symbol {
-        symbol: string;
-        status: string;
         baseAsset: string;
         baseAssetPrecision: number;
-        quoteAsset: string;
-        quotePrecision: number;
-        orderTypes: OrderType[];
-        icebergAllowed: boolean;
+        baseCommissionPrecision: number;
         filters: SymbolFilter[];
+        icebergAllowed: boolean;
+        isMarginTradingAllowed: boolean;
+        isSpotTradingAllowed: boolean;
+        ocoAllowed: boolean;
+        orderTypes: OrderType[];
+        quoteAsset: string;
+        quoteCommissionPrecision: number;
+        quoteOrderQtyMarketAllowed: boolean;
+        quotePrecision: number;
+        status: string;
+        symbol: string;
     }
 
     export interface ExchangeInfo {
