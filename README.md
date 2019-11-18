@@ -911,17 +911,21 @@ console.log(await client.tradeFee())
 <summary>Output</summary>
 
 ```js
-[{
-  symbol: 'BTC',
-  maker: 0.0001,
-  taker: 0.0001,
-},
 {
-  symbol: 'LTC',
-  maker: 0.0001,
-  taker: 0.0001,
+  tradeFee: [{
+    symbol: 'BTC',
+    maker: 0.0001,
+    taker: 0.0001,
+  },
+  {
+    symbol: 'LTC',
+    maker: 0.0001,
+    taker: 0.0001,
+  }
+  ...],
+  success: true,
 }
-...]
+
 ```
 
 </details>

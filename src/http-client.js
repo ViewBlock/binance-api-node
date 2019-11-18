@@ -278,7 +278,7 @@ export default opts => {
     withdrawHistory: payload => privCall('/wapi/v3/withdrawHistory.html', payload),
     depositHistory: payload => privCall('/wapi/v3/depositHistory.html', payload),
     depositAddress: payload => privCall('/wapi/v3/depositAddress.html', payload),
-    tradeFee: payload => privCall('/wapi/v3/tradeFee.html', payload).then(res => res.tradeFee),
+    tradeFee: payload => privCall('/wapi/v3/tradeFee.html', payload),
     assetDetail: payload => privCall('/wapi/v3/assetDetail.html', payload),
 
     getDataStream: () => privCall('/api/v1/userDataStream', null, 'POST', true),
