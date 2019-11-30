@@ -188,6 +188,26 @@ test('[WS] depth', t => {
   })
 })
 
+test('[WS] bulk depth', t => {
+  return new Promise(resolve => {
+    const symbols = ['ETHBTC', 'LTCBTC'];
+    const connection = client.ws.bulkDepth(symbols, depth => {
+      checkFields(t, depth, [
+        'eventType',
+        'eventTime',
+        'firstUpdateId',
+        'finalUpdateId',
+        'symbol',
+        'bidDepth',
+        'askDepth',
+      ]);
+      
+      connection();
+      resolve();
+    });
+  });
+});
+
 test('[WS] partial depth', t => {
   return new Promise(resolve => {
     client.ws.partialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {

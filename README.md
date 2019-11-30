@@ -72,6 +72,7 @@ Following examples will use the `await` form, which requires some configuration 
     - [tradeFee](#tradefee)
 - [Websockets](#websockets)
     - [depth](#depth)
+    - [bulkDepth](#bulkdepth)
     - [partialDepth](#partialdepth)
     - [ticker](#ticker)
     - [allTickers](#alltickers)
@@ -953,6 +954,42 @@ be a single symbol string or an array of symbols.
 ```js
 client.ws.depth('ETHBTC', depth => {
   console.log(depth)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'depthUpdate',
+  eventTime: 1508612956950,
+  symbol: 'ETHBTC',
+  firstUpdateId: 18331140,
+  finalUpdateId: 18331145,
+  bidDepth: [
+    { price: '0.04896500', quantity: '0.00000000' },
+    { price: '0.04891100', quantity: '15.00000000' },
+    { price: '0.04891000', quantity: '0.00000000' } ],
+  askDepth: [
+    { price: '0.04910600', quantity: '0.00000000' },
+    { price: '0.04910700', quantity: '11.24900000' }
+  ]
+}
+```
+
+</details>
+
+#### bulkDepth
+
+Live depth market data feed. The first parameter can either
+be a single symbol string or an array of symbols.
+
+This method creates only one connection, that prevents from overpopulating the server.
+
+```js
+client.ws.bulkDepth('ETHBTC', depth => {
+  console.log(depth);
 })
 ```
 
