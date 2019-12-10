@@ -56,17 +56,19 @@ Following examples will use the `await` form, which requires some configuration 
   - [prices](#prices)
   - [allBookTickers](#allbooktickers)
 - [Futures Public REST Endpoints](#futures-public-rest-endpoints)
-  - [ping](#futures-ping)
-  - [time](#futures-time)
-  - [exchangeInfo](#futures-exchangeinfo)
-  - [book](#futures-book)
-  - [candles](#futures-candles)
-  - [aggTrades](#futures-aggtrades)
-  - [trades](#futures-trades)
-  - [dailyStats](#futures-dailystats)
-  - [avgPrice](#futures-avgPrice)
-  - [prices](#futures-prices)
-  - [allBookTickers](#futures-allbooktickers)
+  - [futures ping](#futures-ping)
+  - [futures time](#futures-time)
+  - [futures exchangeInfo](#futures-exchangeinfo)
+  - [futures book](#futures-book)
+  - [futures candles](#futures-candles)
+  - [futures aggTrades](#futures-aggtrades)
+  - [futures trades](#futures-trades)
+  - [futures dailyStats](#futures-dailystats)
+  - [futures avgPrice](#futures-avgPrice)
+  - [futures prices](#futures-prices)
+  - [futures allBookTickers](#futures-allbooktickers)
+  - [futures markPrice](#futures-markPrice)
+  - [futures allForceOrders](#futures-allForceOrders)
 - [Authenticated REST Endpoints](#authenticated-rest-endpoints)
   - [order](#order)
   - [orderTest](#ordertest)
@@ -803,12 +805,12 @@ console.log(await client.futuresMarkPrice())
 
 </details>
 
-#### futures Liquidation Orders
+#### futures AllForceOrders
 
 Get all Liquidation Orders.
 
 ```js
-console.log(await client.futuresMarkPrice())
+console.log(await client.futuresAllForceOrders())
 ```
 
 | Param     | Type   | Required |
