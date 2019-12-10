@@ -174,9 +174,9 @@ export const candleFields = [
  * Get candles for a specific pair and interval and convert response
  * to a user friendly collection.
  */
-const candles = (pubCall, payload) =>
+const candles = (pubCall, payload, endpoint = '/api/v1/klines') =>
   checkParams('candles', payload, ['symbol']) &&
-  pubCall('/api/v1/klines', { interval: '5m', ...payload }).then(candles =>
+  pubCall(endpoint, { interval: '5m', ...payload }).then(candles =>
     candles.map(candle => zip(candleFields, candle)),
   )
 
@@ -198,17 +198,17 @@ const order = (privCall, payload = {}, url) => {
 /**
  * Zip asks and bids reponse from order book
  */
-const book = (pubCall, payload) =>
+const book = (pubCall, payload, endpoint = '/api/v1/depth') =>
   checkParams('book', payload, ['symbol']) &&
-  pubCall('/api/v1/depth', payload).then(({ lastUpdateId, asks, bids }) => ({
+  pubCall(endpoint, payload).then(({ lastUpdateId, asks, bids }) => ({
     lastUpdateId,
     asks: asks.map(a => zip(['price', 'quantity'], a)),
     bids: bids.map(b => zip(['price', 'quantity'], b)),
   }))
 
-const aggTrades = (pubCall, payload) =>
+const aggTrades = (pubCall, payload, endpoint = '/api/v1/aggTrades') =>
   checkParams('aggTrades', payload, ['symbol']) &&
-  pubCall('/api/v1/aggTrades', payload).then(trades =>
+  pubCall(endpoint, payload).then(trades =>
     trades.map(trade => ({
       aggId: trade.a,
       price: trade.p,
@@ -309,16 +309,28 @@ export default opts => {
     marginAccountInfo: payload => privCall('/sapi/v1/margin/account', payload),
     marginMyTrades: payload => privCall('/sapi/v1/margin/myTrades', payload),
 
-    // FUTURES
-    // PUBLIC
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
     futuresExchangeInfo: () => pubCall('/fapi/v1/exchangeInfo'),
-    futuresBook: payload => book(pubCall, payload),
+    futuresBook: payload => book(pubCall, payload, '/fapi/v1/depth'),
+    futuresAggTrades: payload => aggTrades(pubCall, payload, '/fapi/v1/aggTrades'),
     futuresMarkPrice: payload => pubCall('/fapi/v1/premiumIndex', payload),
     futuresAllForceOrders: payload => pubCall('/fapi/v1/allForceOrders', payload),
+    futuresCandles: payload => candles(pubCall, payload, '/fapi/v1/klines'),
+    futuresTrades: payload =>
+      checkParams('trades', payload, ['symbol']) && pubCall('/fapi/v1/trades', payload),
+    futuresDailyStats: payload => pubCall('/fapi/v1/ticker/24hr', payload),
+    futuresPrices: () =>
+      pubCall('/fapi/v1/ticker/price').then(r =>
+        r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
+      ),
+    futuresAllBookTickers: () =>
+      pubCall('/fapi/v1/ticker/bookTicker').then(r =>
+        r.reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
+      ),
+    futuresFundingRate: payload =>
+      checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
 
-    // PRIVATE
     futuresOrder: payload => order(privCall, payload, '/fapi/v1/order'),
     futuresCancelOrder: payload => privCall('/fapi/v1/order', payload, 'DELETE'),
     futuresOpenOrders: payload => privCall('/fapi/v1/openOrders', payload),
