@@ -84,10 +84,10 @@ test('[REST] trades', async t => {
   t.is(trades.length, 500)
 })
 
-// test('[REST] tradesHistory', async t => {
-//   const trades = await client.tradesHistory({ symbol: 'BTCUSDT' })
-//   t.is(trades.length, 500)
-// })
+test('[REST] tradesHistory', async t => {
+  const trades = await client.tradesHistory({ symbol: 'BTCUSDT' })
+  t.is(trades.length, 500)
+})
 
 test('[REST] dailyStats', async t => {
   const res = await client.dailyStats({ symbol: 'ETHBTC' })
