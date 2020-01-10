@@ -12,11 +12,11 @@ const defaultGetTime = () => Date.now()
  * Build query string for uri encoded url based on json object
  */
 const makeQueryString = q =>
-  q
-    ? `?${Object.keys(q)
+  q ?
+  `?${Object.keys(q)
         .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(q[k])}`)
-        .join('&')}`
-    : ''
+        .join('&')}` :
+  ''
 
 /**
  * Finalize API response
@@ -74,7 +74,9 @@ const checkParams = (name, payload, requires = []) => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {}) =>
+const publicCall = ({
+    endpoints
+  }) => (path, data, method = 'GET', headers = {}) =>
   sendResult(
     fetch(`${!path.includes('/fapi') ? endpoints.base : endpoints.futures}${path}${makeQueryString(data)}`, {
       method,
@@ -91,7 +93,10 @@ const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {})
  * @param {string} method HTTB VERB, GET by default
  * @returns {object} The api response
  */
-const keyCall = ({ apiKey, pubCall }) => (path, data, method = 'GET') => {
+const keyCall = ({
+  apiKey,
+  pubCall
+}) => (path, data, method = 'GET') => {
   if (!apiKey) {
     throw new Error('You need to pass an API key to make this call.')
   }
@@ -110,7 +115,13 @@ const keyCall = ({ apiKey, pubCall }) => (path, data, method = 'GET') => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, pubCall }) => (
+const privateCall = ({
+  apiKey,
+  apiSecret,
+  endpoints,
+  getTime = defaultGetTime,
+  pubCall
+}) => (
   path,
   data = {},
   method = 'GET',
@@ -121,9 +132,9 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
   }
 
-  return (data && data.useServerTime
-    ? pubCall('/api/v1/time').then(r => r.serverTime)
-    : Promise.resolve(getTime())
+  return (data && data.useServerTime ?
+    pubCall('/api/v1/time').then(r => r.serverTime) :
+    Promise.resolve(getTime())
   ).then(timestamp => {
     if (data) {
       delete data.useServerTime
@@ -131,19 +142,27 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
 
     const signature = crypto
       .createHmac('sha256', apiSecret)
-      .update(makeQueryString({ ...data, timestamp }).substr(1))
+      .update(makeQueryString({
+        ...data,
+        timestamp
+      }).substr(1))
       .digest('hex')
 
-    const newData = noExtra ? data : { ...data, timestamp, signature }
+    const newData = noExtra ? data : {
+      ...data,
+      timestamp,
+      signature
+    }
 
     return sendResult(
       fetch(
         `${!path.includes('/fapi') ? endpoints.base : endpoints.futures}${path}${noData
           ? ''
-          : makeQueryString(newData)}`,
-        {
+          : makeQueryString(newData)}`, {
           method,
-          headers: { 'X-MBX-APIKEY': apiKey },
+          headers: {
+            'X-MBX-APIKEY': apiKey
+          },
           json: true,
         },
       ),
@@ -171,7 +190,10 @@ export const candleFields = [
  */
 const candles = (pubCall, payload) =>
   checkParams('candles', payload, ['symbol']) &&
-  pubCall('/api/v1/klines', { interval: '5m', ...payload }).then(candles =>
+  pubCall('/api/v1/klines', {
+    interval: '5m',
+    ...payload
+  }).then(candles =>
     candles.map(candle => zip(candleFields, candle)),
   )
 
@@ -179,14 +201,19 @@ const candles = (pubCall, payload) =>
  * Create a new order wrapper for market order simplicity
  */
 const order = (privCall, payload = {}, url) => {
-  const newPayload =
-    ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type
-      ? { timeInForce: 'GTC', ...payload }
-      : payload
+  const newPayload = ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type ?
+    {
+      timeInForce: 'GTC',
+      ...payload
+    } :
+    payload
 
   return (
     checkParams('order', newPayload, ['symbol', 'side', 'quantity']) &&
-    privCall(url, { type: 'LIMIT', ...newPayload }, 'POST')
+    privCall(url, {
+      type: 'LIMIT',
+      ...newPayload
+    }, 'POST')
   )
 }
 
@@ -195,7 +222,11 @@ const order = (privCall, payload = {}, url) => {
  */
 const book = (pubCall, payload) =>
   checkParams('book', payload, ['symbol']) &&
-  pubCall('/api/v1/depth', payload).then(({ lastUpdateId, asks, bids }) => ({
+  pubCall('/api/v1/depth', payload).then(({
+    lastUpdateId,
+    asks,
+    bids
+  }) => ({
     lastUpdateId,
     asks: asks.map(a => zip(['price', 'quantity'], a)),
     bids: bids.map(b => zip(['price', 'quantity'], b)),
@@ -222,9 +253,19 @@ export default opts => {
     'futures': opts && opts.httpFutures || FUTURES,
   }
 
-  const pubCall = publicCall({ ...opts, endpoints })
-  const privCall = privateCall({ ...opts, endpoints, pubCall })
-  const kCall = keyCall({ ...opts, pubCall })
+  const pubCall = publicCall({
+    ...opts,
+    endpoints
+  })
+  const privCall = privateCall({
+    ...opts,
+    endpoints,
+    pubCall
+  })
+  const kCall = keyCall({
+    ...opts,
+    pubCall
+  })
 
   return {
     ping: () => pubCall('/api/v1/ping').then(() => true),
@@ -299,5 +340,7 @@ export default opts => {
     marginOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload),
     marginAccountInfo: payload => privCall('/sapi/v1/margin/account', payload),
     marginMyTrades: payload => privCall('/sapi/v1/margin/myTrades', payload),
+    marginTransfer: payload => privCall('/sapi/v1/margin/transfer', payload),
+    maxTransferable: payload => privCall('/sapi/v1/margin/maxTransferable', payload),
   }
 }
