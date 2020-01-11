@@ -201,8 +201,7 @@ const candles = (pubCall, payload) =>
  * Create a new order wrapper for market order simplicity
  */
 const order = (privCall, payload = {}, url) => {
-  const newPayload = ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type ?
-    {
+  const newPayload = ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type ? {
       timeInForce: 'GTC',
       ...payload
     } :
@@ -340,7 +339,13 @@ export default opts => {
     marginOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload),
     marginAccountInfo: payload => privCall('/sapi/v1/margin/account', payload),
     marginMyTrades: payload => privCall('/sapi/v1/margin/myTrades', payload),
-    marginTransfer: payload => privCall('/sapi/v1/margin/transfer', payload),
+    marginTransfer: payload => privCall('/sapi/v1/margin/transfer', payload, 'POST'),
+    marginBorrow: payload => privCall('/sapi/v1/margin/borrow', payload, 'POST'),
+    marginMaxBorrowable: payload => privCall('/sapi/v1/margin/maxBorrowable', payload),
+    marginRepay: payload => privCall('/sapi/v1/margin/repay', payload, 'POST'),
+    marginRepayRecord: payload => privCall('/sapi/v1/margin/repay', payload),
+    marginAssets: payload => privCall('/sapi/v1/margin/allAssets', payload),
+    marginAsset: payload => privCall('/sapi/v1/margin/asset', payload),
     maxTransferable: payload => privCall('/sapi/v1/margin/maxTransferable', payload),
   }
 }
