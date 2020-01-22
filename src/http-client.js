@@ -23,7 +23,7 @@ const makeQueryString = q =>
  */
 const sendResult = call =>
   call.then(res => {
-    // If response is ok, we can safely asume it is valid JSON
+    // If response is ok, we can safely assume it is valid JSON
     if (res.ok) {
       return res.json()
     }
@@ -38,6 +38,7 @@ const sendResult = call =>
         // The body was JSON parseable, assume it is an API response error
         error = new Error(json.msg || `${res.status} ${res.statusText}`)
         error.code = json.code
+        error.url = res.url
       } catch (e) {
         // The body was not JSON parseable, assume it is proxy error
         error = new Error(`${res.status} ${res.statusText} ${text}`)

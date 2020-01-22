@@ -181,8 +181,8 @@ declare module 'binance-api-node' {
     }
 
     export interface HttpError extends Error {
-        code: number | string;
-        message: string;
+        code: number;
+        url: string;
     }
 
     export interface WebSocket {
