@@ -23,7 +23,7 @@ const makeQueryString = q =>
  */
 const sendResult = call =>
   call.then(res => {
-    // If response is ok, we can safely asume it is valid JSON
+    // If response is ok, we can safely assume it is valid JSON
     if (res.ok) {
       return res.json()
     }
