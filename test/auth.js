@@ -122,7 +122,7 @@ const main = () => {
   test('[REST] depositHistory', async t => {
     const history = await client.depositHistory()
     t.true(history.success)
-    t.truthy(history.depositList.length)
+    t.truthy(Array.isArray(history.depositList))
   })
 
   test('[REST] withdrawHistory', async t => {
