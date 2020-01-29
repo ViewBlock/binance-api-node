@@ -128,6 +128,7 @@ declare module 'binance-api-node' {
         {
             id: string;
             amount: number;
+            transactionFee: number;
             address: string;
             asset: string;
             txId: string;
