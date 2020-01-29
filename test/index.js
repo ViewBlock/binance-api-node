@@ -84,11 +84,6 @@ test('[REST] trades', async t => {
   t.is(trades.length, 500)
 })
 
-test('[REST] tradesHistory', async t => {
-  const trades = await client.tradesHistory({ symbol: 'BTCUSDT' })
-  t.is(trades.length, 500)
-})
-
 test('[REST] dailyStats', async t => {
   const res = await client.dailyStats({ symbol: 'ETHBTC' })
   t.truthy(res)
@@ -533,8 +528,9 @@ test('[FUTURES-REST] candles', async t => {
 })
 
 test('[FUTURES-REST] trades', async t => {
-  const trades = await client.futuresTrades({ symbol: 'BTCUSDT' })
-  t.is(trades.length, 500)
+  const trades = await client.futuresTrades({ symbol: 'BTCUSDT', limit: 10 })
+  t.is(trades.length, 10)
+  checkFields(t, trades[0], ['id', 'price', 'qty', 'quoteQty', 'time'])
 })
 
 test('[FUTURES-REST] dailyStats', async t => {
