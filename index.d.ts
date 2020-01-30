@@ -160,6 +160,7 @@ declare module 'binance-api-node' {
         exchangeInfo(): Promise<ExchangeInfo>;
         order(options: NewOrder): Promise<Order>;
         orderTest(options: NewOrder): Promise<Order>;
+        orderOco(options: NewOcoOrder): Promise<OcoOrder>;
         ping(): Promise<boolean>;
         prices(): Promise<{ [index: string]: string }>;
         avgPrice(options?: { symbol: string }): Promise<AvgPriceResult | AvgPriceResult[]>;
@@ -344,6 +345,24 @@ declare module 'binance-api-node' {
         newOrderRespType?: NewOrderRespType;
     }
 
+    export interface NewOcoOrder {
+        symbol: string;
+        listClientOrderId?: string;
+        side: OrderSide;
+        quantity: string;
+        limitClientOrderId?: string;
+        price: string;
+        limitIcebergQty?: string;
+        stopClientOrderId?: string;
+        stopPrice: string;
+        stopLimitPrice?: string;
+        stopIcebergQty?: string;
+        stopLimitTimeInForce?: TimeInForce;
+        newOrderRespType?: NewOrderRespType;
+        recvWindow?: number;
+        useServerTime?: boolean;
+    }
+
     interface OrderFill {
         price: string;
         qty: string;
@@ -353,9 +372,11 @@ declare module 'binance-api-node' {
 
     interface Order {
         clientOrderId: string;
+        cummulativeQuoteQty: string,
         executedQty: string;
         icebergQty?: string;
         orderId: number;
+        orderListId: number;
         origQty: string;
         price: string;
         side: OrderSide;
@@ -366,6 +387,18 @@ declare module 'binance-api-node' {
         transactTime: number;
         type: OrderType;
         fills?: OrderFill[];
+    }
+
+    interface OcoOrder {
+        orderListId: number;
+        contingencyType: ContingencyType;
+        listStatusType: ListStatusType;
+        listOrderStatus: ListOrderStatus;
+        listClientOrderId: string;
+        transactionTime: number;
+        symbol: string;
+        orders: Order[];
+        orderReports: Order[];
     }
 
     export type OrderSide = 'BUY' | 'SELL';
@@ -387,6 +420,18 @@ declare module 'binance-api-node' {
         | 'STOP_LOSS_LIMIT'
         | 'TAKE_PROFIT'
         | 'TAKE_PROFIT_LIMIT';
+
+    export type ListOrderStatus =
+        | 'EXECUTING'
+        | 'ALL_DONE'
+        | 'REJECT';
+
+    export type ListStatusType =
+        | 'RESPONSE'
+        | 'EXEC_STARTED'
+        | 'ALL_DONE';
+
+    export type ContingencyType = 'OCO';
 
     export type NewOrderRespType = 'ACK' | 'RESULT' | 'FULL';
 

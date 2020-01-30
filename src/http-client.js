@@ -196,6 +196,18 @@ const order = (privCall, payload = {}, url) => {
   )
 }
 
+const orderOco = (privCall, payload = {}, url) => {
+  const newPayload =
+    payload.stopLimitPrice && !payload.stopLimitTimeInForce
+      ? { stopLimitTimeInForce: 'GTC', ...payload }
+      : payload
+
+  return (
+    checkParams('order', newPayload, ['symbol', 'side', 'quantity', 'price', 'stopPrice']) &&
+    privCall(url, newPayload, 'POST')
+  )
+}
+
 /**
  * Zip asks and bids reponse from order book
  */
@@ -271,6 +283,7 @@ export default opts => {
     publicRequest: (method, url, payload) => pubCall(url, payload, method),
 
     order: payload => order(privCall, payload, '/api/v3/order'),
+    orderOco: payload => orderOco(privCall, payload, '/api/v3/order/oco'),
     orderTest: payload => order(privCall, payload, '/api/v3/order/test'),
     getOrder: payload => privCall('/api/v3/order', payload),
     cancelOrder: payload => privCall('/api/v3/order', payload, 'DELETE'),
