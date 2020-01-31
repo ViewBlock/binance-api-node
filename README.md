@@ -72,6 +72,7 @@ Following examples will use the `await` form, which requires some configuration 
 - [Authenticated REST Endpoints](#authenticated-rest-endpoints)
   - [order](#order)
   - [orderTest](#ordertest)
+  - [orderOco](#orderoco)
   - [getOrder](#getorder)
   - [cancelOrder](#cancelorder)
   - [openOrders](#openorders)
@@ -920,6 +921,110 @@ Additional mandatory parameters based on `type`:
 Test new order creation and signature/recvWindow. Creates and validates a new order but does not send it into the matching engine.
 
 Same API as above, but does not return any output on success.
+
+#### orderOco
+
+Creates a new OCO order.
+
+```js
+console.log(
+  await client.orderOco({
+    symbol: 'XLMETH',
+    side: 'SELL',
+    quantity: 100,
+    price: 0.0002,
+    stopPrice: 0.0001,
+    stopLimitPrice: 0.0001,
+  }),
+)
+```
+
+| Param                | Type   | Required | Description
+|----------------------|--------|----------|------------
+| symbol               | String | true     |
+| listClientOrderId    | String | false    | A unique Id for the entire orderList
+| side                 | String | true     | `BUY`,`SELL`
+| quantity             | Number | true     |
+| limitClientOrderId   | String | false    | A unique Id for the limit order
+| price                | Number | true     |
+| limitIcebergQty      | Number | false    | Used to make the `LIMIT_MAKER` leg an iceberg order.
+| stopClientOrderId    | String | false    | A unique Id for the stop loss/stop loss limit leg
+| stopPrice            | Number | true
+| stopLimitPrice       | Number | false    | If provided, `stopLimitTimeInForce` is required.
+| stopIcebergQty       | Number | false    | Used with `STOP_LOSS_LIMIT` leg to make an iceberg order.
+| stopLimitTimeInForce | String | false    | `FOK`, `GTC`, `IOC`
+| newOrderRespType     | String | false    | Returns more complete info of the order. `ACK`, `RESULT`, or `FULL`
+| recvWindow           | Number | false    | The value cannot be greater than `60000`
+
+Additional Info:
+- Price Restrictions:
+    - `SELL`: Limit Price > Last Price > Stop Price
+    - `BUY`: Limit Price < Last Price < Stop Price
+- Quantity Restrictions:
+    - Both legs must have the same quantity.
+    - ```ICEBERG``` quantities however do not have to be the same
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "orderListId": 0,
+  "contingencyType": "OCO",
+  "listStatusType": "EXEC_STARTED",
+  "listOrderStatus": "EXECUTING",
+  "listClientOrderId": "JYVpp3F0f5CAG15DhtrqLp",
+  "transactionTime": 1514418413947,
+  "symbol": "XLMETH",
+  "orders": [
+    {
+      "symbol": "XLMETH",
+      "orderId": 1740797,
+      "clientOrderId": "1XZTVBTGS4K1e"
+    },
+    {
+      "symbol": "XLMETH",
+      "orderId": 1740798,
+      "clientOrderId": "1XZTVBTGS4K1f"
+    }
+  ],
+  "orderReports": [
+    {
+      "symbol": "XLMETH",
+      "orderId": 1740797,
+      "orderListId": 0,
+      "clientOrderId": "1XZTVBTGS4K1e",
+      "transactTime": 1514418413947,
+      "price": "0.000000",
+      "origQty": "100",
+      "executedQty": "0.000000",
+      "cummulativeQuoteQty": "0.000000",
+      "status": "NEW",
+      "timeInForce": "GTC",
+      "type": "STOP_LOSS",
+      "side": "SELL",
+      "stopPrice": "0.0001"
+    },
+    {
+      "symbol": "XLMETH",
+      "orderId": 1740798,
+      "orderListId": 0,
+      "clientOrderId": "1XZTVBTGS4K1f",
+      "transactTime": 1514418413947,
+      "price": "0.0002",
+      "origQty": "100",
+      "executedQty": "0.000000",
+      "cummulativeQuoteQty": "0.000000",
+      "status": "NEW",
+      "timeInForce": "GTC",
+      "type": "LIMIT_MAKER",
+      "side": "SELL"
+    }
+  ]
+}
+```
+
+</details>
 
 #### getOrder
 
