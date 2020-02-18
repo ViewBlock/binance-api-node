@@ -1,4 +1,4 @@
-# binance-api-networks [![build](https://img.shields.io/travis/Ashlar/binance-api-node.svg?style=flat-square)](https://travis-ci.org/Ashlar/binance-api-node) [![cover](https://img.shields.io/coveralls/Ashlar/binance-api-node.svg?style=flat-square)](https://coveralls.io/github/Ashlar/binance-api-node) [![bnb](https://img.shields.io/badge/binance-winner-yellow.svg?style=flat-square)](https://github.com/binance-exchange/binance-api-node)
+# binance-api-networks
 
 
 ### Installation
