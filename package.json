@@ -1,7 +1,7 @@
 {
-  "name": "binance-api-node",
-  "version": "0.9.15",
-  "description": "A node API wrapper for Binance",
+  "name": "binance-api-networks",
+  "version": "1.0.0",
+  "description": "A node API wrapper for Binance (Support Networks SAPI)",
   "main": "dist",
   "files": [
     "dist",
