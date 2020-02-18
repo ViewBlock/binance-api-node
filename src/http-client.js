@@ -298,6 +298,10 @@ export default opts => {
     withdrawHistory: payload => privCall('/wapi/v3/withdrawHistory.html', payload),
     depositHistory: payload => privCall('/wapi/v3/depositHistory.html', payload),
     depositAddress: payload => privCall('/wapi/v3/depositAddress.html', payload),
+    withdrawNetworks: payload => privCall('/sapi/v1/capital/withdraw/apply', payload, 'POST'),
+    withdrawHistoryNetworks: payload => privCall('/sapi/v1/capital/withdraw/history', payload),
+    depositHistoryNetworks: payload => privCall('/sapi/v1/capital/deposit/hisrec', payload),
+    depositAddressNetworks: payload => privCall('/sapi/v1/capital/deposit/address', payload),
     tradeFee: payload => privCall('/wapi/v3/tradeFee.html', payload),
     assetDetail: payload => privCall('/wapi/v3/assetDetail.html', payload),
 

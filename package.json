@@ -1,6 +1,6 @@
 {
   "name": "binance-api-networks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A node API wrapper for Binance (Support Networks SAPI)",
   "main": "dist",
   "files": [
@@ -51,6 +51,25 @@
       "!test/utils.js"
     ]
   },
-  "author": "Balthazar Gronon <bgronon@gmail.com>",
-  "license": "MIT"
+  "author": "Balthazar Gronon <bgronon@gmail.com>, mugglepay@gmail.com",
+  "license": "MIT",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MugglePay/binance-api-networks.git"
+  },
+  "keywords": [
+    "binance",
+    "binance-api",
+    "sapi",
+    "support-networks",
+    "cryptocurrency",
+    "exchanges"
+  ],
+  "bugs": {
+    "url": "https://github.com/MugglePay/binance-api-networks/issues"
+  },
+  "homepage": "https://github.com/MugglePay/binance-api-networks#readme"
 }
