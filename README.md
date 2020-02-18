@@ -1,15 +1,22 @@
-# binance-api-node [![build](https://img.shields.io/travis/Ashlar/binance-api-node.svg?style=flat-square)](https://travis-ci.org/Ashlar/binance-api-node) [![cover](https://img.shields.io/coveralls/Ashlar/binance-api-node.svg?style=flat-square)](https://coveralls.io/github/Ashlar/binance-api-node) [![bnb](https://img.shields.io/badge/binance-winner-yellow.svg?style=flat-square)](https://github.com/binance-exchange/binance-api-node)
+# binance-api-networks [![build](https://img.shields.io/travis/Ashlar/binance-api-node.svg?style=flat-square)](https://travis-ci.org/Ashlar/binance-api-node) [![cover](https://img.shields.io/coveralls/Ashlar/binance-api-node.svg?style=flat-square)](https://coveralls.io/github/Ashlar/binance-api-node) [![bnb](https://img.shields.io/badge/binance-winner-yellow.svg?style=flat-square)](https://github.com/binance-exchange/binance-api-node)
 
-> A complete API wrapper for the [Binance](https://binance.com) API.
-
-Note: This wrapper uses Promises, if they are not supported in your environment, you might
-want to add [a polyfill](https://github.com/stefanpenner/es6-promise) for them.
-
-For PRs or issues, head over to the [source repository](https://github.com/Ashlar/binance-api-node).
 
 ### Installation
 
-    yarn add binance-api-node
+    npm install binance-api-networks
+
+
+### 2020-02-18
+
+Binance API supports Supports Deposits and Withdrawals for Interoperable Tokens. For example, you can deposit USDT based on OMNI, ERC20 or TRC20 into Binance.
+
+>  [Latest Binance API docs](https://binance-docs.github.io/apidocs/spot/en/)
+
+
+We name this modules as to binance-api-networks, which is based on top of 
+https://github.com/Ashlar/binance-api-node Version 0.9.15. Follwings are the docs from binance-api-node.
+
+
 
 ### Getting started
 
@@ -18,7 +25,7 @@ you don't plan on doing authenticated calls. You can create an api key
 [here](https://www.binance.com/userCenter/createApi.html).
 
 ```js
-import Binance from 'binance-api-node'
+import Binance from 'binance-api-networks'
 
 const client = Binance()
 
@@ -35,7 +42,7 @@ client.time().then(time => console.log(time))
 If you do not have an appropriate babel config, you will need to use the basic commonjs requires.
 
 ```js
-const Binance = require('binance-api-node').default
+const Binance = require('binance-api-networks').default
 ```
 
 Every REST method returns a Promise, making this library [async await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) ready.
