@@ -1653,7 +1653,9 @@ client.ws.trades(['ETHBTC', 'BNBBTC'], trade => {
   price: '0.04923600',
   quantity: '3.43500000',
   maker: false,
-  tradeId: 2148226
+  tradeId: 2148226,
+  buyerOrderId: 390876,
+  sellerOrderId: 390752
 }
 ```
 

@@ -178,7 +178,9 @@ const tradesInternal = (payload, streamName, cb) => {
         q: quantity,
         m: maker,
         M: isBuyerMaker,
-        a: tradeId,
+        t: tradeId,
+        a: sellerOrderId,
+        b: buyerOrderId,
       } = JSON.parse(msg.data)
 
       cb({
@@ -190,6 +192,8 @@ const tradesInternal = (payload, streamName, cb) => {
         maker,
         isBuyerMaker,
         tradeId,
+        buyerOrderId,
+        sellerOrderId,
       })
     }
 
