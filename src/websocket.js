@@ -170,31 +170,68 @@ const tradesInternal = (payload, streamName, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
     const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@${streamName}`)
     w.onmessage = msg => {
-      const {
-        e: eventType,
-        E: eventTime,
-        s: symbol,
-        p: price,
-        q: quantity,
-        m: maker,
-        M: isBuyerMaker,
-        t: tradeId,
-        a: sellerOrderId,
-        b: buyerOrderId,
-      } = JSON.parse(msg.data)
+      const data = JSON.parse(msg.data)
+      let res
+      if (data.t) {
+        // @trade stream
+        const {
+          e: eventType,
+          E: eventTime,
+          T: tradeTime,
+          s: symbol,
+          p: price,
+          q: quantity,
+          m: maker,
+          M: isBuyerMaker,
+          t: tradeId,
+          a: sellerOrderId,
+          b: buyerOrderId,
+        } = data
 
-      cb({
-        eventType,
-        eventTime,
-        symbol,
-        price,
-        quantity,
-        maker,
-        isBuyerMaker,
-        tradeId,
-        buyerOrderId,
-        sellerOrderId,
-      })
+        res = {
+          eventType,
+          eventTime,
+          tradeTime,
+          symbol,
+          price,
+          quantity,
+          maker,
+          isBuyerMaker,
+          tradeId,
+          buyerOrderId,
+          sellerOrderId,
+        }
+      } else {
+        // @aggTrade stream
+        const {
+          e: eventType,
+          E: eventTime,
+          T: tradeTime,
+          s: symbol,
+          p: price,
+          q: quantity,
+          m: maker,
+          M: isBuyerMaker,
+          a: tradeId,
+          f: firstTradeId,
+          l: lastTradeId,
+        } = data
+
+        res = {
+          eventType,
+          eventTime,
+          tradeTime,
+          symbol,
+          price,
+          quantity,
+          maker,
+          isBuyerMaker,
+          tradeId,
+          firstTradeId,
+          lastTradeId,
+        }
+      }
+      cb(res)
     }
 
     return w

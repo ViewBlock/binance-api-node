@@ -1649,6 +1649,7 @@ client.ws.trades(['ETHBTC', 'BNBBTC'], trade => {
 {
   eventType: 'trade',
   eventTime: 1508614495052,
+  tradeTime: 1508614495050,
   symbol: 'ETHBTC',
   price: '0.04923600',
   quantity: '3.43500000',
@@ -1678,11 +1679,14 @@ client.ws.aggTrades(['ETHBTC', 'BNBBTC'], trade => {
 {
   eventType: 'aggTrade',
   eventTime: 1508614495052,
+  tradeTime: 1508614495050,
   symbol: 'ETHBTC',
   price: '0.04923600',
   quantity: '3.43500000',
   maker: false,
-  tradeId: 2148226
+  tradeId: 2148226,
+  firstTradeId: 37856,
+  lastTradeId: 37904
 }
 ```
 
