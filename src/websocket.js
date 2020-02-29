@@ -166,72 +166,37 @@ const allTickers = cb => {
   return options => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
 }
 
-const tradesInternal = (payload, streamName, cb) => {
+const aggTradesInternal = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@${streamName}`)
+    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@aggTrade`)
     w.onmessage = msg => {
-      const data = JSON.parse(msg.data)
-      let res
-      if (data.t) {
-        // @trade stream
-        const {
-          e: eventType,
-          E: eventTime,
-          T: tradeTime,
-          s: symbol,
-          p: price,
-          q: quantity,
-          m: maker,
-          M: isBuyerMaker,
-          t: tradeId,
-          a: sellerOrderId,
-          b: buyerOrderId,
-        } = data
+      const {
+        e: eventType,
+        E: eventTime,
+        T: tradeTime,
+        s: symbol,
+        p: price,
+        q: quantity,
+        m: maker,
+        M: isBuyerMaker,
+        a: tradeId,
+        f: firstTradeId,
+        l: lastTradeId,
+      } = JSON.parse(msg.data)
 
-        res = {
-          eventType,
-          eventTime,
-          tradeTime,
-          symbol,
-          price,
-          quantity,
-          maker,
-          isBuyerMaker,
-          tradeId,
-          buyerOrderId,
-          sellerOrderId,
-        }
-      } else {
-        // @aggTrade stream
-        const {
-          e: eventType,
-          E: eventTime,
-          T: tradeTime,
-          s: symbol,
-          p: price,
-          q: quantity,
-          m: maker,
-          M: isBuyerMaker,
-          a: tradeId,
-          f: firstTradeId,
-          l: lastTradeId,
-        } = data
-
-        res = {
-          eventType,
-          eventTime,
-          tradeTime,
-          symbol,
-          price,
-          quantity,
-          maker,
-          isBuyerMaker,
-          tradeId,
-          firstTradeId,
-          lastTradeId,
-        }
-      }
-      cb(res)
+      cb({
+        eventType,
+        eventTime,
+        tradeTime,
+        symbol,
+        price,
+        quantity,
+        maker,
+        isBuyerMaker,
+        tradeId,
+        firstTradeId,
+        lastTradeId,
+      })
     }
 
     return w
@@ -241,9 +206,49 @@ const tradesInternal = (payload, streamName, cb) => {
     cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
-const aggTrades = (payload, cb) => tradesInternal(payload, 'aggTrade', cb)
+const tradesInternal = (payload, cb) => {
+  const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
+    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@trade`)
+    w.onmessage = msg => {
+      const {
+        e: eventType,
+        E: eventTime,
+        T: tradeTime,
+        s: symbol,
+        p: price,
+        q: quantity,
+        m: maker,
+        M: isBuyerMaker,
+        t: tradeId,
+        a: sellerOrderId,
+        b: buyerOrderId,
+      } = JSON.parse(msg.data)
 
-const trades = (payload, cb) => tradesInternal(payload, 'trade', cb)
+      cb({
+        eventType,
+        eventTime,
+        tradeTime,
+        symbol,
+        price,
+        quantity,
+        maker,
+        isBuyerMaker,
+        tradeId,
+        buyerOrderId,
+        sellerOrderId,
+      })
+    }
+
+    return w
+  })
+
+  return options =>
+    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+}
+
+const aggTrades = (payload, cb) => aggTradesInternal(payload, cb)
+
+const trades = (payload, cb) => tradesInternal(payload, cb)
 
 const userTransforms = {
   outboundAccountInfo: m => ({
