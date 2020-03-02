@@ -287,6 +287,7 @@ Note: If `frondId`, `startTime`, and `endTime` are not sent, the most recent agg
 ;[
   {
     aggId: 2107132,
+    symbol: 'ETHBTC',
     price: '0.05390400',
     quantity: '1.31000000',
     firstId: 2215345,
@@ -1653,7 +1654,8 @@ client.ws.trades(['ETHBTC', 'BNBBTC'], trade => {
   symbol: 'ETHBTC',
   price: '0.04923600',
   quantity: '3.43500000',
-  maker: false,
+  isBuyerMaker: true,
+  maker: true,
   tradeId: 2148226,
   buyerOrderId: 390876,
   sellerOrderId: 390752
@@ -1679,14 +1681,15 @@ client.ws.aggTrades(['ETHBTC', 'BNBBTC'], trade => {
 {
   eventType: 'aggTrade',
   eventTime: 1508614495052,
-  tradeTime: 1508614495050,
-  symbol: 'ETHBTC',
+  aggId: 2148226,
   price: '0.04923600',
   quantity: '3.43500000',
-  maker: false,
-  tradeId: 2148226,
-  firstTradeId: 37856,
-  lastTradeId: 37904
+  firstId: 37856,
+  lastId: 37904,
+  timestamp: 1508614495050,
+  symbol: 'ETHBTC',
+  isBuyerMaker: false,
+  wasBestPrice: true
 }
 ```
 
