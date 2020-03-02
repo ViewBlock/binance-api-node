@@ -224,6 +224,7 @@ const aggTrades = (pubCall, payload, endpoint = '/api/v1/aggTrades') =>
   pubCall(endpoint, payload).then(trades =>
     trades.map(trade => ({
       aggId: trade.a,
+      symbol: payload.symbol,
       price: trade.p,
       quantity: trade.q,
       firstId: trade.f,
