@@ -7,7 +7,7 @@ export const checkFields = (t, object, fields) => {
 }
 
 const generatePort = (() => {
-  let portNum = parseInt(9000 + (65535 - 9000) * Math.random(), 10);
+  let portNum = 9000;
   return () => portNum++;
 })()
 
