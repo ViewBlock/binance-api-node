@@ -77,6 +77,7 @@ test('[REST] aggTrades', async t => {
 
   const [trade] = trades
   t.truthy(trade.aggId)
+  t.truthy(trade.symbol)
 })
 
 test('[REST] trades', async t => {
@@ -235,7 +236,7 @@ test('[WS] candles', t => {
 test('[WS] trades', t => {
   return new Promise(resolve => {
     client.ws.trades(['BNBBTC', 'ETHBTC', 'BNTBTC'], trade => {
-      checkFields(t, trade, ['eventType', 'tradeId', 'quantity', 'price', 'symbol'])
+      checkFields(t, trade, ['eventType', 'tradeId', 'tradeTime', 'quantity', 'price', 'symbol', 'buyerOrderId', 'sellerOrderId'])
       resolve()
     })
   })
@@ -244,7 +245,7 @@ test('[WS] trades', t => {
 test('[WS] aggregate trades', t => {
   return new Promise(resolve => {
     client.ws.aggTrades(['BNBBTC', 'ETHBTC', 'BNTBTC'], trade => {
-      checkFields(t, trade, ['eventType', 'tradeId', 'quantity', 'price', 'symbol'])
+      checkFields(t, trade, ['eventType', 'aggId', 'timestamp', 'quantity', 'price', 'symbol', 'firstId', 'lastId'])
       resolve()
     })
   })

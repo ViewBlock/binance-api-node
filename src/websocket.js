@@ -166,30 +166,36 @@ const allTickers = cb => {
   return options => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
 }
 
-const tradesInternal = (payload, streamName, cb) => {
+const aggTradesInternal = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@${streamName}`)
+    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@aggTrade`)
     w.onmessage = msg => {
       const {
         e: eventType,
         E: eventTime,
+        T: timestamp,
         s: symbol,
         p: price,
         q: quantity,
-        m: maker,
-        M: isBuyerMaker,
-        a: tradeId,
+        m: isBuyerMaker,
+        M: wasBestPrice,
+        a: aggId,
+        f: firstId,
+        l: lastId,
       } = JSON.parse(msg.data)
 
       cb({
         eventType,
         eventTime,
-        symbol,
+        aggId,
         price,
         quantity,
-        maker,
+        firstId,
+        lastId,
+        timestamp,
+        symbol,
         isBuyerMaker,
-        tradeId,
+        wasBestPrice,
       })
     }
 
@@ -200,9 +206,49 @@ const tradesInternal = (payload, streamName, cb) => {
     cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
-const aggTrades = (payload, cb) => tradesInternal(payload, 'aggTrade', cb)
+const tradesInternal = (payload, cb) => {
+  const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
+    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@trade`)
+    w.onmessage = msg => {
+      const {
+        e: eventType,
+        E: eventTime,
+        T: tradeTime,
+        s: symbol,
+        p: price,
+        q: quantity,
+        m: isBuyerMaker,
+        M: maker,
+        t: tradeId,
+        a: sellerOrderId,
+        b: buyerOrderId,
+      } = JSON.parse(msg.data)
 
-const trades = (payload, cb) => tradesInternal(payload, 'trade', cb)
+      cb({
+        eventType,
+        eventTime,
+        tradeTime,
+        symbol,
+        price,
+        quantity,
+        isBuyerMaker,
+        maker,
+        tradeId,
+        buyerOrderId,
+        sellerOrderId,
+      })
+    }
+
+    return w
+  })
+
+  return options =>
+    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+}
+
+const aggTrades = (payload, cb) => aggTradesInternal(payload, cb)
+
+const trades = (payload, cb) => tradesInternal(payload, cb)
 
 const userTransforms = {
   outboundAccountInfo: m => ({

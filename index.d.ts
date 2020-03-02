@@ -67,6 +67,7 @@ declare module 'binance-api-node' {
     }
     export interface AggregatedTrade {
         aggId: number;
+        symbol: string;
         price: string;
         quantity: string;
         firstId: number;
