@@ -175,7 +175,7 @@ declare module 'binance-api-node' {
         allOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
         candles(options: CandlesOptions): Promise<CandleChartResult[]>;
-        tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<Trade[]>;
+        tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<TradeResult[]>;
         depositAddress(options: { asset: string }): Promise<DepositAddress>;
         withdraw(options: { asset: string, address: string, amount: number; name?: string }): Promise<WithrawResponse>;
         assetDetail(): Promise<AssetDetail>;
