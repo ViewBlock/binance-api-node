@@ -706,30 +706,6 @@ console.log(await client.futuresDailyStats({ symbol: 'ETHBTC' }))
 
 </details>
 
-#### futures avgPrice
-
-Current average price for a symbol.
-
-```js
-console.log(await client.futuresAvgPrice({ symbol: 'ETHBTC' }))
-```
-
-| Param  | Type   | Required |
-| ------ | ------ | -------- |
-| symbol | String | true     |
-
-<details>
-<summary>Output</summary>
-
-```js
-{
-  "mins": 5,
-  "price": "9.35751834"
-}
-```
-
-</details>
-
 #### futures prices
 
 Latest price for all symbols.
