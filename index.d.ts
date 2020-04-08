@@ -175,12 +175,30 @@ declare module 'binance-api-node' {
         allOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
         candles(options: CandlesOptions): Promise<CandleChartResult[]>;
-        tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<Trade[]>;
+        tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<TradeResult[]>;
         depositAddress(options: { asset: string }): Promise<DepositAddress>;
         withdraw(options: { asset: string, address: string, amount: number; name?: string }): Promise<WithrawResponse>;
         assetDetail(): Promise<AssetDetail>;
         withdrawHistory(options: { asset: string, status?: number, startTime?: number, endTime?: number }): Promise<WithdrawHistoryResponse>;
         depositHistory(options: { asset: string, status?: number, startTime?: number, endTime?: number }): Promise<DepositHistoryResponse>;
+        futuresPing(): Promise<boolean>;
+        futuresTime(): Promise<number>;
+        futuresExchangeInfo(): Promise<ExchangeInfo>;
+        futuresBook(options: { symbol: string, limit?: number }): Promise<OrderBook>;
+        futuresCandles(options: CandlesOptions): Promise<CandleChartResult[]>;
+        futuresAggTrades(options?: { symbol: string, fromId?: string, startTime?: number, endTime?: number, limit?: number }): Promise<AggregatedTrade[]>;
+        futuresTrades(options: { symbol: string, limit?: number }): Promise<TradeResult[]>;
+        futuresDailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
+        futuresPrices(): Promise<{ [index: string]: string }>;
+        futuresAllBookTickers(): Promise<{ [key: string]: Ticker }>;
+        futuresMarkPrice(): Promise<MarkPriceResult>;
+        futuresAllForceOrders(options?: { symbol?: string, startTime?: number, endTime?: number, limit?: number }): Promise<AllForceOrdersResult[]>;
+        futuresFundingRate(options: { symbol: string, startTime?: number, endTime?: number, limit?: number }): Promise<FundingRateResult[]>;
+        futuresOrder(options: NewOrder): Promise<Order>;
+        futuresCancelOrder(options: { symbol: string; orderId: number, useServerTime?: boolean }): Promise<CancelOrderResult>;
+        futuresOpenOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult>;
+        futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>;
+
     }
 
     export interface HttpError extends Error {
@@ -685,5 +703,48 @@ declare module 'binance-api-node' {
         trades: number;
         baseAssetVolume: string;
         quoteAssetVolume: string;
+    }
+    
+    export interface MarkPriceResult {
+        symbol: string;
+        markPrice: string;
+        lastFundingRate: string;
+        nextFundingTime: number;
+        time: number;
+    }
+
+    export interface AllForceOrdersResult {
+        symbol: string;
+        price: string;
+        origQty: string;
+        executedQty: string;
+        averagePrice: string;
+        status: string;
+        timeInForce: string;
+        type: string;
+        side: string;
+        time: number;
+    }
+
+    export interface FundingRateResult {
+        symbol: string;
+        fundingRate: string;
+        fundingTime: number;
+        time: number;
+    }
+
+    export interface PositionRiskResult {
+        entryPrice: string;
+        marginType: string;
+        isAutoAddMargin: string;
+        isolatedMargin: string;
+        leverage: string;
+        liquidationPrice: string;
+        markPrice: string;
+        maxNotionalValue: string;
+        positionAmt: string;
+        symbol: string;
+        unRealizedProfit: string;
+        positionSide: string;
     }
 }
