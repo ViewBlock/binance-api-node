@@ -189,7 +189,7 @@ declare module 'binance-api-node' {
         futuresAggTrades(options?: { symbol: string, fromId?: string, startTime?: number, endTime?: number, limit?: number }): Promise<AggregatedTrade[]>;
         futuresTrades(options: { symbol: string, limit?: number }): Promise<TradeResult[]>;
         futuresDailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
-        /* futuresAvgPrice(options?: { symbol: string }): Promise<AvgPriceResult | AvgPriceResult[]>; */
+        // futuresAvgPrice(options?: { symbol: string }): Promise<AvgPriceResult | AvgPriceResult[]>;
         futuresPrices(): Promise<{ [index: string]: string }>;
         futuresAllBookTickers(): Promise<{ [key: string]: Ticker }>;
         futuresMarkPrice(): Promise<MarkPriceResult>;
@@ -197,7 +197,7 @@ declare module 'binance-api-node' {
         futuresFundingRate(options: { symbol: string, startTime?: number, endTime?: number, limit?: number }): Promise<FundingRateResult[]>;
         futuresOrder(options: NewOrder): Promise<Order>;
         futuresCancelOrder(options: { symbol: string; orderId: number, useServerTime?: boolean }): Promise<CancelOrderResult>;
-        futuresOpenOrders(options: { symbol?: string, useServerTime?: boolean }): Promise</*QueryOrderResult*/any[]>;
+        futuresOpenOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult>;
         futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>;
 
     }
