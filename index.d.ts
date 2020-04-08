@@ -196,7 +196,7 @@ declare module 'binance-api-node' {
         futuresFundingRate(options: { symbol: string, startTime?: number, endTime?: number, limit?: number }): Promise<FundingRateResult[]>;
         futuresOrder(options: NewOrder): Promise<Order>;
         futuresCancelOrder(options: { symbol: string; orderId: number, useServerTime?: boolean }): Promise<CancelOrderResult>;
-        futuresOpenOrders(options: { symbol?: string, useServerTime?: boolean }): Promise</*QueryOrderResult*/any[]>;
+        futuresOpenOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult>;
         futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>;
 
     }
