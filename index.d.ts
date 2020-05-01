@@ -382,14 +382,14 @@ declare module 'binance-api-node' {
         useServerTime?: boolean;
     }
 
-    interface OrderFill {
+    export interface OrderFill {
         price: string;
         qty: string;
         commission: string;
         commissionAsset: string;
     }
 
-    interface Order {
+    export interface Order {
         clientOrderId: string;
         cummulativeQuoteQty: string,
         executedQty: string;
@@ -408,7 +408,7 @@ declare module 'binance-api-node' {
         fills?: OrderFill[];
     }
 
-    interface OcoOrder {
+    export interface OcoOrder {
         orderListId: number;
         contingencyType: ContingencyType;
         listStatusType: ListStatusType;
@@ -468,7 +468,7 @@ declare module 'binance-api-node' {
         | 'executionReport'
         | 'account';
 
-    interface Depth {
+    export interface Depth {
         eventType: string;
         eventTime: number;
         symbol: string;
@@ -478,24 +478,24 @@ declare module 'binance-api-node' {
         askDepth: BidDepth[];
     }
 
-    interface BidDepth {
+    export interface BidDepth {
         price: string;
         quantity: string;
     }
 
-    interface PartialDepth {
+    export interface PartialDepth {
         symbol: string;
         level: number;
         bids: Bid[];
         asks: Bid[];
     }
 
-    interface Bid {
+    export interface Bid {
         price: string;
         quantity: string;
     }
 
-    interface Ticker {
+    export interface Ticker {
         eventType: string;
         eventTime: number;
         symbol: string;
@@ -521,7 +521,7 @@ declare module 'binance-api-node' {
         totalTrades: number;
     }
 
-    interface Candle {
+    export interface Candle {
         eventType: string;
         eventTime: number;
         symbol: string;
@@ -542,7 +542,7 @@ declare module 'binance-api-node' {
         quoteBuyVolume: string;
     }
 
-    interface Trade {
+    export interface Trade {
         eventType: string;
         eventTime: number;
         symbol: string;
@@ -553,19 +553,19 @@ declare module 'binance-api-node' {
         tradeId: number;
     }
 
-    interface Message {
+    export interface Message {
         eventType: EventType;
         eventTime: number;
     }
 
-    interface Balances {
+    export interface Balances {
         [key: string]: {
             available: string;
             locked: string;
         };
     }
 
-    interface OutboundAccountInfo extends Message {
+    export interface OutboundAccountInfo extends Message {
         balances: Balances;
         makerCommissionRate: number;
         takerCommissionRate: number;
@@ -577,7 +577,7 @@ declare module 'binance-api-node' {
         lastAccountUpdate: number;
     }
 
-    interface ExecutionReport extends Message {
+    export interface ExecutionReport extends Message {
         symbol: string;
         newClientOrderId: string;
         originalClientOrderId: string;
@@ -613,7 +613,7 @@ declare module 'binance-api-node' {
         isBestMatch: boolean;
     }
 
-    interface MyTrade {
+    export interface MyTrade {
         id: number;
         orderId: number;
         orderListId: number;
@@ -628,7 +628,7 @@ declare module 'binance-api-node' {
         isBestMatch: boolean;
     }
 
-    interface QueryOrderResult {
+    export interface QueryOrderResult {
         clientOrderId: string;
         cummulativeQuoteQty: string,
         executedQty: string;
@@ -647,7 +647,7 @@ declare module 'binance-api-node' {
         updateTime: number;
     }
 
-    interface CancelOrderResult {
+    export interface CancelOrderResult {
         symbol: string;
         origClientOrderId: string;
         orderId: number;
