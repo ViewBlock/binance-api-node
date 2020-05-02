@@ -615,6 +615,7 @@ declare module 'binance-api-node' {
 
     export interface MyTrade {
         id: number;
+        symbol: string;
         orderId: number;
         orderListId: number;
         price: string;
