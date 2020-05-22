@@ -173,6 +173,7 @@ declare module 'binance-api-node' {
         cancelOrder(options: { symbol: string; orderId: number, useServerTime?: boolean }): Promise<CancelOrderResult>;
         openOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
         allOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>;
+        allOrdersOCO(options: { timestamp: number, fromId?: number, startTime?: number, endTime?: number, limit?: number, recvWindow: number }): Promise<QueryOrderResult[]>;
         dailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>;
         candles(options: CandlesOptions): Promise<CandleChartResult[]>;
         tradesHistory(options: { symbol: string, limit?: number, fromId?: number }): Promise<TradeResult[]>;
@@ -219,7 +220,7 @@ declare module 'binance-api-node' {
         marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
     }
 
-    export type ReconnectingWebSocketHandler = (options?: {keepClosed: boolean, fastClose: boolean, delay: number}) => void
+    export type ReconnectingWebSocketHandler = (options?: { keepClosed: boolean, fastClose: boolean, delay: number }) => void
 
     export enum CandleChartInterval {
         ONE_MINUTE = '1m',
@@ -706,7 +707,7 @@ declare module 'binance-api-node' {
         baseAssetVolume: string;
         quoteAssetVolume: string;
     }
-    
+
     export interface MarkPriceResult {
         symbol: string;
         markPrice: string;
