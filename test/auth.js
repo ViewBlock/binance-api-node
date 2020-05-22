@@ -79,6 +79,22 @@ const main = () => {
     checkFields(t, res, ['orderId', 'symbol', 'price', 'type', 'side'])
   })
 
+  test('[REST] allOrdersOCO', async t => {
+  
+    // Note that this test will fail if you don't have any ETH/BTC order in your account
+    const orderLists = await client.allOrdersOCO({
+      timestamp: new Date().getTime(),
+    })
+
+    t.true(Array.isArray(orderLists))
+    t.truthy(orderLists.length)
+
+    const [orderList] = orderLists
+
+    checkFields(t, orderList, ['orderListId', 'symbol', 'transactionTime', 'listStatusType', 'orders'])
+
+  })
+
   test('[REST] getOrder with useServerTime', async t => {
     const orders = await client.allOrders({
       symbol: 'ETHBTC',
