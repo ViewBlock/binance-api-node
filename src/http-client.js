@@ -128,7 +128,7 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
   }
 
   return (data && data.useServerTime
-    ? pubCall('/api/v1/time').then(r => r.serverTime)
+    ? pubCall('/api/v3/time').then(r => r.serverTime)
     : Promise.resolve(getTime())
   ).then(timestamp => {
     if (data) {
@@ -175,7 +175,7 @@ export const candleFields = [
  * Get candles for a specific pair and interval and convert response
  * to a user friendly collection.
  */
-const candles = (pubCall, payload, endpoint = '/api/v1/klines') =>
+const candles = (pubCall, payload, endpoint = '/api/v3/klines') =>
   checkParams('candles', payload, ['symbol']) &&
   pubCall(endpoint, { interval: '5m', ...payload }).then(candles =>
     candles.map(candle => zip(candleFields, candle)),
@@ -211,7 +211,7 @@ const orderOco = (privCall, payload = {}, url) => {
 /**
  * Zip asks and bids reponse from order book
  */
-const book = (pubCall, payload, endpoint = '/api/v1/depth') =>
+const book = (pubCall, payload, endpoint = '/api/v3/depth') =>
   checkParams('book', payload, ['symbol']) &&
   pubCall(endpoint, payload).then(({ lastUpdateId, asks, bids }) => ({
     lastUpdateId,
@@ -219,7 +219,7 @@ const book = (pubCall, payload, endpoint = '/api/v1/depth') =>
     bids: bids.map(b => zip(['price', 'quantity'], b)),
   }))
 
-const aggTrades = (pubCall, payload, endpoint = '/api/v1/aggTrades') =>
+const aggTrades = (pubCall, payload, endpoint = '/api/v3/aggTrades') =>
   checkParams('aggTrades', payload, ['symbol']) &&
   pubCall(endpoint, payload).then(trades =>
     trades.map(trade => ({
@@ -246,30 +246,30 @@ export default opts => {
   const kCall = keyCall({ ...opts, pubCall })
 
   return {
-    ping: () => pubCall('/api/v1/ping').then(() => true),
-    time: () => pubCall('/api/v1/time').then(r => r.serverTime),
-    exchangeInfo: () => pubCall('/api/v1/exchangeInfo'),
+    ping: () => pubCall('/api/v3/ping').then(() => true),
+    time: () => pubCall('/api/v3/time').then(r => r.serverTime),
+    exchangeInfo: () => pubCall('/api/v3/exchangeInfo'),
 
     book: payload => book(pubCall, payload),
     aggTrades: payload => aggTrades(pubCall, payload),
     candles: payload => candles(pubCall, payload),
 
     trades: payload =>
-      checkParams('trades', payload, ['symbol']) && pubCall('/api/v1/trades', payload),
+      checkParams('trades', payload, ['symbol']) && pubCall('/api/v3/trades', payload),
     tradesHistory: payload =>
       checkParams('tradesHitory', payload, ['symbol']) &&
-      kCall('/api/v1/historicalTrades', payload),
+      kCall('/api/v3/historicalTrades', payload),
 
-    dailyStats: payload => pubCall('/api/v1/ticker/24hr', payload),
+    dailyStats: payload => pubCall('/api/v3/ticker/24hr', payload),
     prices: () =>
-      pubCall('/api/v1/ticker/allPrices').then(r =>
+      pubCall('/api/v3/ticker/price').then(r =>
         r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
 
     avgPrice: payload => pubCall('/api/v3/avgPrice', payload),
 
     allBookTickers: () =>
-      pubCall('/api/v1/ticker/allBookTickers').then(r =>
+      pubCall('/api/v3/ticker/bookTicker').then(r =>
         r.reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
       ),
 
@@ -302,9 +302,9 @@ export default opts => {
     tradeFee: payload => privCall('/wapi/v3/tradeFee.html', payload),
     assetDetail: payload => privCall('/wapi/v3/assetDetail.html', payload),
 
-    getDataStream: () => privCall('/api/v1/userDataStream', null, 'POST', true),
-    keepDataStream: payload => privCall('/api/v1/userDataStream', payload, 'PUT', false, true),
-    closeDataStream: payload => privCall('/api/v1/userDataStream', payload, 'DELETE', false, true),
+    getDataStream: () => privCall('/api/v3/userDataStream', null, 'POST', true),
+    keepDataStream: payload => privCall('/api/v3/userDataStream', payload, 'PUT', false, true),
+    closeDataStream: payload => privCall('/api/v3/userDataStream', payload, 'DELETE', false, true),
 
     marginGetDataStream: () => privCall('/sapi/v1/userDataStream', null, 'POST', true),
     marginKeepDataStream: payload =>
