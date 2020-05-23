@@ -1788,6 +1788,17 @@ Note that this methods returns a promise which will resolve the `clean` callback
 
 </details>
 
+
+Live user messages data feed of futures.
+
+**Requires authentication**
+
+```js
+const clean = await client.ws.userFutures(msg => {
+  console.log(msg)
+})
+```
+
 ### ErrorCodes
 
 An utility error code map is also being exported by the package in order for you to make readable
