@@ -1192,7 +1192,7 @@ console.log(
 | timestamp  | Number  | true     |         |                                                           |
 | startTime  | Number  | false    |         |                                                           |
 | endTime    | Number  | false    |         |                                                           |
-| limit      | Integer | false    | 500     | Default Value: 500; Max Value: 1000                       |
+| limit      | Integer | false    | `500`   | Max `1000`                                                |
 | recvWindow | Number  | false    |         | The value cannot be greater than 60000                    |
 | formId     | Number  | false    |         | If supplied, neither startTime or endTime can be provided |
 
