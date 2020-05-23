@@ -198,6 +198,7 @@ declare module 'binance-api-node' {
         futuresCancelOrder(options: { symbol: string; orderId: number, useServerTime?: boolean }): Promise<CancelOrderResult>;
         futuresOpenOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult>;
         futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>;
+        futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
 
     }
 
