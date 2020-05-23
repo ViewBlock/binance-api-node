@@ -79,9 +79,7 @@ const main = () => {
     checkFields(t, res, ['orderId', 'symbol', 'price', 'type', 'side'])
   })
 
-  test('[REST] allOrdersOCO', async t => {
-  
-    // Note that this test will fail if you don't have any ETH/BTC order in your account
+  test('[REST] allOrdersOCO', async t => {  
     const orderLists = await client.allOrdersOCO({
       timestamp: new Date().getTime(),
     })
