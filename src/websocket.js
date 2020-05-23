@@ -305,13 +305,27 @@ export const userEventHandler = cb => msg => {
 
 export const keepStreamAlive = (method, listenKey) => method({ listenKey })
 
-const user = (opts, margin) => cb => {
+const user = (opts, variator) => cb => {
   const methods = httpMethods(opts)
 
-  const getDataStream = margin ? methods.marginGetDataStream :  methods.getDataStream
-  const keepDataStream = margin ? methods.marginKeepDataStream : methods.keepDataStream
-  const closeDataStream = margin ? methods.marginCloseDataStream : methods.closeDataStream
 
+  let getDataStream = methods.getDataStream;
+  let keepDataStream = methods.keepDataStream;
+  let closeDataStream = methods.closeDataStream;
+
+  if (variator === 'margin') {
+    getDataStream = methods.marginGetDataStream;
+    keepDataStream = methods.marginKeepDataStream;
+    closeDataStream = methods.marginCloseDataStream;
+
+  }
+  if (variator === 'futures') {
+    getDataStream = methods.futuresGetDataStream;
+    keepDataStream = methods.futuresKeepDataStream;
+    closeDataStream = methods.futuresCloseDataStream;
+  }
+
+ 
   let currentListenKey = null
   let int = null
   let w = null
@@ -380,5 +394,6 @@ export default opts => ({
   ticker,
   allTickers,
   user: user(opts),
-  marginUser: user(opts, true)
+  marginUser: user(opts, 'margin'),
+  futuresuser: user(opts, 'futures')
 })
