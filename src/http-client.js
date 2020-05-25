@@ -289,8 +289,6 @@ export default opts => {
     getOrder: payload => privCall('/api/v3/order', payload),
     cancelOrder: payload => privCall('/api/v3/order', payload, 'DELETE'),
 
-
-
     openOrders: payload => privCall('/api/v3/openOrders', payload),
     allOrders: payload => privCall('/api/v3/allOrders', payload),
 
