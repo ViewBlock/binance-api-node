@@ -90,7 +90,6 @@ const main = () => {
     const [orderList] = orderLists
 
     checkFields(t, orderList, ['orderListId', 'symbol', 'transactionTime', 'listStatusType', 'orders'])
-
   })
 
   test('[REST] getOrder with useServerTime', async t => {
