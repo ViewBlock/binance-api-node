@@ -199,7 +199,6 @@ declare module 'binance-api-node' {
         futuresCancelOrder(options: { symbol: string; orderId: number, useServerTime?: boolean }): Promise<CancelOrderResult>;
         futuresOpenOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult>;
         futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>;
-
     }
 
     export interface HttpError extends Error {
@@ -215,8 +214,10 @@ declare module 'binance-api-node' {
         candles: (pair: string | string[], period: string, callback: (ticker: Candle) => void) => ReconnectingWebSocketHandler;
         trades: (pairs: string | string[], callback: (trade: Trade) => void) => ReconnectingWebSocketHandler;
         aggTrades: (pairs: string | string[], callback: (trade: Trade) => void) => ReconnectingWebSocketHandler;
+
         user: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
         marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
+        futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
     }
 
     export type ReconnectingWebSocketHandler = (options?: { keepClosed: boolean, fastClose: boolean, delay: number }) => void

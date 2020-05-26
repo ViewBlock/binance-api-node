@@ -1759,17 +1759,14 @@ const clean = await client.ws.user(msg => {
 })
 ```
 
-Live user messages data feed on margin wallet.
-
-**Requires authentication**
+There is also two equivalent functions to query either the margin or futures wallet:
 
 ```js
-const clean = await client.ws.marginUser(msg => {
-  console.log(msg)
-})
+client.ws.marginUser()
+client.ws.futuresUser()
 ```
 
-Note that this methods returns a promise which will resolve the `clean` callback.
+Note that these methods all return a promise which will resolve the `clean` callback.
 
 <details>
 <summary>Output</summary>

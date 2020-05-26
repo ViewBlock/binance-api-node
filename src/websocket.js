@@ -4,6 +4,7 @@ import httpMethods from 'http-client'
 import openWebSocket from 'open-websocket'
 
 const BASE = 'wss://stream.binance.com:9443/ws'
+const FUTURES = 'wss://fstream.binance.com/ws'
 
 const depth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
@@ -303,14 +304,23 @@ export const userEventHandler = cb => msg => {
   cb(userTransforms[type] ? userTransforms[type](rest) : { type, ...rest })
 }
 
-export const keepStreamAlive = (method, listenKey) => method({ listenKey })
+const STREAM_METHODS = ['get', 'keep', 'close']
 
-const user = (opts, margin) => cb => {
+const capitalize = (str, check) => (check ? `${str[0].toUpperCase()}${str.slice(1)}` : str)
+
+const getStreamMethods = (opts, variator = '') => {
   const methods = httpMethods(opts)
 
-  const getDataStream = margin ? methods.marginGetDataStream :  methods.getDataStream
-  const keepDataStream = margin ? methods.marginKeepDataStream : methods.keepDataStream
-  const closeDataStream = margin ? methods.marginCloseDataStream : methods.closeDataStream
+  return STREAM_METHODS.reduce(
+    (acc, key) => [...acc, methods[`${variator}${capitalize(`${key}DataStream`, !!variator)}`]],
+    [],
+  )
+}
+
+export const keepStreamAlive = (method, listenKey) => method({ listenKey })
+
+const user = (opts, variator) => cb => {
+  const [getDataStream, keepDataStream, closeDataStream] = getStreamMethods(opts, variator)
 
   let currentListenKey = null
   let int = null
@@ -348,7 +358,7 @@ const user = (opts, margin) => cb => {
   const makeStream = isReconnecting => {
     return getDataStream()
       .then(({ listenKey }) => {
-        w = openWebSocket(`${BASE}/${listenKey}`)
+        w = openWebSocket(`${variator === 'futures' ? FUTURES : BASE}/${listenKey}`)
         w.onmessage = msg => userEventHandler(cb)(msg)
 
         currentListenKey = listenKey
@@ -380,5 +390,6 @@ export default opts => ({
   ticker,
   allTickers,
   user: user(opts),
-  marginUser: user(opts, true)
+  marginUser: user(opts, 'margin'),
+  futuresUser: user(opts, 'futures'),
 })
