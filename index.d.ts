@@ -199,7 +199,6 @@ declare module 'binance-api-node' {
         futuresOpenOrders(options: { symbol?: string, useServerTime?: boolean }): Promise<QueryOrderResult>;
         futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>;
         futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
-
     }
 
     export interface HttpError extends Error {

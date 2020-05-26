@@ -308,7 +308,6 @@ export const keepStreamAlive = (method, listenKey) => method({ listenKey })
 const user = (opts, variator) => cb => {
   const methods = httpMethods(opts)
 
-
   let getDataStream = methods.getDataStream;
   let keepDataStream = methods.keepDataStream;
   let closeDataStream = methods.closeDataStream;
@@ -317,7 +316,6 @@ const user = (opts, variator) => cb => {
     getDataStream = methods.marginGetDataStream;
     keepDataStream = methods.marginKeepDataStream;
     closeDataStream = methods.marginCloseDataStream;
-
   }
   if (variator === 'futures') {
     getDataStream = methods.futuresGetDataStream;
@@ -325,7 +323,7 @@ const user = (opts, variator) => cb => {
     closeDataStream = methods.futuresCloseDataStream;
   }
 
- 
+
   let currentListenKey = null
   let int = null
   let w = null
