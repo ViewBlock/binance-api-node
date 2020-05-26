@@ -4,6 +4,7 @@ import httpMethods from 'http-client'
 import openWebSocket from 'open-websocket'
 
 const BASE = 'wss://stream.binance.com:9443/ws'
+const FUTURES = 'wss://fstream.binance.com/ws';
 
 const depth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
@@ -360,7 +361,7 @@ const user = (opts, variator) => cb => {
   const makeStream = isReconnecting => {
     return getDataStream()
       .then(({ listenKey }) => {
-        w = openWebSocket(`${BASE}/${listenKey}`)
+        w = openWebSocket(`${variator!=='futures' ? BASE : FUTURES}/${listenKey}`)
         w.onmessage = msg => userEventHandler(cb)(msg)
 
         currentListenKey = listenKey
