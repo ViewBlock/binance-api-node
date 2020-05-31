@@ -83,6 +83,12 @@ declare module 'binance-api-node' {
         locked: string;
     }
 
+    export interface AssetBalanceUpdate {
+        a: string; // Asset
+        f: string; // Free
+        l: string; // Locked
+    }
+
     export interface DepositAddress {
         address: string,
         addressTag: string,
@@ -411,6 +417,42 @@ declare module 'binance-api-node' {
         fills?: OrderFill[];
     }
 
+    // https://github.com/binance-exchange/binance-official-api-docs/blob/master/user-data-stream.md#order-update
+    export interface OrderUpdate {
+        eventType: 'executionReport';
+        C: string | null; // Original client order ID; This is the ID of the order being canceled
+        c: string; // Client order ID
+        E: number; // Event time
+        F: string; // Iceberg quantity
+        f: TimeInForce; // Time in force
+        g: number; // OrderListId
+        I: number; // Ignore
+        i: number; // Order ID
+        L: string; // Last executed price
+        l: string; // Last executed quantity
+        M: boolean; // Ignore
+        m: boolean; // Is this trade the maker side?
+        N: string | null; // Commission asset
+        n: string; // Commission amount
+        O: number; // Order creation time
+        o: OrderType; // Order type
+        p: string; // Order price
+        P: string; // Stop price
+        Q: string // Quote Order Qty
+        q: string; // Order quantity
+        r: OrderRejectReason; // Order reject reason; will be an error code.
+        S: OrderSide; // Side
+        s: string; // Symbol
+        t: number; // Trade ID
+        T: number; // Transaction time
+        w: boolean; // Is the order on the book?
+        x: ExecutionType; // Current execution type
+        X: ExecutionType; // Current order status
+        Y: string; // Last quote asset transacted quantity (i.e. lastPrice * lastQty);
+        z: string; // Cumulative filled quantity
+        Z: string; // Cumulative quote asset transacted quantity
+    }
+
     export interface OcoOrder {
         orderListId: number;
         contingencyType: ContingencyType;
@@ -466,6 +508,20 @@ declare module 'binance-api-node' {
         | 'REJECTED'
         | 'TRADE'
         | 'EXPIRED';
+
+    export enum OrderRejectReason {
+        ACCOUNT_CANNOT_SETTLE = 'ACCOUNT_CANNOT_SETTLE',
+        ACCOUNT_INACTIVE = 'ACCOUNT_INACTIVE',
+        DUPLICATE_ORDER = 'DUPLICATE_ORDER',
+        INSUFFICIENT_BALANCE = 'INSUFFICIENT_BALANCE',
+        MARKET_CLOSED = 'MARKET_CLOSED',
+        NONE = 'NONE',
+        ORDER_WOULD_TRIGGER_IMMEDIATELY = 'ORDER_WOULD_TRIGGER_IMMEDIATELY',
+        PRICE_QTY_EXCEED_HARD_LIMITS = 'PRICE_QTY_EXCEED_HARD_LIMITS',
+        UNKNOWN_ACCOUNT = 'UNKNOWN_ACCOUNT',
+        UNKNOWN_INSTRUMENT = 'UNKNOWN_INSTRUMENT',
+        UNKNOWN_ORDER = 'UNKNOWN_ORDER'
+    }
 
     export type EventType =
         | 'executionReport'
@@ -556,11 +612,6 @@ declare module 'binance-api-node' {
         tradeId: number;
     }
 
-    export interface Message {
-        eventType: EventType;
-        eventTime: number;
-    }
-
     export interface Balances {
         [key: string]: {
             available: string;
@@ -568,7 +619,17 @@ declare module 'binance-api-node' {
         };
     }
 
-    export interface OutboundAccountInfo extends Message {
+    // https://github.com/binance-exchange/binance-official-api-docs/blob/master/user-data-stream.md#balance-update
+    export interface BalanceUpdate {
+        a: number; // Asset
+        d: number; // Balance Delta
+        E: number; // Event Time
+        T: number; // Clear Time
+        type: 'balanceUpdate';
+    }
+
+    // https://github.com/binance-exchange/binance-official-api-docs/blob/master/user-data-stream.md#account-update
+    export interface OutboundAccountInfo {
         balances: Balances;
         makerCommissionRate: number;
         takerCommissionRate: number;
@@ -578,9 +639,19 @@ declare module 'binance-api-node' {
         canWithdraw: boolean;
         canDeposit: boolean;
         lastAccountUpdate: number;
+        eventType: 'account';
+        eventTime: number;
     }
 
-    export interface ExecutionReport extends Message {
+    // https://github.com/binance-exchange/binance-official-api-docs/blob/master/user-data-stream.md#account-update
+    export interface OutboundAccountPosition {
+        B: AssetBalanceUpdate[],
+        E: 1590913545979; // Event Time
+        type: 'outboundAccountPosition';
+        u: 1590913545978; // Time of last account update
+    }
+
+    export interface ExecutionReport {
         symbol: string;
         newClientOrderId: string;
         originalClientOrderId: string;
@@ -593,7 +664,7 @@ declare module 'binance-api-node' {
         stopPrice: string;
         icebergQuantity: string;
         orderStatus: OrderStatus;
-        orderRejectReason: string;
+        orderRejectReason: OrderRejectReason;
         orderId: number;
         orderTime: number;
         lastTradeQuantity: string;
@@ -605,6 +676,8 @@ declare module 'binance-api-node' {
         isOrderWorking: boolean;
         isBuyerMaker: boolean;
         totalQuoteTradeQuantity: string;
+        eventType: 'executionReport';
+        eventTime: number;
     }
 
     export interface TradeResult {
