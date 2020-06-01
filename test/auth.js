@@ -124,6 +124,14 @@ const main = () => {
     }
   })
 
+  test('[REST] cancelOpenOrders', async t => {
+    try {
+      await client.cancelOpenOrders({ symbol: 'ETHBTC'})
+    } catch (e) {
+      t.is(e.message, 'Unknown order sent.')
+    }
+  })
+
   test('[REST] accountInfo', async t => {
     const account = await client.accountInfo()
     t.truthy(account)
