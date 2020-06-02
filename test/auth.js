@@ -126,7 +126,7 @@ const main = () => {
 
   test('[REST] cancelOpenOrders', async t => {
     try {
-      await client.cancelOpenOrders({ symbol: 'ETHBTC'})
+      await client.cancelOpenOrders({ symbol: 'ETHBTC' })
     } catch (e) {
       t.is(e.message, 'Unknown order sent.')
     }
