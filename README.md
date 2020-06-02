@@ -75,6 +75,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [orderOco](#orderoco)
   - [getOrder](#getorder)
   - [cancelOrder](#cancelorder)
+  - [cancelOpenOrders](#cancelOpenOrders)
   - [openOrders](#openorders)
   - [allOrders](#allorders)
   - [allOrdersOCO](#allordersoco)  
@@ -1082,6 +1083,46 @@ console.log(
   orderId: 1,
   clientOrderId: 'RViSsQPTp1v3WmLYpeKT11'
 }
+```
+
+
+#### cancelOpenOrders
+
+Cancels all active orders on a symbol.
+This includes OCO orders.
+
+```js
+console.log(
+  await client.cancelOpenOrders({
+    symbol: 'ETHBTC'
+  }),
+)
+```
+
+Name       | Type   | Mandatory | Description                            |
+-----------|--------|-----------|----------------------------------------
+symbol     | STRING | YES       |
+recvWindow | LONG   | NO        | The value cannot be greater than `60000`
+timestamp  | LONG   | YES       |
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    symbol: 'ETHBTC',
+    origClientOrderId: 'bnAoRHgI18gRD80FJmsfNP',
+    orderId: 1,
+    clientOrderId: 'RViSsQPTp1v3WmLYpeKT11'
+  },
+  {
+    symbol: 'ETHBTC',
+    origClientOrderId: 'IDbzcGmfwSCKihxILK1snu',
+    orderId: 2,
+    clientOrderId: 'HKFcuWAm9euMgRuwVGR8CL'
+  }
+]
 ```
 
 </details>
