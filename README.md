@@ -1100,10 +1100,10 @@ console.log(
 )
 ```
 
-| Param    Type       | Required  | Description                                                                |
------------|----------|-----------|----------------------------------------
-symbol     | String   | true      |
-recvWindow | Number   | false     | The value cannot be greater than `60000`
+| Param      | Type     | Required  | Description                               |
+|------------|----------|-----------|-------------------------------------------|
+| symbol     | String   | true      |                                           |
+| recvWindow | Number   | false     | The value cannot be greater than `60000`  |
 
 <details>
 <summary>Output</summary>
