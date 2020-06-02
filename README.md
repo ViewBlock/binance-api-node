@@ -1085,6 +1085,7 @@ console.log(
 }
 ```
 
+</details>
 
 #### cancelOpenOrders
 
