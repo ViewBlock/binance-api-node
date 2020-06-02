@@ -1100,9 +1100,11 @@ console.log(
 )
 ```
 
-| Param      | Type     | Required  |
-|------------|----------|-----------|
-| symbol     | String   | true      |                                           
+Name       | Type   | Mandatory | Description                            |
+-----------|--------|-----------|----------------------------------------
+symbol     | STRING | YES       |
+recvWindow | LONG   | NO        | The value cannot be greater than `60000`
+timestamp  | LONG   | YES       |
 
 <details>
 <summary>Output</summary>
