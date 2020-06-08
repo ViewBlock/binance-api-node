@@ -556,11 +556,6 @@ declare module 'binance-api-node' {
         tradeId: number;
     }
 
-    export interface Message {
-        eventType: EventType;
-        eventTime: number;
-    }
-
     export interface Balances {
         [key: string]: {
             available: string;
@@ -568,7 +563,7 @@ declare module 'binance-api-node' {
         };
     }
 
-    export interface OutboundAccountInfo extends Message {
+    export interface OutboundAccountInfo {
         balances: Balances;
         makerCommissionRate: number;
         takerCommissionRate: number;
@@ -578,9 +573,11 @@ declare module 'binance-api-node' {
         canWithdraw: boolean;
         canDeposit: boolean;
         lastAccountUpdate: number;
+        eventType: 'account';
+        eventTime: number;
     }
 
-    export interface ExecutionReport extends Message {
+    export interface ExecutionReport {
         symbol: string;
         newClientOrderId: string;
         originalClientOrderId: string;
@@ -605,6 +602,8 @@ declare module 'binance-api-node' {
         isOrderWorking: boolean;
         isBuyerMaker: boolean;
         totalQuoteTradeQuantity: string;
+        eventType: 'executionReport';
+        eventTime: number;
     }
 
     export interface TradeResult {
