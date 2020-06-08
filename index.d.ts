@@ -460,6 +460,20 @@ declare module 'binance-api-node' {
 
     export type TimeInForce = 'GTC' | 'IOC' | 'FOK';
 
+    export enum OrderRejectReason {
+        ACCOUNT_CANNOT_SETTLE = 'ACCOUNT_CANNOT_SETTLE',
+        ACCOUNT_INACTIVE = 'ACCOUNT_INACTIVE',
+        DUPLICATE_ORDER = 'DUPLICATE_ORDER',
+        INSUFFICIENT_BALANCE = 'INSUFFICIENT_BALANCE',
+        MARKET_CLOSED = 'MARKET_CLOSED',
+        NONE = 'NONE',
+        ORDER_WOULD_TRIGGER_IMMEDIATELY = 'ORDER_WOULD_TRIGGER_IMMEDIATELY',
+        PRICE_QTY_EXCEED_HARD_LIMITS = 'PRICE_QTY_EXCEED_HARD_LIMITS',
+        UNKNOWN_ACCOUNT = 'UNKNOWN_ACCOUNT',
+        UNKNOWN_INSTRUMENT = 'UNKNOWN_INSTRUMENT',
+        UNKNOWN_ORDER = 'UNKNOWN_ORDER'
+    }
+
     export type ExecutionType =
         | 'NEW'
         | 'CANCELED'
@@ -467,10 +481,6 @@ declare module 'binance-api-node' {
         | 'REJECTED'
         | 'TRADE'
         | 'EXPIRED';
-
-    export type EventType =
-        | 'executionReport'
-        | 'account';
 
     export interface Depth {
         eventType: string;
@@ -599,7 +609,7 @@ declare module 'binance-api-node' {
         stopPrice: string;
         icebergQuantity: string;
         orderStatus: OrderStatus;
-        orderRejectReason: string;
+        orderRejectReason: OrderRejectReason;
         orderId: number;
         orderTime: number;
         lastTradeQuantity: string;
