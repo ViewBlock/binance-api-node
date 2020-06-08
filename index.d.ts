@@ -207,6 +207,8 @@ declare module 'binance-api-node' {
         url: string;
     }
 
+    export type UserDataStreamEvent = OutboundAccountInfo | ExecutionReport | BalanceUpdate;
+
     export interface WebSocket {
         depth: (pair: string | string[], callback: (depth: Depth) => void) => ReconnectingWebSocketHandler;
         partialDepth: (options: { symbol: string, level: number } | { symbol: string, level: number }[], callback: (depth: PartialDepth) => void) => ReconnectingWebSocketHandler;
@@ -215,8 +217,7 @@ declare module 'binance-api-node' {
         candles: (pair: string | string[], period: string, callback: (ticker: Candle) => void) => ReconnectingWebSocketHandler;
         trades: (pairs: string | string[], callback: (trade: Trade) => void) => ReconnectingWebSocketHandler;
         aggTrades: (pairs: string | string[], callback: (trade: Trade) => void) => ReconnectingWebSocketHandler;
-
-        user: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
+        user: (callback: (msg: UserDataStreamEvent) => void) => Function;
         marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
         futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
     }
@@ -575,6 +576,14 @@ declare module 'binance-api-node' {
         lastAccountUpdate: number;
         eventType: 'account';
         eventTime: number;
+    }
+
+    export interface BalanceUpdate {
+        asset: string;
+        balanceDelta: number;
+        clearTime: number;
+        eventTime: number;
+        eventType: 'balanceUpdate';
     }
 
     export interface ExecutionReport {
