@@ -207,6 +207,8 @@ declare module 'binance-api-node' {
         url: string;
     }
 
+    export type UserDataStreamEvent = OutboundAccountInfo | ExecutionReport | BalanceUpdate;
+
     export interface WebSocket {
         depth: (pair: string | string[], callback: (depth: Depth) => void) => ReconnectingWebSocketHandler;
         partialDepth: (options: { symbol: string, level: number } | { symbol: string, level: number }[], callback: (depth: PartialDepth) => void) => ReconnectingWebSocketHandler;
@@ -215,8 +217,7 @@ declare module 'binance-api-node' {
         candles: (pair: string | string[], period: string, callback: (ticker: Candle) => void) => ReconnectingWebSocketHandler;
         trades: (pairs: string | string[], callback: (trade: Trade) => void) => ReconnectingWebSocketHandler;
         aggTrades: (pairs: string | string[], callback: (trade: Trade) => void) => ReconnectingWebSocketHandler;
-
-        user: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
+        user: (callback: (msg: UserDataStreamEvent) => void) => Function;
         marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
         futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function;
     }
@@ -459,6 +460,20 @@ declare module 'binance-api-node' {
 
     export type TimeInForce = 'GTC' | 'IOC' | 'FOK';
 
+    export enum OrderRejectReason {
+        ACCOUNT_CANNOT_SETTLE = 'ACCOUNT_CANNOT_SETTLE',
+        ACCOUNT_INACTIVE = 'ACCOUNT_INACTIVE',
+        DUPLICATE_ORDER = 'DUPLICATE_ORDER',
+        INSUFFICIENT_BALANCE = 'INSUFFICIENT_BALANCE',
+        MARKET_CLOSED = 'MARKET_CLOSED',
+        NONE = 'NONE',
+        ORDER_WOULD_TRIGGER_IMMEDIATELY = 'ORDER_WOULD_TRIGGER_IMMEDIATELY',
+        PRICE_QTY_EXCEED_HARD_LIMITS = 'PRICE_QTY_EXCEED_HARD_LIMITS',
+        UNKNOWN_ACCOUNT = 'UNKNOWN_ACCOUNT',
+        UNKNOWN_INSTRUMENT = 'UNKNOWN_INSTRUMENT',
+        UNKNOWN_ORDER = 'UNKNOWN_ORDER'
+    }
+
     export type ExecutionType =
         | 'NEW'
         | 'CANCELED'
@@ -466,10 +481,6 @@ declare module 'binance-api-node' {
         | 'REJECTED'
         | 'TRADE'
         | 'EXPIRED';
-
-    export type EventType =
-        | 'executionReport'
-        | 'account';
 
     export interface Depth {
         eventType: string;
@@ -556,11 +567,6 @@ declare module 'binance-api-node' {
         tradeId: number;
     }
 
-    export interface Message {
-        eventType: EventType;
-        eventTime: number;
-    }
-
     export interface Balances {
         [key: string]: {
             available: string;
@@ -568,7 +574,7 @@ declare module 'binance-api-node' {
         };
     }
 
-    export interface OutboundAccountInfo extends Message {
+    export interface OutboundAccountInfo {
         balances: Balances;
         makerCommissionRate: number;
         takerCommissionRate: number;
@@ -578,9 +584,19 @@ declare module 'binance-api-node' {
         canWithdraw: boolean;
         canDeposit: boolean;
         lastAccountUpdate: number;
+        eventType: 'account';
+        eventTime: number;
     }
 
-    export interface ExecutionReport extends Message {
+    export interface BalanceUpdate {
+        asset: string;
+        balanceDelta: number;
+        clearTime: number;
+        eventTime: number;
+        eventType: 'balanceUpdate';
+    }
+
+    export interface ExecutionReport {
         symbol: string;
         newClientOrderId: string;
         originalClientOrderId: string;
@@ -593,7 +609,7 @@ declare module 'binance-api-node' {
         stopPrice: string;
         icebergQuantity: string;
         orderStatus: OrderStatus;
-        orderRejectReason: string;
+        orderRejectReason: OrderRejectReason;
         orderId: number;
         orderTime: number;
         lastTradeQuantity: string;
@@ -605,6 +621,8 @@ declare module 'binance-api-node' {
         isOrderWorking: boolean;
         isBuyerMaker: boolean;
         totalQuoteTradeQuantity: string;
+        eventType: 'executionReport';
+        eventTime: number;
     }
 
     export interface TradeResult {
