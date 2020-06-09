@@ -306,6 +306,9 @@ const userTransforms = {
     isBuyerMaker: m.m,
     creationTime: m.O,
     totalQuoteTradeQuantity: m.Z,
+    orderListId: m.g,
+    quoteOrderQuantity: m.Q,
+    lastQuoteTransactedQuantity: m.Y,
   }),
 }
 
