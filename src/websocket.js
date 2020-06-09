@@ -308,7 +308,7 @@ const userTransforms = {
     totalQuoteTradeQuantity: m.Z,
     orderListId: m.g,
     quoteOrderQuantity: m.Q,
-    lastQuoteTransactedQuantity: m.Y,
+    lastQuoteTransacted: m.Y,
   }),
 }
 

@@ -236,7 +236,16 @@ test('[WS] candles', t => {
 test('[WS] trades', t => {
   return new Promise(resolve => {
     client.ws.trades(['BNBBTC', 'ETHBTC', 'BNTBTC'], trade => {
-      checkFields(t, trade, ['eventType', 'tradeId', 'tradeTime', 'quantity', 'price', 'symbol', 'buyerOrderId', 'sellerOrderId'])
+      checkFields(t, trade, [
+        'eventType',
+        'tradeId',
+        'tradeTime',
+        'quantity',
+        'price',
+        'symbol',
+        'buyerOrderId',
+        'sellerOrderId',
+      ])
       resolve()
     })
   })
@@ -245,7 +254,16 @@ test('[WS] trades', t => {
 test('[WS] aggregate trades', t => {
   return new Promise(resolve => {
     client.ws.aggTrades(['BNBBTC', 'ETHBTC', 'BNTBTC'], trade => {
-      checkFields(t, trade, ['eventType', 'aggId', 'timestamp', 'quantity', 'price', 'symbol', 'firstId', 'lastId'])
+      checkFields(t, trade, [
+        'eventType',
+        'aggId',
+        'timestamp',
+        'quantity',
+        'price',
+        'symbol',
+        'firstId',
+        'lastId',
+      ])
       resolve()
     })
   })
@@ -376,6 +394,9 @@ test('[WS] userEvents', t => {
       isBuyerMaker: false,
       creationTime: 1499405658657,
       totalQuoteTradeQuantity: '0.00000000',
+      lastQuoteTransacted: undefined,
+      orderListId: -1,
+      quoteOrderQuantity: undefined,
     })
   })({ data: JSON.stringify(orderPayload) })
 
