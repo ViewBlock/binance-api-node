@@ -362,6 +362,8 @@ test('[WS] userEvents', t => {
     m: false,
     M: false,
     O: 1499405658657,
+    Q: 0,
+    Y: 0,
     Z: '0.00000000',
   }
 
@@ -394,9 +396,9 @@ test('[WS] userEvents', t => {
       isBuyerMaker: false,
       creationTime: 1499405658657,
       totalQuoteTradeQuantity: '0.00000000',
-      lastQuoteTransacted: undefined,
+      lastQuoteTransacted: 0,
       orderListId: -1,
-      quoteOrderQuantity: undefined,
+      quoteOrderQuantity: 0,
     })
   })({ data: JSON.stringify(orderPayload) })
 
@@ -430,6 +432,8 @@ test('[WS] userEvents', t => {
     m: false,
     M: true,
     O: 1499405658657,
+    Q: 0,
+    Y: 0,
     Z: '2.30570761',
   }
 
@@ -462,6 +466,9 @@ test('[WS] userEvents', t => {
       isBuyerMaker: false,
       creationTime: 1499405658657,
       totalQuoteTradeQuantity: '2.30570761',
+      lastQuoteTransacted: 0,
+      orderListId: -1,
+      quoteOrderQuantity: 0,
     })
   })({ data: JSON.stringify(tradePayload) })
 
