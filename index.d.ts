@@ -597,32 +597,36 @@ declare module 'binance-api-node' {
     }
 
     export interface ExecutionReport {
-        symbol: string;
-        newClientOrderId: string;
-        originalClientOrderId: string;
-        side: OrderSide;
-        orderType: OrderType;
-        timeInForce: TimeInForce;
-        quantity: string;
-        price: string;
-        executionType: ExecutionType;
-        stopPrice: string;
-        icebergQuantity: string;
-        orderStatus: OrderStatus;
-        orderRejectReason: OrderRejectReason;
-        orderId: number;
-        orderTime: number;
-        lastTradeQuantity: string;
-        totalTradeQuantity: string;
-        priceLastTrade: string;
-        commission: string;
-        commissionAsset: string;
-        tradeId: number;
-        isOrderWorking: boolean;
-        isBuyerMaker: boolean;
-        totalQuoteTradeQuantity: string;
-        eventType: 'executionReport';
+        commission: string; // Commission amount
+        commissionAsset: string | null; // Commission asset
+        creationTime: number; // Order creation time
         eventTime: number;
+        eventType: 'executionReport';
+        executionType: ExecutionType; // Current execution type
+        icebergQuantity: string; // Iceberg quantity
+        isBuyerMaker: boolean; // Is this trade the maker side?
+        isOrderWorking: boolean; // Is the order on the book?
+        lastQuoteTransactedQuantity: string; // Last quote asset transacted quantity (i.e. lastPrice * lastQty);
+        lastTradeQuantity: string; // Last executed quantity
+        newClientOrderId: string; // Client order ID
+        orderId: number; // Order ID
+        orderListId: number; // OrderListId
+        orderRejectReason: OrderRejectReason; // Order reject reason; will be an error code.
+        orderStatus: OrderStatus; // Current order status
+        orderTime: number; // Transaction time
+        orderType: OrderType; // Order type
+        originalClientOrderId: string | null; // Original client order ID; This is the ID of the order being canceled
+        price: string; // Order price
+        priceLastTrade: string; // Last executed price
+        quantity: string; // Order quantity
+        quoteOrderQuantity: string // Quote Order Qty
+        side: OrderSide; // Side
+        stopPrice: string; // Stop price
+        symbol: string; // Symbol
+        timeInForce: TimeInForce; // Time in force
+        totalQuoteTradeQuantity: string; // Cumulative quote asset transacted quantity
+        totalTradeQuantity: string; // Cumulative filled quantity
+        tradeId: number; // Trade ID
     }
 
     export interface TradeResult {
