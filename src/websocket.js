@@ -277,6 +277,13 @@ const userTransforms = {
       return out
     }, {}),
   }),
+  // https://github.com/binance-exchange/binance-official-api-docs/blob/master/user-data-stream.md#account-update
+  outboundAccountPosition: m => ({
+    balances: m.B.map(({a, f, l}) => ({asset: a, free: f, locked: l})),
+    eventTime: m.E,
+    eventType: 'outboundAccountPosition',
+    lastAccountUpdate: m.u,
+  }),
   // https://github.com/binance-exchange/binance-official-api-docs/blob/master/user-data-stream.md#order-update
   executionReport: m => ({
     eventType: 'executionReport',
