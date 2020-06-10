@@ -280,7 +280,7 @@ declare module 'binance-api-node' {
     url: string
   }
 
-  export type UserDataStreamEvent = OutboundAccountInfo | ExecutionReport | BalanceUpdate
+  export type UserDataStreamEvent = OutboundAccountInfo | ExecutionReport | BalanceUpdate | OutboundAccountPosition
 
   export interface WebSocket {
     depth: (
@@ -671,6 +671,13 @@ declare module 'binance-api-node' {
     clearTime: number
     eventTime: number
     eventType: 'balanceUpdate'
+  }
+
+  export interface OutboundAccountPosition {
+    balances: AssetBalance[]
+    eventTime: number
+    eventType: 'outboundAccountPosition'
+    lastAccountUpdate: number
   }
 
   export interface ExecutionReport {
