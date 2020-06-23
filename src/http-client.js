@@ -305,6 +305,9 @@ export default opts => {
     tradeFee: payload => privCall('/wapi/v3/tradeFee.html', payload),
     assetDetail: payload => privCall('/wapi/v3/assetDetail.html', payload),
 
+    capitalConfigs: () => privCall('/sapi/v1/capital/config/getall'),
+    capitalDepositAddress: payload => privCall('/sapi/v1/capital/deposit/address', payload),
+
     getDataStream: () => privCall('/api/v3/userDataStream', null, 'POST', true),
     keepDataStream: payload => privCall('/api/v3/userDataStream', payload, 'PUT', false, true),
     closeDataStream: payload => privCall('/api/v3/userDataStream', payload, 'DELETE', false, true),

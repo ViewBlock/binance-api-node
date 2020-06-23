@@ -87,6 +87,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [withdraw](#withdraw)
   - [depositAddress](#depositaddress)
   - [tradeFee](#tradefee)
+  - [capitalConfigs](#capitalConfigs)
+  - [capitalDepositAddress](#capitalDepositAddress)
 - [Websockets](#websockets)
   - [depth](#depth)
   - [partialDepth](#partialdepth)
@@ -1552,6 +1554,88 @@ console.log(await client.tradeFee())
   success: true,
 }
 
+```
+
+</details>
+
+#### capitalConfigs
+
+Get information of coins (available for deposit and withdraw) for user.
+
+```js
+console.log(await client.capitalConfigs())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    'coin': 'CTR',
+    'depositAllEnable': false,
+    'free': '0.00000000',
+    'freeze': '0.00000000',
+    'ipoable': '0.00000000',
+    'ipoing': '0.00000000',
+    'isLegalMoney': false,
+    'locked': '0.00000000',
+    'name': 'Centra',
+    'networkList': [
+      {
+        'addressRegex': '^(0x)[0-9A-Fa-f]{40}$',
+        'coin': 'CTR',
+        'depositDesc': 'Delisted, Deposit Suspended',
+        'depositEnable': false,
+        'isDefault': true,
+        'memoRegex': '',
+        'minConfirm': 12,
+        'name': 'ERC20',
+        'network': 'ETH',
+        'resetAddressStatus': false,
+        'specialTips': '',
+        'unLockConfirm': 0,
+        'withdrawDesc': '',
+        'withdrawEnable': true,
+        'withdrawFee': '35.00000000',
+        'withdrawIntegerMultiple': '0.00000001',
+        'withdrawMax': '0.00000000',
+        'withdrawMin': '70.00000000'
+      }
+    ],
+    'storage': '0.00000000',
+    'trading': false,
+    'withdrawAllEnable': true,
+    'withdrawing': '0.00000000'
+  }
+]
+```
+
+</details>
+
+#### capitalDepositAddress
+
+Fetch deposit address with network.
+
+```js
+console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
+```
+
+| Param    | Type   | Required | Description      |
+| -------- | ------ | -------- | ---------------- |
+| coin     | String | true     | The coin name    |
+| network  | String | false    | The network name |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  address: 'AM6ytPW78KYxQCmU2pHYGcee7GypZ7Yhhc',
+  coin: 'NEO',
+  tag: '',
+  url: 'https://neoscan.io/address/AM6ytPW78KYxQCmU2pHYGcee7GypZ7Yhhc'
+}
 ```
 
 </details>
