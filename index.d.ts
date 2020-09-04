@@ -154,6 +154,8 @@ declare module 'binance-api-node' {
     }
   }
 
+  export type GetOrderOptions = {symbol: string, orderId: number} | {symbol: string, origClientOrderId: string}
+
   export interface Binance {
     accountInfo(options?: { useServerTime: boolean }): Promise<Account>
     tradeFee(): Promise<TradeFeeResult>
@@ -182,11 +184,7 @@ declare module 'binance-api-node' {
       fromId?: number
       useServerTime?: boolean
     }): Promise<MyTrade[]>
-    getOrder(options: {
-      symbol: string
-      orderId: number
-      useServerTime?: boolean
-    }): Promise<QueryOrderResult>
+    getOrder(options: GetOrderOptions & {useServerTime?: boolean}): Promise<QueryOrderResult>
     cancelOrder(options: {
       symbol: string
       orderId: number
