@@ -745,6 +745,7 @@ declare module 'binance-api-node' {
     icebergQty: string
     isWorking: boolean
     orderId: number
+    orderListId: number
     origQty: string
     price: string
     side: OrderSide
