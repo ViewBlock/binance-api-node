@@ -747,6 +747,7 @@ declare module 'binance-api-node' {
     orderId: number
     orderListId: number
     origQty: string
+    origQuoteOrderQty: string
     price: string
     side: OrderSide
     status: OrderStatus
