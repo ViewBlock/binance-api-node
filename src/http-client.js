@@ -261,7 +261,7 @@ export default opts => {
       kCall('/api/v3/historicalTrades', payload),
 
     dailyStats: payload => pubCall('/api/v3/ticker/24hr', payload),
-    prices: () =>
+    prices: payload =>
       pubCall('/api/v3/ticker/price').then(r =>
         r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
