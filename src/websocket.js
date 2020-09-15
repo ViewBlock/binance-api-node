@@ -6,9 +6,14 @@ import openWebSocket from 'open-websocket'
 const BASE = 'wss://stream.binance.com:9443/ws'
 const FUTURES = 'wss://fstream.binance.com/ws'
 
+const endpoints = {
+  base: BASE,
+  futures: FUTURES,
+}
+
 const depth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@depth`)
+    const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@depth`)
     w.onmessage = msg => {
       const {
         e: eventType,
@@ -40,7 +45,7 @@ const depth = (payload, cb) => {
 
 const partialDepth = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(({ symbol, level }) => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@depth${level}`)
+    const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@depth${level}`)
     w.onmessage = msg => {
       const { lastUpdateId, bids, asks } = JSON.parse(msg.data)
       cb({
@@ -65,7 +70,7 @@ const candles = (payload, interval, cb) => {
   }
 
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
+    const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@kline_${interval}`)
     w.onmessage = msg => {
       const { e: eventType, E: eventTime, s: symbol, k: tick } = JSON.parse(msg.data)
       const {
@@ -143,7 +148,7 @@ const tickerTransform = m => ({
 
 const ticker = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@ticker`)
+    const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@ticker`)
 
     w.onmessage = msg => {
       cb(tickerTransform(JSON.parse(msg.data)))
@@ -157,7 +162,7 @@ const ticker = (payload, cb) => {
 }
 
 const allTickers = cb => {
-  const w = new openWebSocket(`${BASE}/!ticker@arr`)
+  const w = new openWebSocket(`${endpoints.base}/!ticker@arr`)
 
   w.onmessage = msg => {
     const arr = JSON.parse(msg.data)
@@ -169,7 +174,7 @@ const allTickers = cb => {
 
 const aggTradesInternal = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@aggTrade`)
+    const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@aggTrade`)
     w.onmessage = msg => {
       const {
         e: eventType,
@@ -209,7 +214,7 @@ const aggTradesInternal = (payload, cb) => {
 
 const tradesInternal = (payload, cb) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@trade`)
+    const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@trade`)
     w.onmessage = msg => {
       const {
         e: eventType,
@@ -279,7 +284,7 @@ const userTransforms = {
   }),
   // https://github.com/binance-exchange/binance-official-api-docs/blob/master/user-data-stream.md#account-update
   outboundAccountPosition: m => ({
-    balances: m.B.map(({a, f, l}) => ({asset: a, free: f, locked: l})),
+    balances: m.B.map(({ a, f, l }) => ({ asset: a, free: f, locked: l })),
     eventTime: m.E,
     eventType: 'outboundAccountPosition',
     lastAccountUpdate: m.u,
@@ -378,7 +383,7 @@ const user = (opts, variator) => cb => {
   const makeStream = isReconnecting => {
     return getDataStream()
       .then(({ listenKey }) => {
-        w = openWebSocket(`${variator === 'futures' ? FUTURES : BASE}/${listenKey}`)
+        w = openWebSocket(`${variator === 'futures' ? endpoints.futures : endpoints.base}/${listenKey}`)
         w.onmessage = msg => userEventHandler(cb)(msg)
 
         currentListenKey = listenKey
@@ -401,15 +406,20 @@ const user = (opts, variator) => cb => {
   return makeStream(false)
 }
 
-export default opts => ({
-  depth,
-  partialDepth,
-  candles,
-  trades,
-  aggTrades,
-  ticker,
-  allTickers,
-  user: user(opts),
-  marginUser: user(opts, 'margin'),
-  futuresUser: user(opts, 'futures'),
-})
+export default opts => {
+  endpoints.base = (opts && opts.wsBase) || BASE
+  endpoints.futures = (opts && opts.wsFutures) || FUTURES
+
+  return {
+    depth,
+    partialDepth,
+    candles,
+    trades,
+    aggTrades,
+    ticker,
+    allTickers,
+    user: user(opts),
+    marginUser: user(opts, 'margin'),
+    futuresUser: user(opts, 'futures'),
+  }
+}
