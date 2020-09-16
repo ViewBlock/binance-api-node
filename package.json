@@ -51,6 +51,7 @@
       "!test/utils.js"
     ]
   },
-  "author": "Balthazar Gronon <bgronon@gmail.com>",
+  "author": "Balthazar Gronon <git@balthazar.dev>",
+  "homepage": "https://github.com/Ashlar/binance-api-node",
   "license": "MIT"
 }
