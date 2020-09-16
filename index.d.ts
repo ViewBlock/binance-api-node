@@ -173,7 +173,9 @@ declare module 'binance-api-node' {
     orderTest(options: NewOrder): Promise<Order>
     orderOco(options: NewOcoOrder): Promise<OcoOrder>
     ping(): Promise<boolean>
-    prices(): Promise<{ [index: string]: string }>
+    prices(options?: {
+      symbol?: string
+    }): Promise<{ [index: string]: string }>
     avgPrice(options?: { symbol: string }): Promise<AvgPriceResult | AvgPriceResult[]>
     time(): Promise<number>
     trades(options: { symbol: string; limit?: number }): Promise<TradeResult[]>
