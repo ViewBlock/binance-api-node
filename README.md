@@ -405,7 +405,7 @@ console.log(await client.avgPrice({ symbol: 'ETHBTC' }))
 
 #### prices
 
-Latest price for symbol, not providing a symbol will return prices for all symbols. 
+Latest price for a symbol, not providing the symbol will return prices for all symbols. 
 
 ```js
 console.log(await client.prices())
