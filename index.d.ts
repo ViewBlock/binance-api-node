@@ -273,6 +273,7 @@ declare module 'binance-api-node' {
       useServerTime?: boolean
     }): Promise<QueryOrderResult>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
+    FuturesAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
   }
 
   export interface HttpError extends Error {
@@ -858,5 +859,15 @@ declare module 'binance-api-node' {
     symbol: string
     unRealizedProfit: string
     positionSide: string
+  }
+
+  export interface FuturesBalanceResult {
+    accountAlias: string
+    asset: string
+    balance: string
+    crossWalletBalance: string
+    crossUnPnl: string
+    availableBalance: string
+    maxWithdrawAmount: string
   }
 }
