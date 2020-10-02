@@ -273,7 +273,7 @@ declare module 'binance-api-node' {
       useServerTime?: boolean
     }): Promise<QueryOrderResult>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
-    FuturesAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
+    futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
   }
 
   export interface HttpError extends Error {
