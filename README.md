@@ -89,6 +89,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [tradeFee](#tradefee)
   - [capitalConfigs](#capitalConfigs)
   - [capitalDepositAddress](#capitalDepositAddress)
+- [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
+  - [futuresAccountBalance](#futuresAccountBalance)
 - [Websockets](#websockets)
   - [depth](#depth)
   - [partialDepth](#partialdepth)
@@ -1640,6 +1642,35 @@ console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
   tag: '',
   url: 'https://neoscan.io/address/AM6ytPW78KYxQCmU2pHYGcee7GypZ7Yhhc'
 }
+```
+
+</details>
+
+### Futures Authenticated REST endpoints
+
+#### futuresAccountBalance
+
+Get futures account balance
+
+```js
+console.log(await client.futuresAccountBalance());
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "accountAlias": "SgsR",    // unique account code
+    "asset": "USDT",    // asset name
+    "balance": "122607.35137903", // wallet balance
+    "crossWalletBalance": "23.72469206", // crossed wallet balance
+    "crossUnPnl": "0.00000000"  // unrealized profit of crossed positions
+    "availableBalance": "23.72469206",       // available balance
+    "maxWithdrawAmount": "23.72469206"     // maximum amount for transfer out
+  }
+]
 ```
 
 </details>
