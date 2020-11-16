@@ -310,16 +310,18 @@ declare module 'binance-api-node' {
       pairs: string | string[],
       callback: (trade: Trade) => void,
     ) => ReconnectingWebSocketHandler
-    user: (callback: (msg: UserDataStreamEvent) => void) => Function
-    marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function
-    futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function
+    user: (callback: (msg: UserDataStreamEvent) => void) => Promise<ReconnectingWebSocketHandler>
+    marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Promise<ReconnectingWebSocketHandler>
+    futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Promise<ReconnectingWebSocketHandler>
   }
 
-  export type ReconnectingWebSocketHandler = (options?: {
-    keepClosed: boolean
-    fastClose: boolean
-    delay: number
-  }) => void
+  export type WebSocketCloseOptions = {
+    delay: number;
+    fastClose: boolean;
+    keepClosed: boolean;
+  }
+
+  export type ReconnectingWebSocketHandler = (options?: WebSocketCloseOptions) => void
 
   export enum CandleChartInterval {
     ONE_MINUTE = '1m',
