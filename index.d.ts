@@ -670,7 +670,7 @@ declare module 'binance-api-node' {
 
   export interface BalanceUpdate {
     asset: string
-    balanceDelta: number
+    balanceDelta: string
     clearTime: number
     eventTime: number
     eventType: 'balanceUpdate'
