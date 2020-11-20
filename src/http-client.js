@@ -262,14 +262,18 @@ export default opts => {
 
     dailyStats: payload => pubCall('/api/v3/ticker/24hr', payload),
     prices: payload =>
-      pubCall('/api/v3/ticker/price', payload).then(r =>
-        r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
-      ),
+      pubCall('/api/v3/ticker/price', payload).then(r => {
+        if (!Array.isArray(r)) {
+          r = [r];
+        }
+        
+        return r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {});
+      }),
 
     avgPrice: payload => pubCall('/api/v3/avgPrice', payload),
 
     allBookTickers: () =>
-      pubCall('/api/v3/ticker/bookTicker').then(r =>
+      pubCall('/api/v3/ticker/bookTicker').then(r => 
         r.reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
       ),
 

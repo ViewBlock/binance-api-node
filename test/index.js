@@ -97,6 +97,13 @@ test('[REST] prices', async t => {
   t.truthy(prices.ETHBTC)
 })
 
+test('[REST] pair price', async t => {
+  const prices = await client.prices({symbol: 'ETHBTC'})
+  t.truthy(prices)
+  t.truthy(prices.ETHBTC)
+})
+
+
 test('[REST] avgPrice', async t => {
   const res = await client.avgPrice({ symbol: 'ETHBTC' })
   t.truthy(res)
@@ -108,6 +115,13 @@ test('[REST] allBookTickers', async t => {
   t.truthy(tickers)
   t.truthy(tickers.ETHBTC)
 })
+
+test('[REST] pair allBookTickers', async t => {
+  const tickers = await client.allBookTickers({ symbol: 'ETHBTC' })
+  t.truthy(tickers)
+  t.truthy(tickers.ETHBTC)
+})
+
 
 test('[REST] Signed call without creds', async t => {
   try {
@@ -574,11 +588,24 @@ test('[FUTURES-REST] prices', async t => {
   t.truthy(prices.BTCUSDT)
 })
 
+test('[FUTURES-REST] pair prices', async t => {
+  const prices = await client.futuresPrices({ symbol: 'BTCUSDT'})
+  t.truthy(prices)
+  t.truthy(prices.BTCUSDT)
+})
+
 test('[FUTURES-REST] allBookTickers', async t => {
   const tickers = await client.futuresAllBookTickers()
   t.truthy(tickers)
   t.truthy(tickers.BTCUSDT)
 })
+
+test('[FUTURES-REST] pair allBookTickers', async t => {
+  const tickers = await client.futuresAllBookTickers({ symbol: 'BTCUSDT' })
+  t.truthy(tickers)
+  t.truthy(tickers.BTCUSDT)
+})
+
 
 test('[FUTURES-REST] aggTrades', async t => {
   try {
