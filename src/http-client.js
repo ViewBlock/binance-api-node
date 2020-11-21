@@ -263,14 +263,14 @@ export default opts => {
     dailyStats: payload => pubCall('/api/v3/ticker/24hr', payload),
     prices: payload =>
       pubCall('/api/v3/ticker/price', payload).then(r =>
-        r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
+        (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
 
     avgPrice: payload => pubCall('/api/v3/avgPrice', payload),
 
     allBookTickers: () =>
       pubCall('/api/v3/ticker/bookTicker').then(r =>
-        r.reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
+        (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
       ),
 
     /**
@@ -343,11 +343,11 @@ export default opts => {
     futuresDailyStats: payload => pubCall('/fapi/v1/ticker/24hr', payload),
     futuresPrices: () =>
       pubCall('/fapi/v1/ticker/price').then(r =>
-        r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
+        (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
     futuresAllBookTickers: () =>
       pubCall('/fapi/v1/ticker/bookTicker').then(r =>
-        r.reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
+        (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
       ),
     futuresFundingRate: payload =>
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
