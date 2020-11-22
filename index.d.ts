@@ -274,6 +274,14 @@ declare module 'binance-api-node' {
     }): Promise<QueryOrderResult>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
     futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
+    marginOrder(options: NewOrder): Promise<Order>
+    marginAllOrders(options: { symbol: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    marginCancelOrder(options: {
+      symbol: string
+      orderId?: number
+      useServerTime?: boolean
+    }): Promise<CancelOrderResult>
+    marginOpenOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
   }
 
   export interface HttpError extends Error {
