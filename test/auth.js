@@ -48,7 +48,7 @@ const main = () => {
         symbol: 'ETHBTC',
         side: 'BUY',
         quoteOrderQty: 10,
-        type: 'MARKET'
+        type: 'MARKET',
       })
     } catch (e) {
       t.is(e.message, 'Filter failure: PERCENT_PRICE')
@@ -63,7 +63,6 @@ const main = () => {
 
     t.pass()
   })
-
 
   test('[REST] allOrders / getOrder', async t => {
     try {
