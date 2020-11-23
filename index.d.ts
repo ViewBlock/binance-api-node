@@ -274,6 +274,11 @@ declare module 'binance-api-node' {
     }): Promise<QueryOrderResult>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
     futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
+    futuresPositionMode(options?: { recvWindow: number }): Promise<PositionModeResult>
+    futuresPositionModeChange(options: {
+      dualSidePosition: string
+      recvWindow: number
+    }): Promise<ChangePositionModeResult>
     marginOrder(options: NewOrder): Promise<Order>
     marginAllOrders(options: { symbol: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>
     marginCancelOrder(options: {
@@ -880,5 +885,14 @@ declare module 'binance-api-node' {
     crossUnPnl: string
     availableBalance: string
     maxWithdrawAmount: string
+  }
+
+  export interface ChangePositionModeResult {
+    code: number
+    msg: string
+  }
+
+  export interface PositionModeResult {
+    dualSidePosition: boolean
   }
 }
