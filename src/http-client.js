@@ -190,10 +190,10 @@ const order = (privCall, payload = {}, url) => {
       ? { timeInForce: 'GTC', ...payload }
       : payload
 
-  const requires = ['symbol', 'side'];
+  const requires = ['symbol', 'side']
 
   if (!(newPayload.type === 'MARKET' && newPayload.quoteOrderQty)) {
-    requires.push('quantity');
+    requires.push('quantity')
   }
 
   return (
