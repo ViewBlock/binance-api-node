@@ -278,6 +278,19 @@ declare module 'binance-api-node' {
     }): Promise<QueryOrderResult>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
     futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
+    futuresPositionMode(options?: { recvWindow: number }): Promise<PositionModeResult>
+    futuresPositionModeChange(options: {
+      dualSidePosition: string
+      recvWindow: number
+    }): Promise<ChangePositionModeResult>
+    marginOrder(options: NewOrder): Promise<Order>
+    marginAllOrders(options: { symbol: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    marginCancelOrder(options: {
+      symbol: string
+      orderId?: number
+      useServerTime?: boolean
+    }): Promise<CancelOrderResult>
+    marginOpenOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
   }
 
   export interface HttpError extends Error {
@@ -314,16 +327,18 @@ declare module 'binance-api-node' {
       pairs: string | string[],
       callback: (trade: Trade) => void,
     ) => ReconnectingWebSocketHandler
-    user: (callback: (msg: UserDataStreamEvent) => void) => Function
-    marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function
-    futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Function
+    user: (callback: (msg: UserDataStreamEvent) => void) => Promise<ReconnectingWebSocketHandler>
+    marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Promise<ReconnectingWebSocketHandler>
+    futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Promise<ReconnectingWebSocketHandler>
   }
 
-  export type ReconnectingWebSocketHandler = (options?: {
-    keepClosed: boolean
-    fastClose: boolean
-    delay: number
-  }) => void
+  export type WebSocketCloseOptions = {
+    delay: number;
+    fastClose: boolean;
+    keepClosed: boolean;
+  }
+
+  export type ReconnectingWebSocketHandler = (options?: WebSocketCloseOptions) => void
 
   export enum CandleChartInterval {
     ONE_MINUTE = '1m',
@@ -672,7 +687,7 @@ declare module 'binance-api-node' {
 
   export interface BalanceUpdate {
     asset: string
-    balanceDelta: number
+    balanceDelta: string
     clearTime: number
     eventTime: number
     eventType: 'balanceUpdate'
@@ -722,6 +737,7 @@ declare module 'binance-api-node' {
     id: number
     price: string
     qty: string
+    quoteQty: string
     time: number
     isBuyerMaker: boolean
     isBestMatch: boolean
@@ -873,5 +889,14 @@ declare module 'binance-api-node' {
     crossUnPnl: string
     availableBalance: string
     maxWithdrawAmount: string
+  }
+
+  export interface ChangePositionModeResult {
+    code: number
+    msg: string
+  }
+
+  export interface PositionModeResult {
+    dualSidePosition: boolean
   }
 }
