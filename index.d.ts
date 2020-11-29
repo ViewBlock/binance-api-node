@@ -652,12 +652,15 @@ declare module 'binance-api-node' {
   export interface Trade {
     eventType: string
     eventTime: number
+    tradeTime: number
     symbol: string
     price: string
     quantity: string
     maker: boolean
     isBuyerMaker: boolean
     tradeId: number
+    buyerOrderId: number
+    sellerOrderId: number
   }
 
   export interface Balances {
