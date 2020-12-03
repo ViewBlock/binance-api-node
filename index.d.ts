@@ -780,7 +780,16 @@ declare module 'binance-api-node' {
     symbol: string
     origClientOrderId: string
     orderId: number
+    orderListId: number
     clientOrderId: string
+    price: string
+    origQty: string
+    executedQty: string
+    cummulativeQuoteQty: string
+    status: string
+    timeInForce: string
+    type: string
+    side: string
   }
 
   export interface AvgPriceResult {
