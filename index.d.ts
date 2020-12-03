@@ -471,6 +471,9 @@ declare module 'binance-api-node' {
     useServerTime?: boolean
     type: OrderType
     newOrderRespType?: NewOrderRespType
+    isIsolated?: boolean
+    quoteOrderQty?: string
+    sideEffectType?: SideEffectType
   }
 
   export interface NewOcoOrder {
@@ -490,6 +493,11 @@ declare module 'binance-api-node' {
     recvWindow?: number
     useServerTime?: boolean
   }
+
+  export type SideEffectType =
+    | 'NO_SIDE_EFFECT'
+    | 'MARGIN_BUY'
+    | 'AUTO_REPAY'
 
   export interface OrderFill {
     price: string
