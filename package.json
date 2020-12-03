@@ -1,6 +1,6 @@
 {
   "name": "binance-api-node",
-  "version": "0.10.13",
+  "version": "0.10.14",
   "description": "A node API wrapper for Binance",
   "main": "dist",
   "files": [
