@@ -50,12 +50,14 @@ declare module 'binance-api-node' {
   }
 
   export interface Account {
+    accountType: TradingType.MARGIN | TradingType.SPOT
     balances: AssetBalance[]
     buyerCommission: number
     canDeposit: boolean
     canTrade: boolean
     canWithdraw: boolean
     makerCommission: number
+    permissions: TradingType[]
     sellerCommission: number
     takerCommission: number
     updateTime: number
@@ -355,6 +357,11 @@ declare module 'binance-api-node' {
   }
 
   export type RateLimitType = 'REQUEST_WEIGHT' | 'ORDERS'
+
+  export enum TradingType {
+    MARGIN = 'MARGIN',
+    SPOT = 'SPOT',
+  }
 
   export type RateLimitInterval = 'SECOND' | 'MINUTE' | 'DAY'
 
