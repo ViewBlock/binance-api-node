@@ -1654,14 +1654,12 @@ console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
 
 Check an order's status.
 
-##### Weight: 1
 
 - These orders will not be found
   - order status is CANCELED or EXPIRED, <b>AND</b>
   - order has NO filled trade, <b>AND</b>
   - created time + 7 days < current time
   
-##### Parameters:
 
 | Name              | Type   | Mandatory | Description      |
 | ----------------- | ------ | --------  | ---------------- |
@@ -1669,8 +1667,6 @@ Check an order's status.
 | orderId           | LONG   | NO        |                  |
 | origClientOrderId | STRING | NO        |                  |
 | recvWindow        | LONG   | NO        |                  |
-
-##### Notes:
 
 
 Either orderId or origClientOrderId must be sent.
@@ -1721,9 +1717,6 @@ console.log(
 
 Change user's initial leverage of specific symbol market.
 
-##### Weight: 1
-
-##### Parameters:
 
 | Name              | Type   | Mandatory | Description                                |
 | ----------------- | ------ | --------  | ------------------------------------------ |
