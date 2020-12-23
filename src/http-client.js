@@ -362,10 +362,14 @@ export default opts => {
     futuresGetOrder: payload => privCall('/fapi/v1/order', payload),
     futuresCancelOrder: payload => privCall('/fapi/v1/order', payload, 'DELETE'),
     futuresOpenOrders: payload => privCall('/fapi/v1/openOrders', payload),
+    futuresAllOrders: payload => privCall('/fapi/v1/allOrders', payload),
     futuresPositionRisk: payload => privCall('/fapi/v2/positionRisk', payload),
     futuresAccountBalance: payload => privCall('/fapi/v2/balance', payload),
     futuresPositionMode: payload => privCall('/fapi/v1/positionSide/dual', payload, 'GET'),
     futuresPositionModeChange: payload => privCall('/fapi/v1/positionSide/dual', payload, 'POST'),
     futuresLeverage: payload => privCall('/fapi/v1/leverage', payload, 'POST'),
+    futuresMarginType: payload => privCall('/fapi/v1/marginType', payload, 'POST'),
+    futuresPositionMargin: payload => privCall('/fapi/v1/positionMargin', payload, 'POST'),
+    futuresMarginHistory: payload => privCall('/fapi/v1/positionMargin/history', payload)
   }
 }
