@@ -50,12 +50,14 @@ declare module 'binance-api-node' {
   }
 
   export interface Account {
+    accountType: TradingType.MARGIN | TradingType.SPOT
     balances: AssetBalance[]
     buyerCommission: number
     canDeposit: boolean
     canTrade: boolean
     canWithdraw: boolean
     makerCommission: number
+    permissions: TradingType[]
     sellerCommission: number
     takerCommission: number
     updateTime: number
@@ -356,6 +358,11 @@ declare module 'binance-api-node' {
 
   export type RateLimitType = 'REQUEST_WEIGHT' | 'ORDERS'
 
+  export enum TradingType {
+    MARGIN = 'MARGIN',
+    SPOT = 'SPOT',
+  }
+
   export type RateLimitInterval = 'SECOND' | 'MINUTE' | 'DAY'
 
   export interface ExchangeInfoRateLimit {
@@ -471,6 +478,9 @@ declare module 'binance-api-node' {
     useServerTime?: boolean
     type: OrderType
     newOrderRespType?: NewOrderRespType
+    isIsolated?: boolean
+    quoteOrderQty?: string
+    sideEffectType?: SideEffectType
   }
 
   export interface NewOcoOrder {
@@ -490,6 +500,11 @@ declare module 'binance-api-node' {
     recvWindow?: number
     useServerTime?: boolean
   }
+
+  export type SideEffectType =
+    | 'NO_SIDE_EFFECT'
+    | 'MARGIN_BUY'
+    | 'AUTO_REPAY'
 
   export interface OrderFill {
     price: string
@@ -780,7 +795,16 @@ declare module 'binance-api-node' {
     symbol: string
     origClientOrderId: string
     orderId: number
+    orderListId: number
     clientOrderId: string
+    price: string
+    origQty: string
+    executedQty: string
+    cummulativeQuoteQty: string
+    status: string
+    timeInForce: string
+    type: string
+    side: string
   }
 
   export interface AvgPriceResult {
