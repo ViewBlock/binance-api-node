@@ -6,6 +6,8 @@ declare module 'binance-api-node' {
     getTime?: () => number | Promise<number>
     httpBase?: string
     httpFutures?: string
+    wsBase?: string
+    wsFutures?: string
   }): Binance
 
   export enum ErrorCodes {
