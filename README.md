@@ -1669,7 +1669,7 @@ Check an order's status.
 | recvWindow        | LONG   | NO        |                  |
 
 
-Either orderId or origClientOrderId must be sent.
+Either <b>orderId</b> or <b>origClientOrderId</b> must be sent.
 
 ```js
 console.log(
