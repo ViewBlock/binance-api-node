@@ -8,7 +8,7 @@ const FUTURES = 'https://fapi.binance.com'
 
 const defaultGetTime = () => Date.now()
 
-const binanceInfo = {
+const info = {
   spot: {},
   futures: {}
 }
@@ -31,14 +31,14 @@ const responseHandler = res => {
   if (res.headers && res.url) {
     const marketName = res.url.includes(BASE) ? 'spot' : 'futures'
 
-    binanceInfo[marketName].usedWeigh = res.headers.get('x-mbx-used-weight-1m') || 0
-    binanceInfo[marketName].orderCount1s = res.headers.get('x-mbx-order-count-1s') || 0
-    binanceInfo[marketName].orderCount1m = res.headers.get('x-mbx-order-count-1m') || 0
-    binanceInfo[marketName].orderCount1h = res.headers.get('x-mbx-order-count-1h') || 0
-    binanceInfo[marketName].orderCount1d = res.headers.get('x-mbx-order-count-1d') || 0
+    info[marketName].usedWeigh1m = res.headers.get('x-mbx-used-weight-1m') || 0
+    info[marketName].orderCount1s = res.headers.get('x-mbx-order-count-1s') || 0
+    info[marketName].orderCount1m = res.headers.get('x-mbx-order-count-1m') || 0
+    info[marketName].orderCount1h = res.headers.get('x-mbx-order-count-1h') || 0
+    info[marketName].orderCount1d = res.headers.get('x-mbx-order-count-1d') || 0
 
     if (marketName === 'futures') {
-      binanceInfo[marketName].futuresLatency = res.headers.get('x-response-time') || 0
+      info[marketName].futuresLatency = res.headers.get('x-response-time') || 0
     }
   }
 }
@@ -282,7 +282,7 @@ export default opts => {
 
 
   return {
-    getBinanceInfo: () => binanceInfo,
+    getInfo: () => info,
     ping: () => pubCall('/api/v3/ping').then(() => true),
     time: () => pubCall('/api/v3/time').then(r => r.serverTime),
     exchangeInfo: () => pubCall('/api/v3/exchangeInfo'),

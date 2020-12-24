@@ -59,13 +59,13 @@ const partialDepth = (payload, cb) => {
     cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
-const candles = (payload, interval, cb) => {
+const candles = (payload, interval, cb, variator = '') => {
   if (!interval || !cb) {
     throw new Error('Please pass a symbol, interval and callback.')
   }
 
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(`${BASE}/${symbol.toLowerCase()}@kline_${interval}`)
+    const w = openWebSocket(`${variator === 'futures' ? FUTURES : BASE}/${symbol.toLowerCase()}@kline_${interval}`)
     w.onmessage = msg => {
       const { e: eventType, E: eventTime, s: symbol, k: tick } = JSON.parse(msg.data)
       const {
@@ -411,5 +411,6 @@ export default opts => ({
   allTickers,
   user: user(opts),
   marginUser: user(opts, 'margin'),
+  futuresCandles: (payload, interval, cb) => candles(payload, interval, cb, 'futures'),
   futuresUser: user(opts, 'futures'),
 })
