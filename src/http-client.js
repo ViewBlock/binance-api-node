@@ -8,6 +8,11 @@ const FUTURES = 'https://fapi.binance.com'
 
 const defaultGetTime = () => Date.now()
 
+const binanceInfo = {
+  spot: {},
+  futures: {}
+}
+
 /**
  * Build query string for uri encoded url based on json object
  */
@@ -19,10 +24,33 @@ const makeQueryString = q =>
     : ''
 
 /**
+ * Get API limits info from headers
+ */
+
+const responseHandler = res => {
+  if (res.headers && res.url) {
+    const marketName = res.url.includes(BASE) ? 'spot' : 'futures'
+
+    binanceInfo[marketName].usedWeigh = res.headers.get('x-mbx-used-weight-1m') || 0
+    binanceInfo[marketName].orderCount1s = res.headers.get('x-mbx-order-count-1s') || 0
+    binanceInfo[marketName].orderCount1m = res.headers.get('x-mbx-order-count-1m') || 0
+    binanceInfo[marketName].orderCount1h = res.headers.get('x-mbx-order-count-1h') || 0
+    binanceInfo[marketName].orderCount1d = res.headers.get('x-mbx-order-count-1d') || 0
+
+    if (marketName === 'futures') {
+      binanceInfo[marketName].futuresLatency = res.headers.get('x-response-time') || 0
+    }
+  }
+}
+
+/**
  * Finalize API response
  */
 const sendResult = call =>
   call.then(res => {
+    // Get API limits info from headers
+    responseHandler(res)
+
     // If response is ok, we can safely assume it is valid JSON
     if (res.ok) {
       return res.json()
@@ -251,7 +279,10 @@ export default opts => {
   const privCall = privateCall({ ...opts, endpoints, pubCall })
   const kCall = keyCall({ ...opts, pubCall })
 
+
+
   return {
+    getBinanceInfo: () => binanceInfo,
     ping: () => pubCall('/api/v3/ping').then(() => true),
     time: () => pubCall('/api/v3/time').then(r => r.serverTime),
     exchangeInfo: () => pubCall('/api/v3/exchangeInfo'),
