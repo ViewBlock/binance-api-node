@@ -290,9 +290,6 @@ declare module 'binance-api-node' {
     marginRepay(options: { asset: string; amount:number; useServerTime?: boolean }): Promise<{tranId:number}>
   }
 
-
-
-
   export interface HttpError extends Error {
     code: number
     url: string
