@@ -91,8 +91,13 @@ Following examples will use the `await` form, which requires some configuration 
   - [capitalDepositAddress](#capitalDepositAddress)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
+  - [futuresAllOrders](#futuresAllOrders)
   - [futuresAccountBalance](#futuresAccountBalance)
   - [futuresLeverage](#futuresLeverage)
+  - [futuresMarginType](#futuresMarginType)
+  - [futuresPositionMargin](#futuresPositionMargin)
+  - [futuresMarginHistory](#futuresMarginHistory)
+  - [futuresIncome](#futuresIncome)
 - [Websockets](#websockets)
   - [depth](#depth)
   - [partialDepth](#partialdepth)
@@ -1654,7 +1659,6 @@ console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
 
 Check an order's status.
 
-
 - These orders will not be found
   - order status is CANCELED or EXPIRED, <b>AND</b>
   - order has NO filled trade, <b>AND</b>
@@ -1676,7 +1680,7 @@ console.log(
   await client.futuresGetOrder({
     symbol: 'BNBETH',
     orderId: 50167927,
-  }),
+  })
 )
 ```
 
@@ -1712,6 +1716,71 @@ console.log(
 ```
 </details>
 
+#### futuresAllOrders
+
+Get all account orders; active, canceled, or filled.
+
+- These orders will not be found
+  - order status is CANCELED or EXPIRED, <b>AND</b>
+  - order has NO filled trade, <b>AND</b>
+  - created time + 7 days < current time
+  
+| Name              | Type   | Mandatory | Description            |
+| ----------------- | ------ | --------  | ---------------------- |
+| symbol            | STRING | YES       | The pair name          |
+| orderId           | LONG   | NO        |                        |
+| startTime         | LONG   | NO        |                        |
+| endTime           | LONG   | NO        |                        |
+| limit             | INT    | NO        | Default 500; max 1000. |
+| recvWindow        | LONG   | NO        |                        |
+
+If <b>orderId</b> is set, it will get orders >= that <b>orderId</b>. Otherwise most recent orders are returned.
+
+```js
+console.log(
+  await client.futuresAllOrders({
+    symbol: 'BNBETH',
+    orderId: 50167927,
+    startTime: 1579276756075,
+    limit: 700,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "avgPrice": "0.00000",
+    "clientOrderId": "abc",
+    "cumQuote": "0",
+    "executedQty": "0",
+    "orderId": 1917641,
+    "origQty": "0.40",
+    "origType": "TRAILING_STOP_MARKET",
+    "price": "0",
+    "reduceOnly": false,
+    "side": "BUY",
+    "positionSide": "SHORT",
+    "status": "NEW",
+    "stopPrice": "9300",                // please ignore when order type is TRAILING_STOP_MARKET
+    "closePosition": false,             // if Close-All
+    "symbol": "BTCUSDT",
+    "time": 1579276756075,              // order time
+    "timeInForce": "GTC",
+    "type": "TRAILING_STOP_MARKET",
+    "activatePrice": "9020",            // activation price, only return with TRAILING_STOP_MARKET order
+    "priceRate": "0.3",                 // callback rate, only return with TRAILING_STOP_MARKET order
+    "updateTime": 1579276756075,        // update time
+    "workingType": "CONTRACT_PRICE",
+    "priceProtect": false               // if conditional order trigger is protected   
+  }
+]
+```
+</details>
+
 
 #### futuresLeverage
 
@@ -1729,7 +1798,7 @@ console.log(
   await client.futuresLeverage({
     symbol: 'BTCUSDT',
     leverage: 21,
-  }),
+  })
 )
 ```
 
@@ -1742,6 +1811,177 @@ console.log(
     "maxNotionalValue": "1000000",
     "symbol": "BTCUSDT"
 }
+```
+</details>
+
+#### futuresMarginType
+
+Change margin type.
+
+| Name              | Type   | Mandatory | Description       |
+| ----------------- | ------ | --------  | ----------------- |
+| symbol            | STRING | YES       | The pair name     |
+| marginType        | ENUM   | YES       | ISOLATED, CROSSED |
+| recvWindow        | LONG   | NO        |                   |
+
+```js
+console.log(
+  await client.futuresMarginType({
+    symbol: 'BTCUSDT',
+    marginType: 'ISOLATED',
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "code": 200,
+    "msg": "success"
+}
+```
+</details>
+
+#### futuresPositionMargin
+
+Modify isolated position margin.
+
+| Name              | Type    | Mandatory | Description                                       |
+| ----------------- | ------- | --------  | ------------------------------------------------- |
+| symbol            | STRING  | YES       | The pair name                                     |
+| positionSide      | ENUM    | NO        | Default BOTH for One-way Mode; <br>LONG or SHORT for Hedge Mode. <br>It must be sent with Hedge Mode. |
+| amount            | DECIMAL | YES       |                                                   |
+| type              | INT     | YES       | 1: Add position margin，2: Reduce position margin |
+| recvWindow        | LONG    | NO        |                                                   |
+
+Only for isolated symbol.
+
+```js
+console.log(
+  await client.futuresPositionMargin({
+    symbol: 'BTCUSDT',
+    amount: 100,
+    type: 1,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "amount": 100.0,
+    "code": 200,
+    "msg": "Successfully modify position margin.",
+    "type": 1
+}
+```
+</details>
+
+#### futuresMarginHistory
+
+Get position margin change history.
+
+| Name              | Type   | Mandatory | Description                                       |
+| ----------------- | ------ | --------  | ------------------------------------------------- |
+| symbol            | STRING | YES       | The pair name                                     |
+| type              | INT    | NO        | 1: Add position margin，2: Reduce position margin |
+| startTime         | LONG   | NO        |                                                   |
+| endTime           | LONG   | NO        |                                                   |
+| limit             | INT    | NO        | Default 500;                                      |
+| recvWindow        | LONG   | NO        |                                                   |
+
+```js
+console.log(
+  await client.futuresMarginHistory({
+    symbol: 'BTCUSDT',
+    type: 1,
+    startTime: 1579276756075,
+    limit: 700,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "amount": "23.36332311",
+        "asset": "USDT",
+        "symbol": "BTCUSDT",
+        "time": 1578047897183,
+        "type": 1,
+        "positionSide": "BOTH"
+    },
+    {
+        "amount": "100",
+        "asset": "USDT",
+        "symbol": "BTCUSDT",
+        "time": 1578047900425,
+        "type": 1,
+        "positionSide": "LONG"
+    }
+]
+```
+</details>
+
+#### futuresIncome
+
+Get income history.
+
+| Name              | Type   | Mandatory | Description                                       |
+| ----------------- | ------ | --------  | ------------------------------------------------- |
+| symbol            | STRING | NO        | The pair name                                     |
+| incomeType        | STRING | NO        | "TRANSFER"，"WELCOME_BONUS", "REALIZED_PNL"，<br>"FUNDING_FEE", "COMMISSION", and "INSURANCE_CLEAR" |
+| startTime         | LONG   | NO        | Timestamp in ms to get funding from INCLUSIVE.    |
+| endTime           | LONG   | NO        | Timestamp in ms to get funding until INCLUSIVE.   |
+| limit             | INT    | NO        | Default 100; max 1000                             |
+| recvWindow        | LONG   | NO        |                                                   |
+
+- If incomeType is not sent, all kinds of flow will be returned
+- "trandId" is unique in the same incomeType for a user
+
+```js
+console.log(
+  await client.futuresIncome({
+    symbol: 'BTCUSDT',
+    startTime: 1579276756075,
+    limit: 700,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "symbol": "",                   // trade symbol, if existing
+        "incomeType": "TRANSFER",       // income type
+        "income": "-0.37500000",        // income amount
+        "asset": "USDT",                // income asset
+        "info":"TRANSFER",              // extra information
+        "time": 1570608000000,      
+        "tranId":"9689322392",          // transaction id
+        "tradeId":""                    // trade id, if existing
+    },
+    {
+        "symbol": "BTCUSDT",
+        "incomeType": "COMMISSION", 
+        "income": "-0.01000000",
+        "asset": "USDT",
+        "info":"COMMISSION",
+        "time": 1570636800000,
+        "tranId":"9689322392",
+        "tradeId":"2059192"
+    }
+]
 ```
 </details>
 

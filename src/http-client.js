@@ -29,17 +29,14 @@ const makeQueryString = q =>
 
 const responseHandler = res => {
   if (res.headers && res.url) {
-    const marketName = res.url.includes(BASE) ? 'spot' : 'futures'
+    const marketName = res.url.includes(FUTURES) ? 'futures' : 'spot'
 
-    info[marketName].usedWeigh1m = res.headers.get('x-mbx-used-weight-1m') || 0
-    info[marketName].orderCount1s = res.headers.get('x-mbx-order-count-1s') || 0
-    info[marketName].orderCount1m = res.headers.get('x-mbx-order-count-1m') || 0
-    info[marketName].orderCount1h = res.headers.get('x-mbx-order-count-1h') || 0
-    info[marketName].orderCount1d = res.headers.get('x-mbx-order-count-1d') || 0
-
-    if (marketName === 'futures') {
-      info[marketName].futuresLatency = res.headers.get('x-response-time') || 0
-    }
+    if (res.headers.has('x-mbx-used-weight-1m')) info[marketName].usedWeigh1m = res.headers.get('x-mbx-used-weight-1m')
+    if (res.headers.has('x-mbx-order-count-10s')) info[marketName].orderCount10s = res.headers.get('x-mbx-order-count-10s')
+    if (res.headers.has('x-mbx-order-count-1m')) info[marketName].orderCount1m = res.headers.get('x-mbx-order-count-1m')
+    if (res.headers.has('x-mbx-order-count-1h')) info[marketName].orderCount1h = res.headers.get('x-mbx-order-count-1h')
+    if (res.headers.has('x-mbx-order-count-1d')) info[marketName].orderCount1d = res.headers.get('x-mbx-order-count-1d')
+    if (res.headers.has('x-response-time')) info[marketName].futuresLatency = res.headers.get('x-response-time')
   }
 }
 
@@ -401,6 +398,7 @@ export default opts => {
     futuresLeverage: payload => privCall('/fapi/v1/leverage', payload, 'POST'),
     futuresMarginType: payload => privCall('/fapi/v1/marginType', payload, 'POST'),
     futuresPositionMargin: payload => privCall('/fapi/v1/positionMargin', payload, 'POST'),
-    futuresMarginHistory: payload => privCall('/fapi/v1/positionMargin/history', payload)
+    futuresMarginHistory: payload => privCall('/fapi/v1/positionMargin/history', payload),
+    futuresIncome: payload => privCall('/fapi/v1/income', payload),
   }
 }
