@@ -89,6 +89,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [tradeFee](#tradefee)
   - [capitalConfigs](#capitalConfigs)
   - [capitalDepositAddress](#capitalDepositAddress)
+- [Margin](#margin)
+  - [marginRepay](#marginRepay)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAccountBalance](#futuresAccountBalance)
@@ -1647,6 +1649,34 @@ console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
 ```
 
 </details>
+
+### Margin
+
+#### marginRepay
+
+Repay loan for margin account.
+
+```js
+console.log(await client.marginRepay({ asset: 'BTC', amount:'0.0001' }));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| asset | String | true     | The asset name |
+| amount | Number | true     | 
+
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "tranId": 100000001 //transaction id
+}
+```
+
+</details>
+
 
 ### Futures Authenticated REST endpoints
 
