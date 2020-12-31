@@ -323,7 +323,7 @@ declare module 'binance-api-node' {
     ) => ReconnectingWebSocketHandler
     trades: (
       pairs: string | string[],
-      callback: (trade: Trade) => void,
+      callback: (trade: WSTrade) => void,
     ) => ReconnectingWebSocketHandler
     aggTrades: (
       pairs: string | string[],
@@ -677,6 +677,12 @@ declare module 'binance-api-node' {
     maker: boolean
     isBuyerMaker: boolean
     tradeId: number
+  }
+
+  export interface WSTrade extends Trade {
+    tradeTime: number
+    buyerOrderId: number
+    sellerOrderId: number
   }
 
   export interface Balances {
