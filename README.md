@@ -38,11 +38,36 @@ If you do not have an appropriate babel config, you will need to use the basic c
 const Binance = require('binance-api-node').default
 ```
 
+To get information about limits from response headers call getInfo()
+
+```js
+const binanceInfo = client.getInfo()
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  futures: {
+     futuresLatency: "2ms",
+     orderCount1m: "10",
+     usedWeigh1m: "1",
+  }
+  spot: {
+     orderCount1d: "347"
+     orderCount10s: "1"
+     usedWeigh1m: "15"
+  }
+}
+```
+
+</details>
+
 Every REST method returns a Promise, making this library [async await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) ready.
 Following examples will use the `await` form, which requires some configuration you will have to lookup.
 
 ### Table of Contents
-
 - [Public REST Endpoints](#public-rest-endpoints)
   - [ping](#ping)
   - [time](#time)
