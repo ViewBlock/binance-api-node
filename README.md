@@ -93,6 +93,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
   - [futuresAccountBalance](#futuresAccountBalance)
+  - [futuresUserTrades](#futuresUserTrades)
   - [futuresLeverage](#futuresLeverage)
   - [futuresMarginType](#futuresMarginType)
   - [futuresPositionMargin](#futuresPositionMargin)
@@ -107,6 +108,14 @@ Following examples will use the `await` form, which requires some configuration 
   - [aggTrades](#aggtrades-1)
   - [trades](#trades-1)
   - [user](#user)
+- [Futures Websockets](#futuresWebsockets)
+  - [futuresDepth](#futuresDepth)
+  - [futuresPartialDepth](#futuresPartialdepth)
+  - [futuresTicker](#futuresTicker)
+  - [futuresAllTickers](#futuresAlltickers)
+  - [futuresCandles](#futuresCandles)
+  - [futuresAggTrades](#futuresAggtrades)
+  - [futuresUser](#futuresUser)
 - [ErrorCodes](#errorcodes)
 
 ### Public REST Endpoints
@@ -2012,6 +2021,53 @@ console.log(await client.futuresAccountBalance());
 
 </details>
 
+#### futuresUserTrades
+
+Get trades for a specific account and symbol.
+
+```js
+console.log(
+  await client.futuresUserTrades({
+    symbol: 'ETHBTC',
+  }),
+)
+```
+
+| Param      | Type   | Mandatory | Description                                              |
+| ---------- | ------ | --------- | -------------------------------------------------------- |
+| symbol     | STRING | YES       |                                                          |
+| startTime  | LONG   | NO        |                                                          |
+| endTime    | LONG   | NO        |                                                          |
+| limit      | INT    | NO        | Default 500; max 1000.                                   |
+| fromId     | LONG   | NO        | Trade id to fetch from. Default gets most recent trades. |
+| recvWindow | LONG   | NO        |                                                          |
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "buyer": false,
+    "commission": "-0.07819010",
+    "commissionAsset": "USDT",
+    "id": 698759,
+    "maker": false,
+    "orderId": 25851813,
+    "price": "7819.01",
+    "qty": "0.002",
+    "quoteQty": "15.63802",
+    "realizedPnl": "-0.91539999",
+    "side": "SELL",
+    "positionSide": "SHORT",
+    "symbol": "BTCUSDT",
+    "time": 1569514978020
+  }
+]
+```
+
+</details>
+
 ### WebSockets
 
 Every websocket utility returns a function you can call to close the opened
@@ -2254,14 +2310,13 @@ const clean = await client.ws.user(msg => {
 })
 ```
 
-There is also two equivalent functions to query either the margin or futures wallet:
+There is also equivalent function to query the margin wallet:
 
 ```js
 client.ws.marginUser()
-client.ws.futuresUser()
 ```
 
-Note that these methods all return a promise which will resolve the `clean` callback.
+Note that this method return a promise which will resolve the `clean` callback.
 
 <details>
 <summary>Output</summary>
@@ -2279,6 +2334,292 @@ Note that these methods all return a promise which will resolve the `clean` call
 ```
 
 </details>
+
+### Futures WebSockets
+
+Every websocket utility returns a function you can call to close the opened
+connection and avoid memory issues.
+
+```js
+const clean = client.ws.futuresDepth('ETHBTC', depth => {
+  console.log(depth)
+})
+
+// After you're done
+clean()
+```
+
+Each websocket utility supports the ability to get a clean callback without data transformation, for this, pass the third attribute FALSE.
+
+```js
+const clean = client.ws.futuresDepth('ETHBTC', depth => {
+  console.log(depth)
+}, false)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "e": "depthUpdate", // Event type
+  "E": 123456789,     // Event time
+  "T": 123456788,     // transaction time 
+  "s": "BTCUSDT",      // Symbol
+  "U": 157,           // First update ID in event
+  "u": 160,           // Final update ID in event
+  "pu": 149,          // Final update Id in last stream(ie `u` in last stream)
+  "b": [              // Bids to be updated
+    [
+      "0.0024",       // Price level to be updated
+      "10"            // Quantity
+    ]
+  ],
+  "a": [              // Asks to be updated
+    [
+      "0.0026",       // Price level to be updated
+      "100"          // Quantity
+    ]
+  ]
+}
+```
+</details>
+
+#### futuresDepth
+
+Live futuresDepth market data feed. The first parameter can either
+be a single symbol string or an array of symbols.
+
+```js
+client.ws.futuresDepth('ETHBTC', depth => {
+  console.log(depth)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'depthUpdate',
+  eventTime: 1508612956950,
+  symbol: 'ETHBTC',
+  firstUpdateId: 18331140,
+  finalUpdateId: 18331145,
+  bidDepth: [
+    { price: '0.04896500', quantity: '0.00000000' },
+    { price: '0.04891100', quantity: '15.00000000' },
+    { price: '0.04891000', quantity: '0.00000000' } ],
+  askDepth: [
+    { price: '0.04910600', quantity: '0.00000000' },
+    { price: '0.04910700', quantity: '11.24900000' }
+  ]
+}
+```
+</details>
+
+#### futuresPartialDepth
+
+Top levels bids and asks, pushed every second. Valid levels are 5, 10, or 20.
+Accepts an array of objects for multiple depths.
+
+```js
+client.ws.futuresPartialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {
+  console.log(depth)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+
+  eventType: 'depthUpdate',
+  eventTime: 1508612956950,
+  symbol: 'ETHBTC',
+  level: 10,
+  firstUpdateId: 18331140,
+  finalUpdateId: 18331145,
+  bidDepth: [
+    { price: '0.04896500', quantity: '0.00000000' },
+    { price: '0.04891100', quantity: '15.00000000' },
+    { price: '0.04891000', quantity: '0.00000000' } ],
+  askDepth: [
+    { price: '0.04910600', quantity: '0.00000000' },
+    { price: '0.04910700', quantity: '11.24900000' }
+  ]
+}
+```
+</details>
+
+#### futuresTicker
+
+24hr Ticker statistics for a symbol pushed every 500ms. Accepts an array of symbols.
+
+```js
+client.ws.futuresTicker('HSRETH', ticker => {
+  console.log(ticker)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: '24hrTicker',
+  eventTime: 123456789,
+  symbol: 'BTCUSDT',
+  priceChange: '0.0015',
+  priceChangePercent: '250.00',
+  weightedAvg: '0.0018',
+  curDayClose: '0.0025',
+  closeTradeQuantity: '10',
+  open: '0.0010',
+  high: '0.0025',
+  low: '0.0010',
+  volume: '10000',
+  volumeQuote: '18',
+  openTime: 0,
+  closeTime: 86400000,
+  firstTradeId: 0,
+  lastTradeId: 18150,
+  totalTrades: 18151,
+}
+```
+</details>
+
+#### futuresAllTickers
+
+Retrieves all the tickers.
+
+```js
+client.ws.futuresAllTickers(tickers => {
+  console.log(tickers)
+})
+```
+
+#### futuresCandles
+
+Live candle data feed for a given interval. You can pass either a symbol string
+or a symbol array.
+
+```js
+client.ws.futuresCandles('ETHBTC', '1m', candle => {
+  console.log(candle)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'kline',
+  eventTime: 1508613366276,
+  symbol: 'ETHBTC',
+  open: '0.04898000',
+  high: '0.04902700',
+  low: '0.04898000',
+  close: '0.04901900',
+  volume: '37.89600000',
+  trades: 30,
+  interval: '5m',
+  isFinal: false,
+  quoteVolume: '1.85728874',
+  buyVolume: '21.79900000',
+  quoteBuyVolume: '1.06838790'
+}
+```
+</details>
+
+#### futuresAggTrades
+
+Live trade data feed. Pass either a single symbol string or an array of symbols. The Aggregate Trade Streams push trade information that is aggregated for a single taker order every 100 milliseconds.
+
+```js
+client.ws.futuresAggTrades(['ETHBTC', 'BNBBTC'], trade => {
+  console.log(trade)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'aggTrade',
+  eventTime: 1508614495052,
+  aggId: 2148226,
+  price: '0.04923600',
+  quantity: '3.43500000',
+  firstId: 37856,
+  lastId: 37904,
+  timestamp: 1508614495050,
+  symbol: 'ETHBTC',
+  isBuyerMaker: false,
+}
+```
+</details>
+
+#### futuresUser
+
+Live user messages data feed.
+
+**Requires authentication**
+
+```js
+const futuresUser = await client.ws.futuresUser(msg => {
+  console.log(msg)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventTime: 1564745798939,
+  transactionTime: 1564745798938,
+  eventType: 'ACCOUNT_UPDATE',
+  eventReasonType: 'ORDER',
+  balances: [
+    {
+      asset:'USDT',
+      walletBalance:'122624.12345678',
+      crossWalletBalance:'100.12345678'
+    },
+    {
+      asset:'BNB',           
+      walletBalance:'1.00000000',
+      crossWalletBalance:'0.00000000'         
+    }
+  ],
+  positions: [
+    {
+      symbol:'BTCUSDT',
+      positionAmount:'0',
+      entryPrice:'0.00000',
+      accumulatedRealized:'200',
+      unrealizedPnL:'0',
+      marginType:'isolated',
+      isolatedWallet:'0.00000000',
+      positionSide:'BOTH'
+    }，
+    {
+      symbol:'BTCUSDT',
+      positionAmount:'20',
+      entryPrice:'6563.66500',
+      accumulatedRealized:'0',
+      unrealizedPnL:'2850.21200',
+      marginType:'isolated',
+      isolatedWallet:'13200.70726908',
+      positionSide:'LONG'
+    }
+  ],
+}
+```
 
 ### ErrorCodes
 
