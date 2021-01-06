@@ -2642,11 +2642,11 @@ const binanceInfo = client.getInfo()
      futuresLatency: "2ms",
      orderCount1m: "10",
      usedWeigh1m: "1",
-  }
+  },
   spot: {
-     orderCount1d: "347"
-     orderCount10s: "1"
-     usedWeigh1m: "15"
+     orderCount1d: "347",
+     orderCount10s: "1",
+     usedWeigh1m: "15",
   }
 }
 ```
