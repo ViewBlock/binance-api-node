@@ -2607,7 +2607,7 @@ const futuresUser = await client.ws.futuresUser(msg => {
       marginType:'isolated',
       isolatedWallet:'0.00000000',
       positionSide:'BOTH'
-    }，
+    },
     {
       symbol:'BTCUSDT',
       positionAmount:'20',
