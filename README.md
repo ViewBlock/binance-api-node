@@ -2621,6 +2621,7 @@ const futuresUser = await client.ws.futuresUser(msg => {
   ],
 }
 ```
+</details>
 
 #### Common
 
