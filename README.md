@@ -109,7 +109,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [aggTrades](#aggtrades-1)
   - [trades](#trades-1)
   - [user](#user)
-- [Futures Websockets](#futuresWebsockets)
+- [Futures Websockets](#futures-websockets)
   - [futuresDepth](#futuresDepth)
   - [futuresPartialDepth](#futuresPartialdepth)
   - [futuresTicker](#futuresTicker)
