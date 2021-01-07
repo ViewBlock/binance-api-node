@@ -4,6 +4,10 @@ declare module 'binance-api-node' {
     apiKey: string
     apiSecret: string
     getTime?: () => number | Promise<number>
+    httpBase?: string
+    httpFutures?: string
+    wsBase?: string
+    wsFutures?: string
   }): Binance
 
   export enum ErrorCodes {
@@ -289,6 +293,7 @@ declare module 'binance-api-node' {
       useServerTime?: boolean
     }): Promise<CancelOrderResult>
     marginOpenOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    marginRepay(options: { asset: string; amount:number; useServerTime?: boolean }): Promise<{tranId:number}>
   }
 
   export interface HttpError extends Error {
@@ -319,7 +324,7 @@ declare module 'binance-api-node' {
     ) => ReconnectingWebSocketHandler
     trades: (
       pairs: string | string[],
-      callback: (trade: Trade) => void,
+      callback: (trade: WSTrade) => void,
     ) => ReconnectingWebSocketHandler
     aggTrades: (
       pairs: string | string[],
@@ -673,6 +678,12 @@ declare module 'binance-api-node' {
     maker: boolean
     isBuyerMaker: boolean
     tradeId: number
+  }
+
+  export interface WSTrade extends Trade {
+    tradeTime: number
+    buyerOrderId: number
+    sellerOrderId: number
   }
 
   export interface Balances {
