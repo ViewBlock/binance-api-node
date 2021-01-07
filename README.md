@@ -88,6 +88,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [tradeFee](#tradefee)
   - [capitalConfigs](#capitalConfigs)
   - [capitalDepositAddress](#capitalDepositAddress)
+- [Margin](#margin)
+  - [marginRepay](#marginRepay)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
@@ -1663,6 +1665,34 @@ console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
 
 </details>
 
+### Margin
+
+#### marginRepay
+
+Repay loan for margin account.
+
+```js
+console.log(await client.marginRepay({ asset: 'BTC', amount:'0.0001' }));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| asset | String | true     | The asset name |
+| amount | Number | true     | 
+
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "tranId": 100000001 //transaction id
+}
+```
+
+</details>
+
+
 ### Futures Authenticated REST endpoints
 
 #### futuresGetOrder
@@ -2336,7 +2366,7 @@ Note that this method return a promise which will resolve the `clean` callback.
 
 </details>
 
-### Futures WebSockets
+#### Futures WebSockets
 
 Every websocket utility returns a function you can call to close the opened
 connection and avoid memory issues.
@@ -2607,7 +2637,7 @@ const futuresUser = await client.ws.futuresUser(msg => {
       marginType:'isolated',
       isolatedWallet:'0.00000000',
       positionSide:'BOTH'
-    }，
+    },
     {
       symbol:'BTCUSDT',
       positionAmount:'20',
@@ -2642,11 +2672,11 @@ const binanceInfo = client.getInfo()
      futuresLatency: "2ms",
      orderCount1m: "10",
      usedWeigh1m: "1",
-  }
+  },
   spot: {
-     orderCount1d: "347"
-     orderCount10s: "1"
-     usedWeigh1m: "15"
+     orderCount1d: "347",
+     orderCount10s: "1",
+     usedWeigh1m: "15",
   }
 }
 ```
