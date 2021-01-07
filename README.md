@@ -2660,7 +2660,7 @@ const futuresUser = await client.ws.futuresUser(msg => {
 To get information about limits from response headers call getInfo()
 
 ```js
-const binanceInfo = client.getInfo()
+console.log(client.getInfo())
 ```
 
 <details>
