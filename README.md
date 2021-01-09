@@ -1667,6 +1667,31 @@ console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
 
 ### Margin
 
+#### marginLoan
+
+Create a loan for margin account.
+
+```js
+console.log(await client.marginLoan({ asset: 'BTC', amount:'0.0001' }));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| asset | String | true     | The asset name |
+| amount | Number | true     | 
+
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "tranId": 100000001 //transaction id
+}
+```
+
+</details>
+
 #### marginRepay
 
 Repay loan for margin account.
