@@ -864,8 +864,8 @@ console.log(
   await client.order({
     symbol: 'XLMETH',
     side: 'BUY',
-    quantity: 100,
-    price: 0.0002,
+    quantity: '100',
+    price: '0.0002',
   }),
 )
 ```
@@ -875,8 +875,8 @@ console.log(
 | symbol           | String | true     |
 | side             | String | true     |          | `BUY`,`SELL`                                                        |
 | type             | String | false    | `LIMIT`  | `LIMIT`, `MARKET`                                                   |
-| quantity         | Number | true     |
-| price            | Number | true     |          | Optional for `MARKET` orders                                        |
+| quantity         | String | true     |
+| price            | String | true     |          | Optional for `MARKET` orders                                        |
 | timeInForce      | String | false    | `GTC`    | `FOK`, `GTC`, `IOC`                                                 |
 | newClientOrderId | String | false    |          | A unique id for the order. Automatically generated if not sent.     |
 | stopPrice        | Number | false    |          | Used with stop orders                                               |
