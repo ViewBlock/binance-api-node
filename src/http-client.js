@@ -373,6 +373,7 @@ export default opts => {
     marginMyTrades: payload => privCall('/sapi/v1/margin/myTrades', payload),
     marginRepay: payload => privCall('/sapi/v1/margin/repay', payload, 'POST'),
     marginLoan: payload => privCall('/sapi/v1/margin/loan', payload, 'POST'),
+    marginIsolatedAccountInfo: payload => privCall('/sapi/v1/margin/isolated/account', payload),
 
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
