@@ -4,6 +4,10 @@ declare module 'binance-api-node' {
     apiKey: string
     apiSecret: string
     getTime?: () => number | Promise<number>
+    httpBase?: string
+    httpFutures?: string
+    wsBase?: string
+    wsFutures?: string
   }): Binance
 
   export enum ErrorCodes {
@@ -50,12 +54,14 @@ declare module 'binance-api-node' {
   }
 
   export interface Account {
+    accountType: TradingType.MARGIN | TradingType.SPOT
     balances: AssetBalance[]
     buyerCommission: number
     canDeposit: boolean
     canTrade: boolean
     canWithdraw: boolean
     makerCommission: number
+    permissions: TradingType[]
     sellerCommission: number
     takerCommission: number
     updateTime: number
@@ -274,6 +280,21 @@ declare module 'binance-api-node' {
     }): Promise<QueryOrderResult>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
     futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
+    futuresPositionMode(options?: { recvWindow: number }): Promise<PositionModeResult>
+    futuresPositionModeChange(options: {
+      dualSidePosition: string
+      recvWindow: number
+    }): Promise<ChangePositionModeResult>
+    marginOrder(options: NewOrder): Promise<Order>
+    marginAllOrders(options: { symbol: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    marginCancelOrder(options: {
+      symbol: string
+      orderId?: number
+      useServerTime?: boolean
+    }): Promise<CancelOrderResult>
+    marginOpenOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    marginRepay(options: { asset: string; amount:number; useServerTime?: boolean }): Promise<{tranId:number}>
+    marginLoan(options: { asset: string; amount:number; useServerTime?: boolean }): Promise<{tranId:number}>
   }
 
   export interface HttpError extends Error {
@@ -304,7 +325,7 @@ declare module 'binance-api-node' {
     ) => ReconnectingWebSocketHandler
     trades: (
       pairs: string | string[],
-      callback: (trade: Trade) => void,
+      callback: (trade: WSTrade) => void,
     ) => ReconnectingWebSocketHandler
     aggTrades: (
       pairs: string | string[],
@@ -342,6 +363,11 @@ declare module 'binance-api-node' {
   }
 
   export type RateLimitType = 'REQUEST_WEIGHT' | 'ORDERS'
+
+  export enum TradingType {
+    MARGIN = 'MARGIN',
+    SPOT = 'SPOT',
+  }
 
   export type RateLimitInterval = 'SECOND' | 'MINUTE' | 'DAY'
 
@@ -458,6 +484,9 @@ declare module 'binance-api-node' {
     useServerTime?: boolean
     type: OrderType
     newOrderRespType?: NewOrderRespType
+    isIsolated?: boolean
+    quoteOrderQty?: string
+    sideEffectType?: SideEffectType
   }
 
   export interface NewOcoOrder {
@@ -477,6 +506,11 @@ declare module 'binance-api-node' {
     recvWindow?: number
     useServerTime?: boolean
   }
+
+  export type SideEffectType =
+    | 'NO_SIDE_EFFECT'
+    | 'MARGIN_BUY'
+    | 'AUTO_REPAY'
 
   export interface OrderFill {
     price: string
@@ -647,6 +681,12 @@ declare module 'binance-api-node' {
     tradeId: number
   }
 
+  export interface WSTrade extends Trade {
+    tradeTime: number
+    buyerOrderId: number
+    sellerOrderId: number
+  }
+
   export interface Balances {
     [key: string]: {
       available: string
@@ -767,7 +807,16 @@ declare module 'binance-api-node' {
     symbol: string
     origClientOrderId: string
     orderId: number
+    orderListId: number
     clientOrderId: string
+    price: string
+    origQty: string
+    executedQty: string
+    cummulativeQuoteQty: string
+    status: string
+    timeInForce: string
+    type: string
+    side: string
   }
 
   export interface AvgPriceResult {
@@ -872,5 +921,14 @@ declare module 'binance-api-node' {
     crossUnPnl: string
     availableBalance: string
     maxWithdrawAmount: string
+  }
+
+  export interface ChangePositionModeResult {
+    code: number
+    msg: string
+  }
+
+  export interface PositionModeResult {
+    dualSidePosition: boolean
   }
 }

@@ -42,6 +42,28 @@ const main = () => {
     t.pass()
   })
 
+  test('[REST] make a MARKET order with quoteOrderQty', async t => {
+    try {
+      await client.orderTest({
+        symbol: 'ETHBTC',
+        side: 'BUY',
+        quoteOrderQty: 10,
+        type: 'MARKET',
+      })
+    } catch (e) {
+      t.is(e.message, 'Filter failure: PERCENT_PRICE')
+    }
+
+    await client.orderTest({
+      symbol: 'ETHBTC',
+      side: 'BUY',
+      quantity: 1,
+      type: 'MARKET',
+    })
+
+    t.pass()
+  })
+
   test('[REST] allOrders / getOrder', async t => {
     try {
       await client.getOrder({ symbol: 'ASTETH' })
