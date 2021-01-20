@@ -295,7 +295,7 @@ declare module 'binance-api-node' {
     marginOpenOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
     marginRepay(options: { asset: string; amount:number; useServerTime?: boolean }): Promise<{tranId:number}>
     marginLoan(options: { asset: string; amount:number; useServerTime?: boolean }): Promise<{tranId:number}>
-    marginIsolatedAccountInfo(options?: { symbol?: string; recvWindow?: number }): Promise<IsolatedMarginAccountInfo>
+    marginIsolatedAccountInfo(options?: { symbol?: string; recvWindow?: number }): Promise<IsolatedMarginAccount>
   }
 
   export interface HttpError extends Error {
@@ -933,7 +933,7 @@ declare module 'binance-api-node' {
     dualSidePosition: boolean
   }
   
-  export interface IsolatedMarginAccountInfo {
+  export interface IsolatedMarginAccoun {
     assets: IsolatedAsset[]
     totalAssetOfBtc: string
     totalLiabilityOfBtc: string
