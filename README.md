@@ -90,7 +90,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [capitalDepositAddress](#capitalDepositAddress)
 - [Margin](#margin)
   - [marginRepay](#marginRepay)
-  - [marginIsolatedAccountInfo](#marginIsolatedAccountInfo)
+  - [marginIsolatedAccount](#marginIsolatedAccount)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
@@ -1718,12 +1718,12 @@ console.log(await client.marginRepay({ asset: 'BTC', amount:'0.0001' }));
 
 </details>
 
-#### marginIsolatedAccountInfo
+#### marginIsolatedAccount
 
 Query Isolated Margin Account Info
 
 ```js
-console.log(await client.marginIsolatedAccountInfo({ symbol: 'BTCUSDT'}));
+console.log(await client.marginIsolatedAccount({ symbol: 'BTCUSDT'}));
 ```
 
 | Param | Type   | Required | Description    |
