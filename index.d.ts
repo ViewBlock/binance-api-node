@@ -933,7 +933,7 @@ declare module 'binance-api-node' {
     dualSidePosition: boolean
   }
   
-  export interface IsolatedMarginAccoun {
+  export interface IsolatedMarginAccount {
     assets: IsolatedAsset[]
     totalAssetOfBtc: string
     totalLiabilityOfBtc: string
