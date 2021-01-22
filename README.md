@@ -91,6 +91,7 @@ Following examples will use the `await` form, which requires some configuration 
 - [Margin](#margin)
   - [marginRepay](#marginRepay)
   - [marginIsolatedAccount](#marginIsolatedAccount)
+  - [marginMaxBorrow](#marginMaxBorrow)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
@@ -1778,6 +1779,32 @@ console.log(await client.marginIsolatedAccount({ symbol: 'BTCUSDT'}));
     "totalAssetOfBtc": "0.00000000",
     "totalLiabilityOfBtc": "0.00000000",
     "totalNetAssetOfBtc": "0.00000000" 
+}
+```
+
+</details>
+
+#### marginMaxBorrow
+
+If isolatedSymbol is not sent, crossed margin data will be sent.
+
+```js
+console.log(await client.marginMaxBorrow({ asset: 'BTC', isolatedSymbol: 'BTCUSDT'}));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| asset | String | true     |
+| isolatedSymbol| String | false | 
+| recvWindow | Number | false     | No more than 60000 |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "amount": "1.69248805", // account's currently max borrowable amount with sufficient system availability
+  "borrowLimit": "60" // max borrowable amount limited by the account level
 }
 ```
 
