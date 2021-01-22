@@ -1789,7 +1789,7 @@ console.log(await client.marginIsolatedAccount({ symbol: 'BTCUSDT'}));
 If isolatedSymbol is not sent, crossed margin data will be sent.
 
 ```js
-console.log(await client.maxBorrow({ asset: 'BTC', isolatedSymbol: 'BTCUSDT'}));
+console.log(await client.marginMaxBorrow({ asset: 'BTC', isolatedSymbol: 'BTCUSDT'}));
 ```
 
 | Param | Type   | Required | Description    |
