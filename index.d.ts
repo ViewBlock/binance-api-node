@@ -173,6 +173,7 @@ declare module 'binance-api-node' {
     orderCount1m?: string
     orderCount1h?: string
     orderCount1d?: string
+    responseTime?: string
   }
   
   export interface Binance {
