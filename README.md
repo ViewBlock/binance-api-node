@@ -88,6 +88,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [tradeFee](#tradefee)
   - [capitalConfigs](#capitalConfigs)
   - [capitalDepositAddress](#capitalDepositAddress)
+  - [universalTransfer](#universalTransfer)
+  - [universalTransferHistory](#universalTransferHistory)
 - [Margin](#margin)
   - [marginRepay](#marginRepay)
   - [marginIsolatedAccount](#marginIsolatedAccount)
@@ -1662,6 +1664,76 @@ console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
   coin: 'NEO',
   tag: '',
   url: 'https://neoscan.io/address/AM6ytPW78KYxQCmU2pHYGcee7GypZ7Yhhc'
+}
+```
+
+</details>
+
+#### universalTransfer
+
+You need to enable Permits Universal Transfer option for the api key which requests this endpoint.
+
+```js
+console.log(await client.universalTransfer({ type: 'MAIN_C2C', asset: 'USDT', amount: '1000' }))
+```
+
+| Param      | Type   | Required | Description      |
+| ---------- | ------ | -------- | ---------------- |
+| type       | String | true     |
+| asset      | String | true     |
+| amount     | String | true     |
+| recvWindow | Number | true     |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  tranId:13526853623
+}
+```
+
+</details>
+
+#### universalTransferHistory
+
+```js
+console.log(await client.universalTransferHistory({ type: 'MAIN_C2C' }))
+```
+
+| Param      | Type   | Required | Description         |
+| ---------- | ------ | -------- | ------------------- |
+| type       | String | true     |
+| startTime  | Number | false    |
+| endTime    | Number | false    |
+| current    | Number | false    | Default 1           |
+| size       | Number | false    | Default 10, Max 100 |
+| recvWindow | Number | true     |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "total":2,
+  "rows":[
+    {
+      "asset":"USDT",
+      "amount":"1",
+      "type":"MAIN_C2C"
+      "status": "CONFIRMED",
+      "tranId": 11415955596,
+      "timestamp":1544433328000
+    },
+    {
+      "asset":"USDT",
+      "amount":"2",
+      "type":"MAIN_C2C",
+      "status": "CONFIRMED",
+      "tranId": 11366865406,
+      "timestamp":1544433328000
+    }
+  ]
 }
 ```
 
