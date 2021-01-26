@@ -162,7 +162,21 @@ declare module 'binance-api-node' {
 
   export type GetOrderOptions = {symbol: string, orderId: number} | {symbol: string, origClientOrderId: string}
 
+  export interface GetInfo {
+    spot: GetInfoDetails
+    futures: GetInfoDetails
+  }
+
+  export type GetInfoDetails = {
+    useWeight1m?: string
+    orderCount10s?: string
+    orderCount1m?: string
+    orderCount1h?: string
+    orderCount1d?: string
+  }
+  
   export interface Binance {
+    getInfo(): GetInfo
     accountInfo(options?: { useServerTime: boolean }): Promise<Account>
     tradeFee(): Promise<TradeFeeResult>
     aggTrades(options?: {
