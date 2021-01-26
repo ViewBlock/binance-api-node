@@ -31,6 +31,7 @@ const headersMapping = {
   'x-mbx-order-count-10s': 'orderCount10s',
   'x-mbx-order-count-1m': 'orderCount1m',
   'x-mbx-order-count-1h': 'orderCount1h',
+  'x-mbx-order-count-1d': 'orderCount1d',
   'x-response-time': 'responseTime',
 }
 
