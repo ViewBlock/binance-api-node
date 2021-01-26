@@ -176,6 +176,52 @@ declare module 'binance-api-node' {
     responseTime?: string
   }
   
+  export type TransferType = 'MAIN_C2C' |
+    'MAIN_UMFUTURE' |
+    'MAIN_CMFUTURE' |
+    'MAIN_MARGIN' |
+    'MAIN_MINING' |
+    'C2C_MAIN' |
+    'C2C_UMFUTURE' |
+    'C2C_MINING' |
+    'UMFUTURE_MAIN' |
+    'UMFUTURE_C2C' |
+    'UMFUTURE_MARGIN' |
+    'CMFUTURE_MAIN' |
+    'MARGIN_MAIN' |
+    'MARGIN_UMFUTURE' |
+    'MINING_MAIN' |
+    'MINING_UMFUTURE' |
+    'MINING_C2C'
+
+  export interface UniversalTransfer {
+    type: TransferType
+    asset: string
+    amount: string
+    recvWindow?: number
+  }
+
+  export interface UniversalTransferHistory {
+    type: TransferType
+    startTime?: number
+    endTime?: number
+    current?: number
+    size?: number
+    recvWindow?: number
+  }
+
+  export interface UniversalTransferHistoryResponse {
+    total: string,
+    rows: {
+      asset: string
+      amount: string
+      type: TransferType
+      status: string
+      tranId: number
+      timestamp: number
+    }[]
+  }
+  
   export interface Binance {
     getInfo(): GetInfo
     accountInfo(options?: { useServerTime: boolean }): Promise<Account>
@@ -254,6 +300,8 @@ declare module 'binance-api-node' {
       startTime?: number
       endTime?: number
     }): Promise<DepositHistoryResponse>
+    universalTransfer(options: UniversalTransfer): Promise<{tranId: number}>
+    universalTransferHistory(options: UniversalTransferHistory): Promise<UniversalTransferHistoryResponse>
     futuresPing(): Promise<boolean>
     futuresTime(): Promise<number>
     futuresExchangeInfo(): Promise<ExchangeInfo>
