@@ -1,8 +1,8 @@
 // tslint:disable:interface-name
 declare module 'binance-api-node' {
   export default function(options?: {
-    apiKey: string
-    apiSecret: string
+    apiKey?: string
+    apiSecret?: string
     getTime?: () => number | Promise<number>
     httpBase?: string
     httpFutures?: string
@@ -277,7 +277,7 @@ declare module 'binance-api-node' {
     futuresOpenOrders(options: {
       symbol?: string
       useServerTime?: boolean
-    }): Promise<QueryOrderResult>
+    }): Promise<QueryOrderResult[]>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
     futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
     futuresPositionMode(options?: { recvWindow: number }): Promise<PositionModeResult>
