@@ -1925,12 +1925,14 @@ console.log(await client.marginIsolatedTransfer({ asset: 'USDT', symbol: 'BNBUSD
 
 <details>
 <summary>Output</summary>
+    
 ```js
 {
     //transaction id
     "tranId": 100000001
 }
 ```
+
 </details>
 
 #### marginIsolatedTransferHistory
@@ -1953,6 +1955,7 @@ console.log(await client.marginIsolatedTransferHistory({ symbol: 'BNBUSDT'}));
 
 <details>
 <summary>Output</summary>
+    
 ```js
 {
   "rows": [
@@ -1978,6 +1981,7 @@ console.log(await client.marginIsolatedTransferHistory({ symbol: 'BNBUSDT'}));
   "total": 2
 }
 ```
+
 </details>
 
 ### Futures Authenticated REST endpoints
