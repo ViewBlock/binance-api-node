@@ -358,8 +358,11 @@ declare module 'binance-api-node' {
     marginOpenOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
     marginRepay(options: { asset: string; amount:number; useServerTime?: boolean }): Promise<{tranId:number}>
     marginLoan(options: { asset: string; amount:number; useServerTime?: boolean }): Promise<{tranId:number}>
-    marginIsolatedAccount(options?: { symbol?: string; recvWindow?: number }): Promise<IsolatedMarginAccount>
+    marginIsolatedAccount(options?: { symbols?: string; recvWindow?: number }): Promise<IsolatedMarginAccount>
     marginMaxBorrow(options: {asset: string, isolatedSymbol?: string, recvWindow?: number}): Promise<{amount: string, borrowLimit: string}>
+    marginCreateIsolated(options: {base: string, quote: string, recvWindow?: number}): Promise<{success: boolean, symbol: string}> 
+    marginIsolatedTransfer(options: marginIsolatedTransfer): Promise<{tranId: string}> 
+    marginIsolatedTransferHistory(options: marginIsolatedTransferHistory): Promise<marginIsolatedTransferHistoryResponse> 
   }
 
   export interface HttpError extends Error {
@@ -1029,5 +1032,39 @@ declare module 'binance-api-node' {
     netAssetOfBtc: string
     repayEnabled: boolean
     totalAsset: string
+  }
+  
+  export interface marginIsolatedTransfer {
+    asset: string
+    symbol: string
+    transFrom: "SPOT" | "ISOLATED_MARGIN"
+    transTo: "SPOT" | "ISOLATED_MARGIN"
+    amount: number
+    recvWindow?: number
+  }
+
+  export interface marginIsolatedTransferHistory {
+    asset?: string
+    symbol: string
+    transFrom?: "SPOT" | "ISOLATED_MARGIN"
+    transTo?: "SPOT" | "ISOLATED_MARGIN"
+    startTime?: number
+    endTime?: number
+    current?: number
+    size?: number
+    recvWindow?: number
+  }
+
+  export interface marginIsolatedTransferHistoryResponse {
+    rows: {
+      amount: string
+      asset: string
+      status: string
+      timestamp: number
+      txId: number
+      transFrom: "SPOT" | "ISOLATED_MARGIN"
+      transTo: "SPOT" | "ISOLATED_MARGIN"
+    }[]
+    total: number
   }
 }
