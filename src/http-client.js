@@ -31,6 +31,7 @@ const headersMapping = {
   'x-mbx-order-count-10s': 'orderCount10s',
   'x-mbx-order-count-1m': 'orderCount1m',
   'x-mbx-order-count-1h': 'orderCount1h',
+  'x-mbx-order-count-1d': 'orderCount1d',
   'x-response-time': 'responseTime',
 }
 
@@ -346,6 +347,8 @@ export default opts => {
     depositAddress: payload => privCall('/wapi/v3/depositAddress.html', payload),
     tradeFee: payload => privCall('/wapi/v3/tradeFee.html', payload),
     assetDetail: payload => privCall('/wapi/v3/assetDetail.html', payload),
+    universalTransfer: payload => privCall('/sapi/v1/asset/transfer', payload, 'POST'),
+    universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
 
     capitalConfigs: () => privCall('/sapi/v1/capital/config/getall'),
     capitalDepositAddress: payload => privCall('/sapi/v1/capital/deposit/address', payload),
