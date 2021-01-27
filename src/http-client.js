@@ -380,7 +380,7 @@ export default opts => {
     marginMaxBorrow: payload => privCall('/sapi/v1/margin/maxBorrowable', payload),
     marginCreateIsolated: payload => privCall('/sapi/v1/margin/isolated/create', payload, 'POST'),
     marginIsolatedTransfer: payload => privCall('/sapi/v1/margin/isolated/transfer', payload, 'POST'),
-    marginIsolatedTransferHistory: payload => privCall('/sapi/v1/margin/isolated/transfer', payload)
+    marginIsolatedTransferHistory: payload => privCall('/sapi/v1/margin/isolated/transfer', payload),
 
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
