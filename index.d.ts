@@ -373,10 +373,22 @@ declare module 'binance-api-node' {
     depth: (
       pair: string | string[],
       callback: (depth: Depth) => void,
+      transform?: boolean
+    ) => ReconnectingWebSocketHandler
+    futuresDepth: (
+      pair: string | string[],
+      callback: (depth: Depth) => void,
+      transform?: boolean
     ) => ReconnectingWebSocketHandler
     partialDepth: (
       options: { symbol: string; level: number } | { symbol: string; level: number }[],
       callback: (depth: PartialDepth) => void,
+      transform?: boolean
+    ) => ReconnectingWebSocketHandler
+    futuresPartialDepth: (
+      options: { symbol: string; level: number } | { symbol: string; level: number }[],
+      callback: (depth: PartialDepth) => void,
+      transform?: boolean
     ) => ReconnectingWebSocketHandler
     ticker: (
       pair: string | string[],
