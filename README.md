@@ -94,6 +94,9 @@ Following examples will use the `await` form, which requires some configuration 
   - [marginRepay](#marginRepay)
   - [marginIsolatedAccount](#marginIsolatedAccount)
   - [marginMaxBorrow](#marginMaxBorrow)
+  - [marginCreateIsolated](#marginCreateIsolated)
+  - [marginIsolatedTransfer](#marginIsolatedTransfer)
+  - [marginIsolatedTransferHistory](#marginIsolatedTransferHistory)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
@@ -1796,12 +1799,12 @@ console.log(await client.marginRepay({ asset: 'BTC', amount:'0.0001' }));
 Query Isolated Margin Account Info
 
 ```js
-console.log(await client.marginIsolatedAccount({ symbol: 'BTCUSDT'}));
+console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
 ```
 
 | Param | Type   | Required | Description    |
 | ----- | ------ | -------- | -------------- |
-| symbol | String | false     | Max 5 symbols can be sent; separated by "," |
+| symbols | String | false     | Max 5 symbols can be sent; separated by "," |
 | recvWindow | Number | false     | No more than 60000 |
 
 <details>
@@ -1877,6 +1880,105 @@ console.log(await client.marginMaxBorrow({ asset: 'BTC', isolatedSymbol: 'BTCUSD
 {
   "amount": "1.69248805", // account's currently max borrowable amount with sufficient system availability
   "borrowLimit": "60" // max borrowable amount limited by the account level
+}
+```
+
+</details>
+
+#### marginCreateIsolated
+
+```js
+console.log(await client.marginCreateIsolated({ base: 'BTC', quote: 'USDT'}));
+```
+
+| Param      | Type   | Required | Description           |
+| ---------- | ------ | -------- | --------------------- |
+| base       | String | true     | Base asset of symbol  |
+| quote      | String | true     | Quote asset of symbol |
+| recvWindow | Number | false    | No more than 60000    |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "success": true,
+    "symbol": "BTCUSDT"
+}
+```
+</details>
+
+#### marginIsolatedTransfer
+
+```js
+console.log(await client.marginIsolatedTransfer({ asset: 'USDT', symbol: 'BNBUSDT', transFrom: 'ISOLATED_MARGIN', transTo: 'SPOT', amount: 1}));
+```
+
+| Param      | Type   | Required | Description               |
+| ---------- | ------ | -------- | ------------------------- |
+| asset      | String | true     | asset,such as BTC         |
+| symbol     | String | true     |
+| transFrom  | String | true     | "SPOT", "ISOLATED_MARGIN" |
+| transTo    | String | true     | "SPOT", "ISOLATED_MARGIN" |
+| amount     | Number | true     |
+| recvWindow | Number | false    | No more than 60000        |
+
+<details>
+<summary>Output</summary>
+    
+```js
+{
+    //transaction id
+    "tranId": 100000001
+}
+```
+
+</details>
+
+#### marginIsolatedTransferHistory
+
+```js
+console.log(await client.marginIsolatedTransferHistory({ symbol: 'BNBUSDT'}));
+```
+
+| Param      | Type   | Required | Description               |
+| ---------- | ------ | -------- | ------------------------- |
+| asset      | String | false    | asset,such as BTC         |
+| symbol     | String | true     |
+| transFrom  | String | false    | "SPOT", "ISOLATED_MARGIN" |
+| transTo    | String | false    | "SPOT", "ISOLATED_MARGIN" |
+| startTime  | Number | false    |
+| endTime    | Number | false    |
+| current    | Number | false    | Current page, default 1   |
+| size       | Number | false    | Default 10, max 100       |
+| recvWindow | Number | false    | No more than 60000        |
+
+<details>
+<summary>Output</summary>
+    
+```js
+{
+  "rows": [
+    {
+      "amount": "0.10000000",
+      "asset": "BNB",
+      "status": "CONFIRMED",
+      "timestamp": 1566898617000,
+      "txId": 5240372201,
+      "transFrom": "SPOT",
+      "transTo": "ISOLATED_MARGIN"
+    },
+    {
+      "amount": "5.00000000",
+      "asset": "USDT",
+      "status": "CONFIRMED",
+      "timestamp": 1566888436123,
+      "txId": 5239810406,
+      "transFrom": "ISOLATED_MARGIN",
+      "transTo": "SPOT"
+    }
+  ],
+  "total": 2
 }
 ```
 
