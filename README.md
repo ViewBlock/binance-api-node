@@ -26,7 +26,7 @@ const client = Binance()
 const client2 = Binance({
   apiKey: 'xxx',
   apiSecret: 'xxx',
-  getTime: xxx, // time generator function, optional, defaults to () => Date.now()
+  getTime: xxx,
 })
 
 client.time().then(time => console.log(time))
@@ -42,6 +42,7 @@ Every REST method returns a Promise, making this library [async await](https://d
 Following examples will use the `await` form, which requires some configuration you will have to lookup.
 
 ### Table of Contents
+- [Init](#init)
 - [Public REST Endpoints](#public-rest-endpoints)
   - [ping](#ping)
   - [time](#time)
@@ -127,6 +128,18 @@ Following examples will use the `await` form, which requires some configuration 
 - [Common](#common)
   - [getInfo](#getInfo)
 - [ErrorCodes](#errorcodes)
+
+### Init
+
+| Param       | Type     | Required | Info                                         |
+| ----------- | -------- | -------- | -------------------------------------------- |
+| apiKey      | String   | false    | Required when making private calls           |
+| apiSecret   | String   | false    | Required when making private calls           |
+| getTime     | Function | false    | Time generator, defaults to () => Date.now() |
+| httpBase    | String   | false    | Changes the default endpoint                 |
+| httpFutures | String   | false    | Changes the default endpoint                 |
+| wsBase      | String   | false    | Changes the default endpoint                 |
+| wsFutures   | String   | false    | Changes the default endpoint                 |
 
 ### Public REST Endpoints
 
