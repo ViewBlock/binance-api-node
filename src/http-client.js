@@ -8,6 +8,11 @@ const FUTURES = 'https://fapi.binance.com'
 
 const defaultGetTime = () => Date.now()
 
+const info = {
+  spot: {},
+  futures: {}
+}
+
 /**
  * Build query string for uri encoded url based on json object
  */
@@ -19,10 +24,41 @@ const makeQueryString = q =>
     : ''
 
 /**
+ * Get API limits info from headers
+ */
+const headersMapping = {
+  'x-mbx-used-weight-1m': 'usedWeigh1m',
+  'x-mbx-order-count-10s': 'orderCount10s',
+  'x-mbx-order-count-1m': 'orderCount1m',
+  'x-mbx-order-count-1h': 'orderCount1h',
+  'x-mbx-order-count-1d': 'orderCount1d',
+  'x-response-time': 'responseTime',
+}
+
+const responseHandler = res => {
+  if (!res.headers || !res.url) {
+    return
+  }
+
+  const marketName = res.url.includes(FUTURES) ? 'futures' : 'spot'
+
+  Object.keys(headersMapping).forEach(key => {
+    const outKey = headersMapping[key]
+
+    if (res.headers.has(key)) {
+      info[marketName][outKey] = res.headers.get(key)
+    }
+  })
+}
+
+/**
  * Finalize API response
  */
 const sendResult = call =>
   call.then(res => {
+    // Get API limits info from headers
+    responseHandler(res)
+
     // If response is ok, we can safely assume it is valid JSON
     if (res.ok) {
       return res.json()
@@ -128,7 +164,7 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
   }
 
   return (data && data.useServerTime
-    ? pubCall('/api/v1/time').then(r => r.serverTime)
+    ? pubCall('/api/v3/time').then(r => r.serverTime)
     : Promise.resolve(getTime())
   ).then(timestamp => {
     if (data) {
@@ -175,7 +211,7 @@ export const candleFields = [
  * Get candles for a specific pair and interval and convert response
  * to a user friendly collection.
  */
-const candles = (pubCall, payload, endpoint = '/api/v1/klines') =>
+const candles = (pubCall, payload, endpoint = '/api/v3/klines') =>
   checkParams('candles', payload, ['symbol']) &&
   pubCall(endpoint, { interval: '5m', ...payload }).then(candles =>
     candles.map(candle => zip(candleFields, candle)),
@@ -190,8 +226,14 @@ const order = (privCall, payload = {}, url) => {
       ? { timeInForce: 'GTC', ...payload }
       : payload
 
+  const requires = ['symbol', 'side']
+
+  if (!(newPayload.type === 'MARKET' && newPayload.quoteOrderQty)) {
+    requires.push('quantity')
+  }
+
   return (
-    checkParams('order', newPayload, ['symbol', 'side', 'quantity']) &&
+    checkParams('order', newPayload, requires) &&
     privCall(url, { type: 'LIMIT', ...newPayload }, 'POST')
   )
 }
@@ -211,7 +253,7 @@ const orderOco = (privCall, payload = {}, url) => {
 /**
  * Zip asks and bids reponse from order book
  */
-const book = (pubCall, payload, endpoint = '/api/v1/depth') =>
+const book = (pubCall, payload, endpoint = '/api/v3/depth') =>
   checkParams('book', payload, ['symbol']) &&
   pubCall(endpoint, payload).then(({ lastUpdateId, asks, bids }) => ({
     lastUpdateId,
@@ -219,11 +261,12 @@ const book = (pubCall, payload, endpoint = '/api/v1/depth') =>
     bids: bids.map(b => zip(['price', 'quantity'], b)),
   }))
 
-const aggTrades = (pubCall, payload, endpoint = '/api/v1/aggTrades') =>
+const aggTrades = (pubCall, payload, endpoint = '/api/v3/aggTrades') =>
   checkParams('aggTrades', payload, ['symbol']) &&
   pubCall(endpoint, payload).then(trades =>
     trades.map(trade => ({
       aggId: trade.a,
+      symbol: payload.symbol,
       price: trade.p,
       quantity: trade.q,
       firstId: trade.f,
@@ -245,31 +288,32 @@ export default opts => {
   const kCall = keyCall({ ...opts, pubCall })
 
   return {
-    ping: () => pubCall('/api/v1/ping').then(() => true),
-    time: () => pubCall('/api/v1/time').then(r => r.serverTime),
-    exchangeInfo: () => pubCall('/api/v1/exchangeInfo'),
+    getInfo: () => info,
+    ping: () => pubCall('/api/v3/ping').then(() => true),
+    time: () => pubCall('/api/v3/time').then(r => r.serverTime),
+    exchangeInfo: () => pubCall('/api/v3/exchangeInfo'),
 
     book: payload => book(pubCall, payload),
     aggTrades: payload => aggTrades(pubCall, payload),
     candles: payload => candles(pubCall, payload),
 
     trades: payload =>
-      checkParams('trades', payload, ['symbol']) && pubCall('/api/v1/trades', payload),
+      checkParams('trades', payload, ['symbol']) && pubCall('/api/v3/trades', payload),
     tradesHistory: payload =>
       checkParams('tradesHitory', payload, ['symbol']) &&
-      kCall('/api/v1/historicalTrades', payload),
+      kCall('/api/v3/historicalTrades', payload),
 
-    dailyStats: payload => pubCall('/api/v1/ticker/24hr', payload),
-    prices: () =>
-      pubCall('/api/v1/ticker/allPrices').then(r =>
-        r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
+    dailyStats: payload => pubCall('/api/v3/ticker/24hr', payload),
+    prices: payload =>
+      pubCall('/api/v3/ticker/price', payload).then(r =>
+        (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
 
     avgPrice: payload => pubCall('/api/v3/avgPrice', payload),
 
     allBookTickers: () =>
-      pubCall('/api/v1/ticker/allBookTickers').then(r =>
-        r.reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
+      pubCall('/api/v3/ticker/bookTicker').then(r =>
+        (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
       ),
 
     /**
@@ -288,8 +332,11 @@ export default opts => {
     getOrder: payload => privCall('/api/v3/order', payload),
     cancelOrder: payload => privCall('/api/v3/order', payload, 'DELETE'),
 
+    cancelOpenOrders: payload => privCall('/api/v3/openOrders', payload, 'DELETE'),
     openOrders: payload => privCall('/api/v3/openOrders', payload),
     allOrders: payload => privCall('/api/v3/allOrders', payload),
+
+    allOrdersOCO: payload => privCall('/api/v3/allOrderList', payload),
 
     accountInfo: payload => privCall('/api/v3/account', payload),
     myTrades: payload => privCall('/api/v3/myTrades', payload),
@@ -304,10 +351,15 @@ export default opts => {
     depositAddressNetworks: payload => privCall('/sapi/v1/capital/deposit/address', payload),
     tradeFee: payload => privCall('/wapi/v3/tradeFee.html', payload),
     assetDetail: payload => privCall('/wapi/v3/assetDetail.html', payload),
+    universalTransfer: payload => privCall('/sapi/v1/asset/transfer', payload, 'POST'),
+    universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
 
-    getDataStream: () => privCall('/api/v1/userDataStream', null, 'POST', true),
-    keepDataStream: payload => privCall('/api/v1/userDataStream', payload, 'PUT', false, true),
-    closeDataStream: payload => privCall('/api/v1/userDataStream', payload, 'DELETE', false, true),
+    capitalConfigs: () => privCall('/sapi/v1/capital/config/getall'),
+    capitalDepositAddress: payload => privCall('/sapi/v1/capital/deposit/address', payload),
+
+    getDataStream: () => privCall('/api/v3/userDataStream', null, 'POST', true),
+    keepDataStream: payload => privCall('/api/v3/userDataStream', payload, 'PUT', false, true),
+    closeDataStream: payload => privCall('/api/v3/userDataStream', payload, 'DELETE', false, true),
 
     marginGetDataStream: () => privCall('/sapi/v1/userDataStream', null, 'POST', true),
     marginKeepDataStream: payload =>
@@ -326,6 +378,13 @@ export default opts => {
     marginOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload),
     marginAccountInfo: payload => privCall('/sapi/v1/margin/account', payload),
     marginMyTrades: payload => privCall('/sapi/v1/margin/myTrades', payload),
+    marginRepay: payload => privCall('/sapi/v1/margin/repay', payload, 'POST'),
+    marginLoan: payload => privCall('/sapi/v1/margin/loan', payload, 'POST'),
+    marginIsolatedAccount: payload => privCall('/sapi/v1/margin/isolated/account', payload),
+    marginMaxBorrow: payload => privCall('/sapi/v1/margin/maxBorrowable', payload),
+    marginCreateIsolated: payload => privCall('/sapi/v1/margin/isolated/create', payload, 'POST'),
+    marginIsolatedTransfer: payload => privCall('/sapi/v1/margin/isolated/transfer', payload, 'POST'),
+    marginIsolatedTransferHistory: payload => privCall('/sapi/v1/margin/isolated/transfer', payload),
 
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
@@ -340,18 +399,29 @@ export default opts => {
     futuresDailyStats: payload => pubCall('/fapi/v1/ticker/24hr', payload),
     futuresPrices: () =>
       pubCall('/fapi/v1/ticker/price').then(r =>
-        r.reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
+        (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
     futuresAllBookTickers: () =>
       pubCall('/fapi/v1/ticker/bookTicker').then(r =>
-        r.reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
+        (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
       ),
     futuresFundingRate: payload =>
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
 
     futuresOrder: payload => order(privCall, payload, '/fapi/v1/order'),
+    futuresGetOrder: payload => privCall('/fapi/v1/order', payload),
     futuresCancelOrder: payload => privCall('/fapi/v1/order', payload, 'DELETE'),
     futuresOpenOrders: payload => privCall('/fapi/v1/openOrders', payload),
-    futuresPositionRisk: payload => privCall('/fapi/v1/positionRisk', payload),
+    futuresAllOrders: payload => privCall('/fapi/v1/allOrders', payload),
+    futuresPositionRisk: payload => privCall('/fapi/v2/positionRisk', payload),
+    futuresAccountBalance: payload => privCall('/fapi/v2/balance', payload),
+    futuresUserTrades: payload => privCall('/fapi/v1/userTrades', payload),
+    futuresPositionMode: payload => privCall('/fapi/v1/positionSide/dual', payload),
+    futuresPositionModeChange: payload => privCall('/fapi/v1/positionSide/dual', payload, 'POST'),
+    futuresLeverage: payload => privCall('/fapi/v1/leverage', payload, 'POST'),
+    futuresMarginType: payload => privCall('/fapi/v1/marginType', payload, 'POST'),
+    futuresPositionMargin: payload => privCall('/fapi/v1/positionMargin', payload, 'POST'),
+    futuresMarginHistory: payload => privCall('/fapi/v1/positionMargin/history', payload),
+    futuresIncome: payload => privCall('/fapi/v1/income', payload),
   }
 }

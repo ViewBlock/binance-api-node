@@ -1,6 +1,5 @@
 # binance-api-networks
 
-
 ### Installation
 
     npm install binance-api-networks
@@ -33,7 +32,7 @@ const client = Binance()
 const client2 = Binance({
   apiKey: 'xxx',
   apiSecret: 'xxx',
-  getTime: xxx, // time generator function, optional, defaults to () => Date.now()
+  getTime: xxx,
 })
 
 client.time().then(time => console.log(time))
@@ -49,7 +48,7 @@ Every REST method returns a Promise, making this library [async await](https://d
 Following examples will use the `await` form, which requires some configuration you will have to lookup.
 
 ### Table of Contents
-
+- [Init](#init)
 - [Public REST Endpoints](#public-rest-endpoints)
   - [ping](#ping)
   - [time](#time)
@@ -82,8 +81,10 @@ Following examples will use the `await` form, which requires some configuration 
   - [orderOco](#orderoco)
   - [getOrder](#getorder)
   - [cancelOrder](#cancelorder)
+  - [cancelOpenOrders](#cancelOpenOrders)
   - [openOrders](#openorders)
   - [allOrders](#allorders)
+  - [allOrdersOCO](#allordersoco)  
   - [accountInfo](#accountinfo)
   - [myTrades](#mytrades)
   - [tradesHistory](#tradeshistory)
@@ -92,6 +93,27 @@ Following examples will use the `await` form, which requires some configuration 
   - [withdraw](#withdraw)
   - [depositAddress](#depositaddress)
   - [tradeFee](#tradefee)
+  - [capitalConfigs](#capitalConfigs)
+  - [capitalDepositAddress](#capitalDepositAddress)
+  - [universalTransfer](#universalTransfer)
+  - [universalTransferHistory](#universalTransferHistory)
+- [Margin](#margin)
+  - [marginRepay](#marginRepay)
+  - [marginIsolatedAccount](#marginIsolatedAccount)
+  - [marginMaxBorrow](#marginMaxBorrow)
+  - [marginCreateIsolated](#marginCreateIsolated)
+  - [marginIsolatedTransfer](#marginIsolatedTransfer)
+  - [marginIsolatedTransferHistory](#marginIsolatedTransferHistory)
+- [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
+  - [futuresGetOrder](#futuresGetOrder)
+  - [futuresAllOrders](#futuresAllOrders)
+  - [futuresAccountBalance](#futuresAccountBalance)
+  - [futuresUserTrades](#futuresUserTrades)
+  - [futuresLeverage](#futuresLeverage)
+  - [futuresMarginType](#futuresMarginType)
+  - [futuresPositionMargin](#futuresPositionMargin)
+  - [futuresMarginHistory](#futuresMarginHistory)
+  - [futuresIncome](#futuresIncome)
 - [Websockets](#websockets)
   - [depth](#depth)
   - [partialDepth](#partialdepth)
@@ -101,7 +123,29 @@ Following examples will use the `await` form, which requires some configuration 
   - [aggTrades](#aggtrades-1)
   - [trades](#trades-1)
   - [user](#user)
+- [Futures Websockets](#futuresWebsockets)
+  - [futuresDepth](#futuresDepth)
+  - [futuresPartialDepth](#futuresPartialdepth)
+  - [futuresTicker](#futuresTicker)
+  - [futuresAllTickers](#futuresAlltickers)
+  - [futuresCandles](#futuresCandles)
+  - [futuresAggTrades](#futuresAggtrades)
+  - [futuresUser](#futuresUser)
+- [Common](#common)
+  - [getInfo](#getInfo)
 - [ErrorCodes](#errorcodes)
+
+### Init
+
+| Param       | Type     | Required | Info                                         |
+| ----------- | -------- | -------- | -------------------------------------------- |
+| apiKey      | String   | false    | Required when making private calls           |
+| apiSecret   | String   | false    | Required when making private calls           |
+| getTime     | Function | false    | Time generator, defaults to () => Date.now() |
+| httpBase    | String   | false    | Changes the default endpoint                 |
+| httpFutures | String   | false    | Changes the default endpoint                 |
+| wsBase      | String   | false    | Changes the default endpoint                 |
+| wsFutures   | String   | false    | Changes the default endpoint                 |
 
 ### Public REST Endpoints
 
@@ -294,6 +338,7 @@ Note: If `frondId`, `startTime`, and `endTime` are not sent, the most recent agg
 ;[
   {
     aggId: 2107132,
+    symbol: 'ETHBTC',
     price: '0.05390400',
     quantity: '1.31000000',
     firstId: 2215345,
@@ -407,11 +452,15 @@ console.log(await client.avgPrice({ symbol: 'ETHBTC' }))
 
 #### prices
 
-Latest price for all symbols.
+Latest price for a symbol, not providing the symbol will return prices for all symbols. 
 
 ```js
 console.log(await client.prices())
 ```
+
+| Param  | Type   | Required |
+| ------ | ------ | -------- |
+| symbol | String | false    |
 
 <details>
 <summary>Output</summary>
@@ -712,30 +761,6 @@ console.log(await client.futuresDailyStats({ symbol: 'ETHBTC' }))
 
 </details>
 
-#### futures avgPrice
-
-Current average price for a symbol.
-
-```js
-console.log(await client.futuresAvgPrice({ symbol: 'ETHBTC' }))
-```
-
-| Param  | Type   | Required |
-| ------ | ------ | -------- |
-| symbol | String | true     |
-
-<details>
-<summary>Output</summary>
-
-```js
-{
-  "mins": 5,
-  "price": "9.35751834"
-}
-```
-
-</details>
-
 #### futures prices
 
 Latest price for all symbols.
@@ -865,8 +890,8 @@ console.log(
   await client.order({
     symbol: 'XLMETH',
     side: 'BUY',
-    quantity: 100,
-    price: 0.0002,
+    quantity: '100',
+    price: '0.0002',
   }),
 )
 ```
@@ -876,8 +901,8 @@ console.log(
 | symbol           | String | true     |
 | side             | String | true     |          | `BUY`,`SELL`                                                        |
 | type             | String | false    | `LIMIT`  | `LIMIT`, `MARKET`                                                   |
-| quantity         | Number | true     |
-| price            | Number | true     |          | Optional for `MARKET` orders                                        |
+| quantity         | String | true     |
+| price            | String | true     |          | Optional for `MARKET` orders                                        |
 | timeInForce      | String | false    | `GTC`    | `FOK`, `GTC`, `IOC`                                                 |
 | newClientOrderId | String | false    |          | A unique id for the order. Automatically generated if not sent.     |
 | stopPrice        | Number | false    |          | Used with stop orders                                               |
@@ -1115,6 +1140,44 @@ console.log(
 
 </details>
 
+#### cancelOpenOrders
+
+Cancels all active orders on a symbol.
+This includes OCO orders.
+
+```js
+console.log(
+  await client.cancelOpenOrders({
+    symbol: 'ETHBTC'
+  }),
+)
+```
+| Param      | Type     | Required  |
+|------------|----------|-----------|
+| symbol     | String   | true      |  
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    symbol: 'ETHBTC',
+    origClientOrderId: 'bnAoRHgI18gRD80FJmsfNP',
+    orderId: 1,
+    clientOrderId: 'RViSsQPTp1v3WmLYpeKT11'
+  },
+  {
+    symbol: 'ETHBTC',
+    origClientOrderId: 'IDbzcGmfwSCKihxILK1snu',
+    orderId: 2,
+    clientOrderId: 'HKFcuWAm9euMgRuwVGR8CL'
+  }
+]
+```
+
+</details>
+
 #### openOrders
 
 Get all open orders on a symbol.
@@ -1202,6 +1265,81 @@ console.log(
 ```
 
 </details>
+
+
+#### allOrdersOCO
+
+Retrieves all OCO based on provided optional parameters
+
+```js
+console.log(
+  await client.allOrdersOCO({
+    timestamp: 1565245913483,
+  }),
+)
+```
+
+| Param      | Type    | Required | Default | Description                                               |
+|------------|---------|----------|---------|-----------------------------------------------------------|
+| timestamp  | Number  | true     |         |                                                           |
+| startTime  | Number  | false    |         |                                                           |
+| endTime    | Number  | false    |         |                                                           |
+| limit      | Integer | false    | `500`   | Max `1000`                                                |
+| recvWindow | Number  | false    |         | The value cannot be greater than 60000                    |
+| formId     | Number  | false    |         | If supplied, neither startTime or endTime can be provided |
+
+<details>
+<summary>Output</summary>
+
+```js
+;[
+  {
+    "orderListId": 29,
+    "contingencyType": "OCO",
+    "listStatusType": "EXEC_STARTED",
+    "listOrderStatus": "EXECUTING",
+    "listClientOrderId": "amEEAXryFzFwYF1FeRpUoZ",
+    "transactionTime": 1565245913483,
+    "symbol": "LTCBTC",
+    "orders": [
+      {
+        "symbol": "LTCBTC",
+        "orderId": 4,
+        "clientOrderId": "oD7aesZqjEGlZrbtRpy5zB"
+      },
+      {
+        "symbol": "LTCBTC",
+        "orderId": 5,
+        "clientOrderId": "Jr1h6xirOxgeJOUuYQS7V3"
+      }
+    ]
+  },
+  {
+    "orderListId": 28,
+    "contingencyType": "OCO",
+    "listStatusType": "EXEC_STARTED",
+    "listOrderStatus": "EXECUTING",
+    "listClientOrderId": "hG7hFNxJV6cZy3Ze4AUT4d",
+    "transactionTime": 1565245913407,
+    "symbol": "LTCBTC",
+    "orders": [
+      {
+        "symbol": "LTCBTC",
+        "orderId": 2,
+        "clientOrderId": "j6lFOfbmFMRjTYA7rRJ0LP"
+      },
+      {
+        "symbol": "LTCBTC",
+        "orderId": 3,
+        "clientOrderId": "z0KCjOdditiLS5ekAFtK81"
+      }
+    ]
+  }
+]
+```
+
+</details>
+
 
 #### accountInfo
 
@@ -1471,6 +1609,806 @@ console.log(await client.tradeFee())
 
 </details>
 
+#### capitalConfigs
+
+Get information of coins (available for deposit and withdraw) for user.
+
+```js
+console.log(await client.capitalConfigs())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    'coin': 'CTR',
+    'depositAllEnable': false,
+    'free': '0.00000000',
+    'freeze': '0.00000000',
+    'ipoable': '0.00000000',
+    'ipoing': '0.00000000',
+    'isLegalMoney': false,
+    'locked': '0.00000000',
+    'name': 'Centra',
+    'networkList': [
+      {
+        'addressRegex': '^(0x)[0-9A-Fa-f]{40}$',
+        'coin': 'CTR',
+        'depositDesc': 'Delisted, Deposit Suspended',
+        'depositEnable': false,
+        'isDefault': true,
+        'memoRegex': '',
+        'minConfirm': 12,
+        'name': 'ERC20',
+        'network': 'ETH',
+        'resetAddressStatus': false,
+        'specialTips': '',
+        'unLockConfirm': 0,
+        'withdrawDesc': '',
+        'withdrawEnable': true,
+        'withdrawFee': '35.00000000',
+        'withdrawIntegerMultiple': '0.00000001',
+        'withdrawMax': '0.00000000',
+        'withdrawMin': '70.00000000'
+      }
+    ],
+    'storage': '0.00000000',
+    'trading': false,
+    'withdrawAllEnable': true,
+    'withdrawing': '0.00000000'
+  }
+]
+```
+
+</details>
+
+#### capitalDepositAddress
+
+Fetch deposit address with network.
+
+```js
+console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
+```
+
+| Param    | Type   | Required | Description      |
+| -------- | ------ | -------- | ---------------- |
+| coin     | String | true     | The coin name    |
+| network  | String | false    | The network name |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  address: 'AM6ytPW78KYxQCmU2pHYGcee7GypZ7Yhhc',
+  coin: 'NEO',
+  tag: '',
+  url: 'https://neoscan.io/address/AM6ytPW78KYxQCmU2pHYGcee7GypZ7Yhhc'
+}
+```
+
+</details>
+
+#### universalTransfer
+
+You need to enable Permits Universal Transfer option for the api key which requests this endpoint.
+
+```js
+console.log(await client.universalTransfer({ type: 'MAIN_C2C', asset: 'USDT', amount: '1000' }))
+```
+
+| Param      | Type   | Required | Description      |
+| ---------- | ------ | -------- | ---------------- |
+| type       | String | true     |
+| asset      | String | true     |
+| amount     | String | true     |
+| recvWindow | Number | true     |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  tranId:13526853623
+}
+```
+
+</details>
+
+#### universalTransferHistory
+
+```js
+console.log(await client.universalTransferHistory({ type: 'MAIN_C2C' }))
+```
+
+| Param      | Type   | Required | Description         |
+| ---------- | ------ | -------- | ------------------- |
+| type       | String | true     |
+| startTime  | Number | false    |
+| endTime    | Number | false    |
+| current    | Number | false    | Default 1           |
+| size       | Number | false    | Default 10, Max 100 |
+| recvWindow | Number | true     |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "total":2,
+  "rows":[
+    {
+      "asset":"USDT",
+      "amount":"1",
+      "type":"MAIN_C2C"
+      "status": "CONFIRMED",
+      "tranId": 11415955596,
+      "timestamp":1544433328000
+    },
+    {
+      "asset":"USDT",
+      "amount":"2",
+      "type":"MAIN_C2C",
+      "status": "CONFIRMED",
+      "tranId": 11366865406,
+      "timestamp":1544433328000
+    }
+  ]
+}
+```
+
+</details>
+
+### Margin
+
+#### marginLoan
+
+Create a loan for margin account.
+
+```js
+console.log(await client.marginLoan({ asset: 'BTC', amount:'0.0001' }));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| asset | String | true     | The asset name |
+| amount | Number | true     | 
+
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "tranId": 100000001 //transaction id
+}
+```
+
+</details>
+
+#### marginRepay
+
+Repay loan for margin account.
+
+```js
+console.log(await client.marginRepay({ asset: 'BTC', amount:'0.0001' }));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| asset | String | true     | The asset name |
+| amount | Number | true     | 
+
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "tranId": 100000001 //transaction id
+}
+```
+
+</details>
+
+#### marginIsolatedAccount
+
+Query Isolated Margin Account Info
+
+```js
+console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| symbols | String | false     | Max 5 symbols can be sent; separated by "," |
+| recvWindow | Number | false     | No more than 60000 |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+   "assets":[
+      {
+        "baseAsset": 
+        {
+          "asset": "BTC",
+          "borrowEnabled": true,
+          "borrowed": "0.00000000",
+          "free": "0.00000000",
+          "interest": "0.00000000",
+          "locked": "0.00000000",
+          "netAsset": "0.00000000",
+          "netAssetOfBtc": "0.00000000",
+          "repayEnabled": true,
+          "totalAsset": "0.00000000"
+        },
+        "quoteAsset": 
+        {
+          "asset": "USDT",
+          "borrowEnabled": true,
+          "borrowed": "0.00000000",
+          "free": "0.00000000",
+          "interest": "0.00000000",
+          "locked": "0.00000000",
+          "netAsset": "0.00000000",
+          "netAssetOfBtc": "0.00000000",
+          "repayEnabled": true,
+          "totalAsset": "0.00000000"
+        },
+        "symbol": "BTCUSDT"
+        "isolatedCreated": true, 
+        "marginLevel": "0.00000000", 
+        "marginLevelStatus": "EXCESSIVE", // "EXCESSIVE", "NORMAL", "MARGIN_CALL", "PRE_LIQUIDATION", "FORCE_LIQUIDATION"
+        "marginRatio": "0.00000000",
+        "indexPrice": "10000.00000000"
+        "liquidatePrice": "1000.00000000",
+        "liquidateRate": "1.00000000"
+        "tradeEnabled": true
+      }
+    ],
+    "totalAssetOfBtc": "0.00000000",
+    "totalLiabilityOfBtc": "0.00000000",
+    "totalNetAssetOfBtc": "0.00000000" 
+}
+```
+
+</details>
+
+#### marginMaxBorrow
+
+If isolatedSymbol is not sent, crossed margin data will be sent.
+
+```js
+console.log(await client.marginMaxBorrow({ asset: 'BTC', isolatedSymbol: 'BTCUSDT'}));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| asset | String | true     |
+| isolatedSymbol| String | false | 
+| recvWindow | Number | false     | No more than 60000 |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "amount": "1.69248805", // account's currently max borrowable amount with sufficient system availability
+  "borrowLimit": "60" // max borrowable amount limited by the account level
+}
+```
+
+</details>
+
+#### marginCreateIsolated
+
+```js
+console.log(await client.marginCreateIsolated({ base: 'BTC', quote: 'USDT'}));
+```
+
+| Param      | Type   | Required | Description           |
+| ---------- | ------ | -------- | --------------------- |
+| base       | String | true     | Base asset of symbol  |
+| quote      | String | true     | Quote asset of symbol |
+| recvWindow | Number | false    | No more than 60000    |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "success": true,
+    "symbol": "BTCUSDT"
+}
+```
+</details>
+
+#### marginIsolatedTransfer
+
+```js
+console.log(await client.marginIsolatedTransfer({ asset: 'USDT', symbol: 'BNBUSDT', transFrom: 'ISOLATED_MARGIN', transTo: 'SPOT', amount: 1}));
+```
+
+| Param      | Type   | Required | Description               |
+| ---------- | ------ | -------- | ------------------------- |
+| asset      | String | true     | asset,such as BTC         |
+| symbol     | String | true     |
+| transFrom  | String | true     | "SPOT", "ISOLATED_MARGIN" |
+| transTo    | String | true     | "SPOT", "ISOLATED_MARGIN" |
+| amount     | Number | true     |
+| recvWindow | Number | false    | No more than 60000        |
+
+<details>
+<summary>Output</summary>
+    
+```js
+{
+    //transaction id
+    "tranId": 100000001
+}
+```
+
+</details>
+
+#### marginIsolatedTransferHistory
+
+```js
+console.log(await client.marginIsolatedTransferHistory({ symbol: 'BNBUSDT'}));
+```
+
+| Param      | Type   | Required | Description               |
+| ---------- | ------ | -------- | ------------------------- |
+| asset      | String | false    | asset,such as BTC         |
+| symbol     | String | true     |
+| transFrom  | String | false    | "SPOT", "ISOLATED_MARGIN" |
+| transTo    | String | false    | "SPOT", "ISOLATED_MARGIN" |
+| startTime  | Number | false    |
+| endTime    | Number | false    |
+| current    | Number | false    | Current page, default 1   |
+| size       | Number | false    | Default 10, max 100       |
+| recvWindow | Number | false    | No more than 60000        |
+
+<details>
+<summary>Output</summary>
+    
+```js
+{
+  "rows": [
+    {
+      "amount": "0.10000000",
+      "asset": "BNB",
+      "status": "CONFIRMED",
+      "timestamp": 1566898617000,
+      "txId": 5240372201,
+      "transFrom": "SPOT",
+      "transTo": "ISOLATED_MARGIN"
+    },
+    {
+      "amount": "5.00000000",
+      "asset": "USDT",
+      "status": "CONFIRMED",
+      "timestamp": 1566888436123,
+      "txId": 5239810406,
+      "transFrom": "ISOLATED_MARGIN",
+      "transTo": "SPOT"
+    }
+  ],
+  "total": 2
+}
+```
+
+</details>
+
+### Futures Authenticated REST endpoints
+
+#### futuresGetOrder
+
+Check an order's status.
+
+- These orders will not be found
+  - order status is CANCELED or EXPIRED, <b>AND</b>
+  - order has NO filled trade, <b>AND</b>
+  - created time + 7 days < current time
+  
+
+| Name              | Type   | Mandatory | Description      |
+| ----------------- | ------ | --------  | ---------------- |
+| symbol            | STRING | YES       | The pair name    |
+| orderId           | LONG   | NO        |                  |
+| origClientOrderId | STRING | NO        |                  |
+| recvWindow        | LONG   | NO        |                  |
+
+
+Either <b>orderId</b> or <b>origClientOrderId</b> must be sent.
+
+```js
+console.log(
+  await client.futuresGetOrder({
+    symbol: 'BNBETH',
+    orderId: 50167927,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "avgPrice": "0.00000",
+    "clientOrderId": "abc",
+    "cumQuote": "0",
+    "executedQty": "0",
+    "orderId": 1917641,
+    "origQty": "0.40",
+    "origType": "TRAILING_STOP_MARKET",
+    "price": "0",
+    "reduceOnly": false,
+    "side": "BUY",
+    "positionSide": "SHORT",
+    "status": "NEW",
+    "stopPrice": "9300",                // please ignore when order type is TRAILING_STOP_MARKET
+    "closePosition": false,             // if Close-All
+    "symbol": "BTCUSDT",
+    "time": 1579276756075,              // order time
+    "timeInForce": "GTC",
+    "type": "TRAILING_STOP_MARKET",
+    "activatePrice": "9020",            // activation price, only return with TRAILING_STOP_MARKET order
+    "priceRate": "0.3",                 // callback rate, only return with TRAILING_STOP_MARKET order
+    "updateTime": 1579276756075,        // update time
+    "workingType": "CONTRACT_PRICE",
+    "priceProtect": false               // if conditional order trigger is protected   
+}
+```
+</details>
+
+#### futuresAllOrders
+
+Get all account orders; active, canceled, or filled.
+
+- These orders will not be found
+  - order status is CANCELED or EXPIRED, <b>AND</b>
+  - order has NO filled trade, <b>AND</b>
+  - created time + 7 days < current time
+  
+| Name              | Type   | Mandatory | Description            |
+| ----------------- | ------ | --------  | ---------------------- |
+| symbol            | STRING | YES       | The pair name          |
+| orderId           | LONG   | NO        |                        |
+| startTime         | LONG   | NO        |                        |
+| endTime           | LONG   | NO        |                        |
+| limit             | INT    | NO        | Default 500; max 1000. |
+| recvWindow        | LONG   | NO        |                        |
+
+If <b>orderId</b> is set, it will get orders >= that <b>orderId</b>. Otherwise most recent orders are returned.
+
+```js
+console.log(
+  await client.futuresAllOrders({
+    symbol: 'BNBETH',
+    orderId: 50167927,
+    startTime: 1579276756075,
+    limit: 700,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "avgPrice": "0.00000",
+    "clientOrderId": "abc",
+    "cumQuote": "0",
+    "executedQty": "0",
+    "orderId": 1917641,
+    "origQty": "0.40",
+    "origType": "TRAILING_STOP_MARKET",
+    "price": "0",
+    "reduceOnly": false,
+    "side": "BUY",
+    "positionSide": "SHORT",
+    "status": "NEW",
+    "stopPrice": "9300",                // please ignore when order type is TRAILING_STOP_MARKET
+    "closePosition": false,             // if Close-All
+    "symbol": "BTCUSDT",
+    "time": 1579276756075,              // order time
+    "timeInForce": "GTC",
+    "type": "TRAILING_STOP_MARKET",
+    "activatePrice": "9020",            // activation price, only return with TRAILING_STOP_MARKET order
+    "priceRate": "0.3",                 // callback rate, only return with TRAILING_STOP_MARKET order
+    "updateTime": 1579276756075,        // update time
+    "workingType": "CONTRACT_PRICE",
+    "priceProtect": false               // if conditional order trigger is protected   
+  }
+]
+```
+</details>
+
+
+#### futuresLeverage
+
+Change user's initial leverage of specific symbol market.
+
+
+| Name              | Type   | Mandatory | Description                                |
+| ----------------- | ------ | --------  | ------------------------------------------ |
+| symbol            | STRING | YES       | The pair name                              |
+| leverage          | INT    | YES       | target initial leverage: int from 1 to 125 |
+| recvWindow        | LONG   | NO        |                                            |
+
+```js
+console.log(
+  await client.futuresLeverage({
+    symbol: 'BTCUSDT',
+    leverage: 21,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "leverage": 21,
+    "maxNotionalValue": "1000000",
+    "symbol": "BTCUSDT"
+}
+```
+</details>
+
+#### futuresMarginType
+
+Change margin type.
+
+| Name              | Type   | Mandatory | Description       |
+| ----------------- | ------ | --------  | ----------------- |
+| symbol            | STRING | YES       | The pair name     |
+| marginType        | ENUM   | YES       | ISOLATED, CROSSED |
+| recvWindow        | LONG   | NO        |                   |
+
+```js
+console.log(
+  await client.futuresMarginType({
+    symbol: 'BTCUSDT',
+    marginType: 'ISOLATED',
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "code": 200,
+    "msg": "success"
+}
+```
+</details>
+
+#### futuresPositionMargin
+
+Modify isolated position margin.
+
+| Name              | Type    | Mandatory | Description                                       |
+| ----------------- | ------- | --------  | ------------------------------------------------- |
+| symbol            | STRING  | YES       | The pair name                                     |
+| positionSide      | ENUM    | NO        | Default BOTH for One-way Mode; <br>LONG or SHORT for Hedge Mode. <br>It must be sent with Hedge Mode. |
+| amount            | DECIMAL | YES       |                                                   |
+| type              | INT     | YES       | 1: Add position margin，2: Reduce position margin |
+| recvWindow        | LONG    | NO        |                                                   |
+
+Only for isolated symbol.
+
+```js
+console.log(
+  await client.futuresPositionMargin({
+    symbol: 'BTCUSDT',
+    amount: 100,
+    type: 1,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "amount": 100.0,
+    "code": 200,
+    "msg": "Successfully modify position margin.",
+    "type": 1
+}
+```
+</details>
+
+#### futuresMarginHistory
+
+Get position margin change history.
+
+| Name              | Type   | Mandatory | Description                                       |
+| ----------------- | ------ | --------  | ------------------------------------------------- |
+| symbol            | STRING | YES       | The pair name                                     |
+| type              | INT    | NO        | 1: Add position margin，2: Reduce position margin |
+| startTime         | LONG   | NO        |                                                   |
+| endTime           | LONG   | NO        |                                                   |
+| limit             | INT    | NO        | Default 500;                                      |
+| recvWindow        | LONG   | NO        |                                                   |
+
+```js
+console.log(
+  await client.futuresMarginHistory({
+    symbol: 'BTCUSDT',
+    type: 1,
+    startTime: 1579276756075,
+    limit: 700,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "amount": "23.36332311",
+        "asset": "USDT",
+        "symbol": "BTCUSDT",
+        "time": 1578047897183,
+        "type": 1,
+        "positionSide": "BOTH"
+    },
+    {
+        "amount": "100",
+        "asset": "USDT",
+        "symbol": "BTCUSDT",
+        "time": 1578047900425,
+        "type": 1,
+        "positionSide": "LONG"
+    }
+]
+```
+</details>
+
+#### futuresIncome
+
+Get income history.
+
+| Name              | Type   | Mandatory | Description                                       |
+| ----------------- | ------ | --------  | ------------------------------------------------- |
+| symbol            | STRING | NO        | The pair name                                     |
+| incomeType        | STRING | NO        | "TRANSFER"，"WELCOME_BONUS", "REALIZED_PNL"，<br>"FUNDING_FEE", "COMMISSION", and "INSURANCE_CLEAR" |
+| startTime         | LONG   | NO        | Timestamp in ms to get funding from INCLUSIVE.    |
+| endTime           | LONG   | NO        | Timestamp in ms to get funding until INCLUSIVE.   |
+| limit             | INT    | NO        | Default 100; max 1000                             |
+| recvWindow        | LONG   | NO        |                                                   |
+
+- If incomeType is not sent, all kinds of flow will be returned
+- "trandId" is unique in the same incomeType for a user
+
+```js
+console.log(
+  await client.futuresIncome({
+    symbol: 'BTCUSDT',
+    startTime: 1579276756075,
+    limit: 700,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "symbol": "",                   // trade symbol, if existing
+        "incomeType": "TRANSFER",       // income type
+        "income": "-0.37500000",        // income amount
+        "asset": "USDT",                // income asset
+        "info":"TRANSFER",              // extra information
+        "time": 1570608000000,      
+        "tranId":"9689322392",          // transaction id
+        "tradeId":""                    // trade id, if existing
+    },
+    {
+        "symbol": "BTCUSDT",
+        "incomeType": "COMMISSION", 
+        "income": "-0.01000000",
+        "asset": "USDT",
+        "info":"COMMISSION",
+        "time": 1570636800000,
+        "tranId":"9689322392",
+        "tradeId":"2059192"
+    }
+]
+```
+</details>
+
+#### futuresAccountBalance
+
+Get futures account balance
+
+```js
+console.log(await client.futuresAccountBalance());
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "accountAlias": "SgsR",    // unique account code
+    "asset": "USDT",    // asset name
+    "balance": "122607.35137903", // wallet balance
+    "crossWalletBalance": "23.72469206", // crossed wallet balance
+    "crossUnPnl": "0.00000000"  // unrealized profit of crossed positions
+    "availableBalance": "23.72469206",       // available balance
+    "maxWithdrawAmount": "23.72469206"     // maximum amount for transfer out
+  }
+]
+```
+
+</details>
+
+#### futuresUserTrades
+
+Get trades for a specific account and symbol.
+
+```js
+console.log(
+  await client.futuresUserTrades({
+    symbol: 'ETHBTC',
+  }),
+)
+```
+
+| Param      | Type   | Mandatory | Description                                              |
+| ---------- | ------ | --------- | -------------------------------------------------------- |
+| symbol     | STRING | YES       |                                                          |
+| startTime  | LONG   | NO        |                                                          |
+| endTime    | LONG   | NO        |                                                          |
+| limit      | INT    | NO        | Default 500; max 1000.                                   |
+| fromId     | LONG   | NO        | Trade id to fetch from. Default gets most recent trades. |
+| recvWindow | LONG   | NO        |                                                          |
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "buyer": false,
+    "commission": "-0.07819010",
+    "commissionAsset": "USDT",
+    "id": 698759,
+    "maker": false,
+    "orderId": 25851813,
+    "price": "7819.01",
+    "qty": "0.002",
+    "quoteQty": "15.63802",
+    "realizedPnl": "-0.91539999",
+    "side": "SELL",
+    "positionSide": "SHORT",
+    "symbol": "BTCUSDT",
+    "time": 1569514978020
+  }
+]
+```
+
+</details>
+
 ### WebSockets
 
 Every websocket utility returns a function you can call to close the opened
@@ -1656,11 +2594,15 @@ client.ws.trades(['ETHBTC', 'BNBBTC'], trade => {
 {
   eventType: 'trade',
   eventTime: 1508614495052,
+  tradeTime: 1508614495050,
   symbol: 'ETHBTC',
   price: '0.04923600',
   quantity: '3.43500000',
-  maker: false,
-  tradeId: 2148226
+  isBuyerMaker: true,
+  maker: true,
+  tradeId: 2148226,
+  buyerOrderId: 390876,
+  sellerOrderId: 390752
 }
 ```
 
@@ -1683,11 +2625,15 @@ client.ws.aggTrades(['ETHBTC', 'BNBBTC'], trade => {
 {
   eventType: 'aggTrade',
   eventTime: 1508614495052,
-  symbol: 'ETHBTC',
+  aggId: 2148226,
   price: '0.04923600',
   quantity: '3.43500000',
-  maker: false,
-  tradeId: 2148226
+  firstId: 37856,
+  lastId: 37904,
+  timestamp: 1508614495050,
+  symbol: 'ETHBTC',
+  isBuyerMaker: false,
+  wasBestPrice: true
 }
 ```
 
@@ -1705,17 +2651,13 @@ const clean = await client.ws.user(msg => {
 })
 ```
 
-Live user messages data feed on margin wallet.
-
-**Requires authentication**
+There is also equivalent function to query the margin wallet:
 
 ```js
-const clean = await client.ws.marginUser(msg => {
-  console.log(msg)
-})
+client.ws.marginUser()
 ```
 
-Note that this methods returns a promise which will resolve the `clean` callback.
+Note that this method return a promise which will resolve the `clean` callback.
 
 <details>
 <summary>Output</summary>
@@ -1732,6 +2674,322 @@ Note that this methods returns a promise which will resolve the `clean` callback
 }
 ```
 
+</details>
+
+### Futures WebSockets
+
+Every websocket utility returns a function you can call to close the opened
+connection and avoid memory issues.
+
+```js
+const clean = client.ws.futuresDepth('ETHBTC', depth => {
+  console.log(depth)
+})
+
+// After you're done
+clean()
+```
+
+Each websocket utility supports the ability to get a clean callback without data transformation, for this, pass the third attribute FALSE.
+
+```js
+const clean = client.ws.futuresDepth('ETHBTC', depth => {
+  console.log(depth)
+}, false)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "e": "depthUpdate", // Event type
+  "E": 123456789,     // Event time
+  "T": 123456788,     // transaction time 
+  "s": "BTCUSDT",      // Symbol
+  "U": 157,           // First update ID in event
+  "u": 160,           // Final update ID in event
+  "pu": 149,          // Final update Id in last stream(ie `u` in last stream)
+  "b": [              // Bids to be updated
+    [
+      "0.0024",       // Price level to be updated
+      "10"            // Quantity
+    ]
+  ],
+  "a": [              // Asks to be updated
+    [
+      "0.0026",       // Price level to be updated
+      "100"          // Quantity
+    ]
+  ]
+}
+```
+</details>
+
+#### futuresDepth
+
+Live futuresDepth market data feed. The first parameter can either
+be a single symbol string or an array of symbols.
+
+```js
+client.ws.futuresDepth('ETHBTC', depth => {
+  console.log(depth)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'depthUpdate',
+  eventTime: 1508612956950,
+  symbol: 'ETHBTC',
+  firstUpdateId: 18331140,
+  finalUpdateId: 18331145,
+  bidDepth: [
+    { price: '0.04896500', quantity: '0.00000000' },
+    { price: '0.04891100', quantity: '15.00000000' },
+    { price: '0.04891000', quantity: '0.00000000' } ],
+  askDepth: [
+    { price: '0.04910600', quantity: '0.00000000' },
+    { price: '0.04910700', quantity: '11.24900000' }
+  ]
+}
+```
+</details>
+
+#### futuresPartialDepth
+
+Top levels bids and asks, pushed every second. Valid levels are 5, 10, or 20.
+Accepts an array of objects for multiple depths.
+
+```js
+client.ws.futuresPartialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {
+  console.log(depth)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+
+  eventType: 'depthUpdate',
+  eventTime: 1508612956950,
+  symbol: 'ETHBTC',
+  level: 10,
+  firstUpdateId: 18331140,
+  finalUpdateId: 18331145,
+  bidDepth: [
+    { price: '0.04896500', quantity: '0.00000000' },
+    { price: '0.04891100', quantity: '15.00000000' },
+    { price: '0.04891000', quantity: '0.00000000' } ],
+  askDepth: [
+    { price: '0.04910600', quantity: '0.00000000' },
+    { price: '0.04910700', quantity: '11.24900000' }
+  ]
+}
+```
+</details>
+
+#### futuresTicker
+
+24hr Ticker statistics for a symbol pushed every 500ms. Accepts an array of symbols.
+
+```js
+client.ws.futuresTicker('HSRETH', ticker => {
+  console.log(ticker)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: '24hrTicker',
+  eventTime: 123456789,
+  symbol: 'BTCUSDT',
+  priceChange: '0.0015',
+  priceChangePercent: '250.00',
+  weightedAvg: '0.0018',
+  curDayClose: '0.0025',
+  closeTradeQuantity: '10',
+  open: '0.0010',
+  high: '0.0025',
+  low: '0.0010',
+  volume: '10000',
+  volumeQuote: '18',
+  openTime: 0,
+  closeTime: 86400000,
+  firstTradeId: 0,
+  lastTradeId: 18150,
+  totalTrades: 18151,
+}
+```
+</details>
+
+#### futuresAllTickers
+
+Retrieves all the tickers.
+
+```js
+client.ws.futuresAllTickers(tickers => {
+  console.log(tickers)
+})
+```
+
+#### futuresCandles
+
+Live candle data feed for a given interval. You can pass either a symbol string
+or a symbol array.
+
+```js
+client.ws.futuresCandles('ETHBTC', '1m', candle => {
+  console.log(candle)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'kline',
+  eventTime: 1508613366276,
+  symbol: 'ETHBTC',
+  open: '0.04898000',
+  high: '0.04902700',
+  low: '0.04898000',
+  close: '0.04901900',
+  volume: '37.89600000',
+  trades: 30,
+  interval: '5m',
+  isFinal: false,
+  quoteVolume: '1.85728874',
+  buyVolume: '21.79900000',
+  quoteBuyVolume: '1.06838790'
+}
+```
+</details>
+
+#### futuresAggTrades
+
+Live trade data feed. Pass either a single symbol string or an array of symbols. The Aggregate Trade Streams push trade information that is aggregated for a single taker order every 100 milliseconds.
+
+```js
+client.ws.futuresAggTrades(['ETHBTC', 'BNBBTC'], trade => {
+  console.log(trade)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'aggTrade',
+  eventTime: 1508614495052,
+  aggId: 2148226,
+  price: '0.04923600',
+  quantity: '3.43500000',
+  firstId: 37856,
+  lastId: 37904,
+  timestamp: 1508614495050,
+  symbol: 'ETHBTC',
+  isBuyerMaker: false,
+}
+```
+</details>
+
+#### futuresUser
+
+Live user messages data feed.
+
+**Requires authentication**
+
+```js
+const futuresUser = await client.ws.futuresUser(msg => {
+  console.log(msg)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventTime: 1564745798939,
+  transactionTime: 1564745798938,
+  eventType: 'ACCOUNT_UPDATE',
+  eventReasonType: 'ORDER',
+  balances: [
+    {
+      asset:'USDT',
+      walletBalance:'122624.12345678',
+      crossWalletBalance:'100.12345678'
+    },
+    {
+      asset:'BNB',           
+      walletBalance:'1.00000000',
+      crossWalletBalance:'0.00000000'         
+    }
+  ],
+  positions: [
+    {
+      symbol:'BTCUSDT',
+      positionAmount:'0',
+      entryPrice:'0.00000',
+      accumulatedRealized:'200',
+      unrealizedPnL:'0',
+      marginType:'isolated',
+      isolatedWallet:'0.00000000',
+      positionSide:'BOTH'
+    },
+    {
+      symbol:'BTCUSDT',
+      positionAmount:'20',
+      entryPrice:'6563.66500',
+      accumulatedRealized:'0',
+      unrealizedPnL:'2850.21200',
+      marginType:'isolated',
+      isolatedWallet:'13200.70726908',
+      positionSide:'LONG'
+    }
+  ],
+}
+```
+</details>
+
+#### Common
+
+#### getInfo
+
+To get information about limits from response headers call getInfo()
+
+```js
+const binanceInfo = client.getInfo()
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  futures: {
+     futuresLatency: "2ms",
+     orderCount1m: "10",
+     usedWeigh1m: "1",
+  },
+  spot: {
+     orderCount1d: "347",
+     orderCount10s: "1",
+     usedWeigh1m: "15",
+  }
+}
+```
 </details>
 
 ### ErrorCodes
