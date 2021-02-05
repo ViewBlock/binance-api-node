@@ -27,7 +27,7 @@ const makeQueryString = q =>
  * Get API limits info from headers
  */
 const headersMapping = {
-  'x-mbx-used-weight-1m': 'usedWeigh1m',
+  'x-mbx-used-weight-1m': 'usedWeight1m',
   'x-mbx-order-count-10s': 'orderCount10s',
   'x-mbx-order-count-1m': 'orderCount1m',
   'x-mbx-order-count-1h': 'orderCount1h',
