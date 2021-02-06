@@ -168,7 +168,7 @@ declare module 'binance-api-node' {
   }
 
   export type GetInfoDetails = {
-    useWeight1m?: string
+    usedWeight1m?: string
     orderCount10s?: string
     orderCount1m?: string
     orderCount1h?: string
