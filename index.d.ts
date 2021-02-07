@@ -896,7 +896,7 @@ declare module 'binance-api-node' {
     status: string
     timeInForce: string
     type: OrderType
-    side: string
+    side: OrderSide
   }
 
   export interface AvgPriceResult {
@@ -967,7 +967,7 @@ declare module 'binance-api-node' {
     status: string
     timeInForce: string
     type: OrderType
-    side: string
+    side: OrderSide
     time: number
   }
 
