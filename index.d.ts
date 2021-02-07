@@ -879,7 +879,7 @@ declare module 'binance-api-node' {
     symbol: string
     time: number
     timeInForce: TimeInForce
-    type: string
+    type: OrderType
     updateTime: number
   }
 
@@ -895,7 +895,7 @@ declare module 'binance-api-node' {
     cummulativeQuoteQty: string
     status: string
     timeInForce: string
-    type: string
+    type: OrderType
     side: string
   }
 
@@ -966,7 +966,7 @@ declare module 'binance-api-node' {
     averagePrice: string
     status: string
     timeInForce: string
-    type: string
+    type: OrderType
     side: string
     time: number
   }
