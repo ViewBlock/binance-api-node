@@ -313,6 +313,47 @@ const aggTrades = (payload, cb, transform = true, variator) => {
     cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
+const futuresLiqsTransform = m => ({
+  symbol: m.s,
+  price: m.p,
+  origQty: m.q,
+  lastFilledQty: m.l,
+  accumulatedQty: m.z,
+  averagePrice: m.ap,
+  status: m.X,
+  timeInForce: m.f,
+  type: m.o,
+  side: m.S,
+  time: m.T,
+})
+
+const futuresLiquidations = (payload, cb, transform = true) => {
+  const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
+    const w = openWebSocket(`${endpoints.futures}/${symbol.toLowerCase()}@forceOrder`)
+    w.onmessage = msg => {
+      const obj = JSON.parse(msg.data)
+
+      cb(transform ? futuresLiqsTransform(obj.o) : obj)
+    }
+
+    return w
+  })
+
+  return options =>
+    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+}
+
+const allFuturesLiquidations = (cb, transform = true) => {
+  const w = new openWebSocket(`${endpoints.futures}/!forceOrder@arr`)
+
+  w.onmessage = msg => {
+    const obj = JSON.parse(msg.data)
+    cb(transform ? futuresLiqsTransform(obj.o) : obj)
+  }
+
+  return options => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
+}
+
 const tradesTransform = m => ({
   eventType: m.e,
   eventTime: m.E,
@@ -615,6 +656,8 @@ export default opts => {
     futuresTicker: (payload, cb, transform) => ticker(payload, cb, transform, 'futures'),
     futuresAllTickers: (cb, transform) => allTickers(cb, transform, 'futures'),
     futuresAggTrades: (payload, cb, transform) => aggTrades(payload, cb, transform, 'futures'),
+    futuresLiquidations,
+    allFuturesLiquidations,
     futuresUser: user(opts, 'futures'),
   }
 }
