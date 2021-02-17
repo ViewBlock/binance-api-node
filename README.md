@@ -124,6 +124,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [futuresAllTickers](#futuresAlltickers)
   - [futuresCandles](#futuresCandles)
   - [futuresAggTrades](#futuresAggtrades)
+  - [futuresLiquidations](#futuresLiquidations)
+  - [futuresAllLiquidations](#futuresAllLiquidations)
   - [futuresUser](#futuresUser)
 - [Common](#common)
   - [getInfo](#getInfo)
@@ -2896,6 +2898,69 @@ client.ws.futuresAggTrades(['ETHBTC', 'BNBBTC'], trade => {
   isBuyerMaker: false,
 }
 ```
+</details>
+
+
+#### futuresLiquidations
+
+Live liquidation data feed. Pass either a single symbol string or an array of symbols. The Liquidation Order Streams push force liquidation order information for specific symbol(s).
+
+```js
+client.ws.futuresLiquidations(['ETHBTC', 'BNBBTC'], liquidation => {
+  console.log(liquidation)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  symbol: string
+  price: '0.04923600',
+  origQty: '3.43500000',
+  lastFilledQty: '3.43500000',
+  accumulatedQty: '3.43500000',
+  averagePrice: '0.04923600',
+  status: 'FILLED',
+  timeInForce: 'IOC',
+  type: 'LIMIT',
+  side: 'SELL',
+  time: 1508614495050
+}
+```
+
+</details>
+
+#### futuresAllLiquidations
+
+Live liquidation data feed. Pass either a single symbol string or an array of symbols. The All Liquidation Order Streams push force liquidation order information for all symbols in the market.
+
+```js
+client.ws.futuresAllLiquidations(liquidation => {
+  console.log(liquidation)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  symbol: string
+  price: '0.04923600',
+  origQty: '3.43500000',
+  lastFilledQty: '3.43500000',
+  accumulatedQty: '3.43500000',
+  averagePrice: '0.04923600',
+  status: 'FILLED',
+  timeInForce: 'IOC',
+  type: 'LIMIT',
+  side: 'SELL',
+  time: 1508614495050
+}
+```
+
 </details>
 
 #### futuresUser

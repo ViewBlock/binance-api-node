@@ -275,6 +275,48 @@ test('[WS] aggregate trades', t => {
   })
 })
 
+test('[WS] liquidations', t => {
+  return new Promise(resolve => {
+    client.ws.futuresLiquidations('ETHBTC', liquidation => {
+      checkFields(t, liquidation, [
+        'symbol',
+        'price',
+        'origQty',
+        'lastFilledQty',
+        'accumulatedQty',
+        'averagePrice',
+        'status',
+        'timeInForce',
+        'type',
+        'side',
+        'time',
+      ])
+      resolve()
+    })
+  })
+})
+
+test('[FUTURES-WS] all liquidations', t => {
+  return new Promise(resolve => {
+    client.ws.futuresAllLiquidations(liquidation => {
+      checkFields(t, liquidation, [
+        'symbol',
+        'price',
+        'origQty',
+        'lastFilledQty',
+        'accumulatedQty',
+        'averagePrice',
+        'status',
+        'timeInForce',
+        'type',
+        'side',
+        'time',
+      ])
+      resolve()
+    })
+  })
+})
+
 test('[WS] userEvents', t => {
   const accountPayload = {
     e: 'outboundAccountInfo',
