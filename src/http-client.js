@@ -27,10 +27,11 @@ const makeQueryString = q =>
  * Get API limits info from headers
  */
 const headersMapping = {
-  'x-mbx-used-weight-1m': 'usedWeigh1m',
+  'x-mbx-used-weight-1m': 'usedWeight1m',
   'x-mbx-order-count-10s': 'orderCount10s',
   'x-mbx-order-count-1m': 'orderCount1m',
   'x-mbx-order-count-1h': 'orderCount1h',
+  'x-mbx-order-count-1d': 'orderCount1d',
   'x-response-time': 'responseTime',
 }
 
@@ -346,6 +347,8 @@ export default opts => {
     depositAddress: payload => privCall('/wapi/v3/depositAddress.html', payload),
     tradeFee: payload => privCall('/wapi/v3/tradeFee.html', payload),
     assetDetail: payload => privCall('/wapi/v3/assetDetail.html', payload),
+    universalTransfer: payload => privCall('/sapi/v1/asset/transfer', payload, 'POST'),
+    universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
 
     capitalConfigs: () => privCall('/sapi/v1/capital/config/getall'),
     capitalDepositAddress: payload => privCall('/sapi/v1/capital/deposit/address', payload),
@@ -372,6 +375,12 @@ export default opts => {
     marginAccountInfo: payload => privCall('/sapi/v1/margin/account', payload),
     marginMyTrades: payload => privCall('/sapi/v1/margin/myTrades', payload),
     marginRepay: payload => privCall('/sapi/v1/margin/repay', payload, 'POST'),
+    marginLoan: payload => privCall('/sapi/v1/margin/loan', payload, 'POST'),
+    marginIsolatedAccount: payload => privCall('/sapi/v1/margin/isolated/account', payload),
+    marginMaxBorrow: payload => privCall('/sapi/v1/margin/maxBorrowable', payload),
+    marginCreateIsolated: payload => privCall('/sapi/v1/margin/isolated/create', payload, 'POST'),
+    marginIsolatedTransfer: payload => privCall('/sapi/v1/margin/isolated/transfer', payload, 'POST'),
+    marginIsolatedTransferHistory: payload => privCall('/sapi/v1/margin/isolated/transfer', payload),
 
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),

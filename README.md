@@ -26,7 +26,7 @@ const client = Binance()
 const client2 = Binance({
   apiKey: 'xxx',
   apiSecret: 'xxx',
-  getTime: xxx, // time generator function, optional, defaults to () => Date.now()
+  getTime: xxx,
 })
 
 client.time().then(time => console.log(time))
@@ -42,6 +42,7 @@ Every REST method returns a Promise, making this library [async await](https://d
 Following examples will use the `await` form, which requires some configuration you will have to lookup.
 
 ### Table of Contents
+- [Init](#init)
 - [Public REST Endpoints](#public-rest-endpoints)
   - [ping](#ping)
   - [time](#time)
@@ -88,8 +89,15 @@ Following examples will use the `await` form, which requires some configuration 
   - [tradeFee](#tradefee)
   - [capitalConfigs](#capitalConfigs)
   - [capitalDepositAddress](#capitalDepositAddress)
+  - [universalTransfer](#universalTransfer)
+  - [universalTransferHistory](#universalTransferHistory)
 - [Margin](#margin)
   - [marginRepay](#marginRepay)
+  - [marginIsolatedAccount](#marginIsolatedAccount)
+  - [marginMaxBorrow](#marginMaxBorrow)
+  - [marginCreateIsolated](#marginCreateIsolated)
+  - [marginIsolatedTransfer](#marginIsolatedTransfer)
+  - [marginIsolatedTransferHistory](#marginIsolatedTransferHistory)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
@@ -120,6 +128,18 @@ Following examples will use the `await` form, which requires some configuration 
 - [Common](#common)
   - [getInfo](#getInfo)
 - [ErrorCodes](#errorcodes)
+
+### Init
+
+| Param       | Type     | Required | Info                                         |
+| ----------- | -------- | -------- | -------------------------------------------- |
+| apiKey      | String   | false    | Required when making private calls           |
+| apiSecret   | String   | false    | Required when making private calls           |
+| getTime     | Function | false    | Time generator, defaults to () => Date.now() |
+| httpBase    | String   | false    | Changes the default endpoint                 |
+| httpFutures | String   | false    | Changes the default endpoint                 |
+| wsBase      | String   | false    | Changes the default endpoint                 |
+| wsFutures   | String   | false    | Changes the default endpoint                 |
 
 ### Public REST Endpoints
 
@@ -864,8 +884,8 @@ console.log(
   await client.order({
     symbol: 'XLMETH',
     side: 'BUY',
-    quantity: 100,
-    price: 0.0002,
+    quantity: '100',
+    price: '0.0002',
   }),
 )
 ```
@@ -875,8 +895,8 @@ console.log(
 | symbol           | String | true     |
 | side             | String | true     |          | `BUY`,`SELL`                                                        |
 | type             | String | false    | `LIMIT`  | `LIMIT`, `MARKET`                                                   |
-| quantity         | Number | true     |
-| price            | Number | true     |          | Optional for `MARKET` orders                                        |
+| quantity         | String | true     |
+| price            | String | true     |          | Optional for `MARKET` orders                                        |
 | timeInForce      | String | false    | `GTC`    | `FOK`, `GTC`, `IOC`                                                 |
 | newClientOrderId | String | false    |          | A unique id for the order. Automatically generated if not sent.     |
 | stopPrice        | Number | false    |          | Used with stop orders                                               |
@@ -1665,7 +1685,102 @@ console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
 
 </details>
 
+#### universalTransfer
+
+You need to enable Permits Universal Transfer option for the api key which requests this endpoint.
+
+```js
+console.log(await client.universalTransfer({ type: 'MAIN_C2C', asset: 'USDT', amount: '1000' }))
+```
+
+| Param      | Type   | Required | Description      |
+| ---------- | ------ | -------- | ---------------- |
+| type       | String | true     |
+| asset      | String | true     |
+| amount     | String | true     |
+| recvWindow | Number | true     |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  tranId:13526853623
+}
+```
+
+</details>
+
+#### universalTransferHistory
+
+```js
+console.log(await client.universalTransferHistory({ type: 'MAIN_C2C' }))
+```
+
+| Param      | Type   | Required | Description         |
+| ---------- | ------ | -------- | ------------------- |
+| type       | String | true     |
+| startTime  | Number | false    |
+| endTime    | Number | false    |
+| current    | Number | false    | Default 1           |
+| size       | Number | false    | Default 10, Max 100 |
+| recvWindow | Number | true     |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "total":2,
+  "rows":[
+    {
+      "asset":"USDT",
+      "amount":"1",
+      "type":"MAIN_C2C"
+      "status": "CONFIRMED",
+      "tranId": 11415955596,
+      "timestamp":1544433328000
+    },
+    {
+      "asset":"USDT",
+      "amount":"2",
+      "type":"MAIN_C2C",
+      "status": "CONFIRMED",
+      "tranId": 11366865406,
+      "timestamp":1544433328000
+    }
+  ]
+}
+```
+
+</details>
+
 ### Margin
+
+#### marginLoan
+
+Create a loan for margin account.
+
+```js
+console.log(await client.marginLoan({ asset: 'BTC', amount:'0.0001' }));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| asset | String | true     | The asset name |
+| amount | Number | true     | 
+
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "tranId": 100000001 //transaction id
+}
+```
+
+</details>
 
 #### marginRepay
 
@@ -1692,6 +1807,195 @@ console.log(await client.marginRepay({ asset: 'BTC', amount:'0.0001' }));
 
 </details>
 
+#### marginIsolatedAccount
+
+Query Isolated Margin Account Info
+
+```js
+console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| symbols | String | false     | Max 5 symbols can be sent; separated by "," |
+| recvWindow | Number | false     | No more than 60000 |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+   "assets":[
+      {
+        "baseAsset": 
+        {
+          "asset": "BTC",
+          "borrowEnabled": true,
+          "borrowed": "0.00000000",
+          "free": "0.00000000",
+          "interest": "0.00000000",
+          "locked": "0.00000000",
+          "netAsset": "0.00000000",
+          "netAssetOfBtc": "0.00000000",
+          "repayEnabled": true,
+          "totalAsset": "0.00000000"
+        },
+        "quoteAsset": 
+        {
+          "asset": "USDT",
+          "borrowEnabled": true,
+          "borrowed": "0.00000000",
+          "free": "0.00000000",
+          "interest": "0.00000000",
+          "locked": "0.00000000",
+          "netAsset": "0.00000000",
+          "netAssetOfBtc": "0.00000000",
+          "repayEnabled": true,
+          "totalAsset": "0.00000000"
+        },
+        "symbol": "BTCUSDT"
+        "isolatedCreated": true, 
+        "marginLevel": "0.00000000", 
+        "marginLevelStatus": "EXCESSIVE", // "EXCESSIVE", "NORMAL", "MARGIN_CALL", "PRE_LIQUIDATION", "FORCE_LIQUIDATION"
+        "marginRatio": "0.00000000",
+        "indexPrice": "10000.00000000"
+        "liquidatePrice": "1000.00000000",
+        "liquidateRate": "1.00000000"
+        "tradeEnabled": true
+      }
+    ],
+    "totalAssetOfBtc": "0.00000000",
+    "totalLiabilityOfBtc": "0.00000000",
+    "totalNetAssetOfBtc": "0.00000000" 
+}
+```
+
+</details>
+
+#### marginMaxBorrow
+
+If isolatedSymbol is not sent, crossed margin data will be sent.
+
+```js
+console.log(await client.marginMaxBorrow({ asset: 'BTC', isolatedSymbol: 'BTCUSDT'}));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| asset | String | true     |
+| isolatedSymbol| String | false | 
+| recvWindow | Number | false     | No more than 60000 |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "amount": "1.69248805", // account's currently max borrowable amount with sufficient system availability
+  "borrowLimit": "60" // max borrowable amount limited by the account level
+}
+```
+
+</details>
+
+#### marginCreateIsolated
+
+```js
+console.log(await client.marginCreateIsolated({ base: 'BTC', quote: 'USDT'}));
+```
+
+| Param      | Type   | Required | Description           |
+| ---------- | ------ | -------- | --------------------- |
+| base       | String | true     | Base asset of symbol  |
+| quote      | String | true     | Quote asset of symbol |
+| recvWindow | Number | false    | No more than 60000    |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "success": true,
+    "symbol": "BTCUSDT"
+}
+```
+</details>
+
+#### marginIsolatedTransfer
+
+```js
+console.log(await client.marginIsolatedTransfer({ asset: 'USDT', symbol: 'BNBUSDT', transFrom: 'ISOLATED_MARGIN', transTo: 'SPOT', amount: 1}));
+```
+
+| Param      | Type   | Required | Description               |
+| ---------- | ------ | -------- | ------------------------- |
+| asset      | String | true     | asset,such as BTC         |
+| symbol     | String | true     |
+| transFrom  | String | true     | "SPOT", "ISOLATED_MARGIN" |
+| transTo    | String | true     | "SPOT", "ISOLATED_MARGIN" |
+| amount     | Number | true     |
+| recvWindow | Number | false    | No more than 60000        |
+
+<details>
+<summary>Output</summary>
+    
+```js
+{
+    //transaction id
+    "tranId": 100000001
+}
+```
+
+</details>
+
+#### marginIsolatedTransferHistory
+
+```js
+console.log(await client.marginIsolatedTransferHistory({ symbol: 'BNBUSDT'}));
+```
+
+| Param      | Type   | Required | Description               |
+| ---------- | ------ | -------- | ------------------------- |
+| asset      | String | false    | asset,such as BTC         |
+| symbol     | String | true     |
+| transFrom  | String | false    | "SPOT", "ISOLATED_MARGIN" |
+| transTo    | String | false    | "SPOT", "ISOLATED_MARGIN" |
+| startTime  | Number | false    |
+| endTime    | Number | false    |
+| current    | Number | false    | Current page, default 1   |
+| size       | Number | false    | Default 10, max 100       |
+| recvWindow | Number | false    | No more than 60000        |
+
+<details>
+<summary>Output</summary>
+    
+```js
+{
+  "rows": [
+    {
+      "amount": "0.10000000",
+      "asset": "BNB",
+      "status": "CONFIRMED",
+      "timestamp": 1566898617000,
+      "txId": 5240372201,
+      "transFrom": "SPOT",
+      "transTo": "ISOLATED_MARGIN"
+    },
+    {
+      "amount": "5.00000000",
+      "asset": "USDT",
+      "status": "CONFIRMED",
+      "timestamp": 1566888436123,
+      "txId": 5239810406,
+      "transFrom": "ISOLATED_MARGIN",
+      "transTo": "SPOT"
+    }
+  ],
+  "total": 2
+}
+```
+
+</details>
 
 ### Futures Authenticated REST endpoints
 
