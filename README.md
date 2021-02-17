@@ -2633,6 +2633,68 @@ client.ws.aggTrades(['ETHBTC', 'BNBBTC'], trade => {
 
 </details>
 
+#### futuresLiquidations
+
+Live liquidation data feed. Pass either a single symbol string or an array of symbols. The Liquidation Order Streams push force liquidation order information for specific symbol(s).
+
+```js
+client.ws.futuresLiquidations(['ETHBTC', 'BNBBTC'], liquidation => {
+  console.log(liquidation)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  symbol: string
+  price: '0.04923600',
+  origQty: '3.43500000',
+  lastFilledQty: '3.43500000',
+  accumulatedQty: '3.43500000',
+  averagePrice: '0.04923600',
+  status: 'FILLED',
+  timeInForce: 'IOC',
+  type: 'LIMIT',
+  side: 'SELL',
+  time: 1508614495050
+}
+```
+
+</details>
+
+#### allFuturesLiquidations
+
+Live liquidation data feed. Pass either a single symbol string or an array of symbols. The All Liquidation Order Streams push force liquidation order information for all symbols in the market.
+
+```js
+client.ws.allFuturesLiquidations(liquidation => {
+  console.log(liquidation)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  symbol: string
+  price: '0.04923600',
+  origQty: '3.43500000',
+  lastFilledQty: '3.43500000',
+  accumulatedQty: '3.43500000',
+  averagePrice: '0.04923600',
+  status: 'FILLED',
+  timeInForce: 'IOC',
+  type: 'LIMIT',
+  side: 'SELL',
+  time: 1508614495050
+}
+```
+
+</details>
+
 #### user
 
 Live user messages data feed.
