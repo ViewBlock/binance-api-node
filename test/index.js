@@ -298,7 +298,7 @@ test('[WS] liquidations', t => {
 
 test('[FUTURES-WS] all liquidations', t => {
   return new Promise(resolve => {
-    client.ws.allFuturesLiquidations(liquidation => {
+    client.ws.futuresAllLiquidations(liquidation => {
       checkFields(t, liquidation, [
         'symbol',
         'price',

@@ -343,7 +343,7 @@ const futuresLiquidations = (payload, cb, transform = true) => {
     cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
-const allFuturesLiquidations = (cb, transform = true) => {
+const futuresAllLiquidations = (cb, transform = true) => {
   const w = new openWebSocket(`${endpoints.futures}/!forceOrder@arr`)
 
   w.onmessage = msg => {
@@ -657,7 +657,7 @@ export default opts => {
     futuresAllTickers: (cb, transform) => allTickers(cb, transform, 'futures'),
     futuresAggTrades: (payload, cb, transform) => aggTrades(payload, cb, transform, 'futures'),
     futuresLiquidations,
-    allFuturesLiquidations,
+    futuresAllLiquidations,
     futuresUser: user(opts, 'futures'),
   }
 }
