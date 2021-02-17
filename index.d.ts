@@ -411,10 +411,10 @@ declare module 'binance-api-node' {
       pairs: string | string[],
       callback: (trade: Trade) => void,
     ) => ReconnectingWebSocketHandler
-    futuresLiquidationStream: (
+    futuresLiquidations: (
       symbol: string | string[],
       callback: (forecOrder: ForceOrder) => void) => ReconnectingWebSocketHandler
-    allFuturesLiquidations: (
+    futuresAllLiquidations: (
       callback: (forecOrder: ForceOrder) => void) => ReconnectingWebSocketHandler
 
     user: (callback: (msg: UserDataStreamEvent) => void) => Promise<ReconnectingWebSocketHandler>
