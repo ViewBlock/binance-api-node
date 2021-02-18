@@ -478,23 +478,21 @@ const futuresUserTransforms = {
     transactionTime: m.T,
     eventType: 'ACCOUNT_UPDATE',
     eventReasonType: m.a.m,
-    balances: m.a.B.reduce((out, cur) => {
-      out[cur.a] = { asset: cur.a, walletBalance: cur.wb, crossWalletBalance: cur.cw }
-      return out
-    }, {}),
-    positions: m.a.P.reduce((out, cur) => {
-      out[cur.a] = {
-        symbol: cur.s,
-        positionAmount: cur.pa,
-        entryPrice: cur.ep,
-        accumulatedRealized: cur.cr,
-        unrealizedPnL: cur.up,
-        marginType: cur.mt,
-        isolatedWallet: cur.iw,
-        positionSide: cur.ps,
-      }
-      return out
-    }, {}),
+    balances: m.a.B.map((b) => ({ 
+      asset: b.a, 
+      walletBalance: b.wb, 
+      crossWalletBalance: b.cw })
+    ),
+    positions: m.a.P.map((p) => ({
+        symbol: p.s,
+        positionAmount: p.pa,
+        entryPrice: p.ep,
+        accumulatedRealized: p.cr,
+        unrealizedPnL: p.up,
+        marginType: p.mt,
+        isolatedWallet: p.iw,
+        positionSide: p.ps,
+      })),
   }),
   // https://binance-docs.github.io/apidocs/futures/en/#event-order-update
   ORDER_TRADE_UPDATE: m => ({
