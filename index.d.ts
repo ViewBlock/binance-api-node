@@ -419,7 +419,7 @@ declare module 'binance-api-node' {
 
     user: (callback: (msg: UserDataStreamEvent) => void) => Promise<ReconnectingWebSocketHandler>
     marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Promise<ReconnectingWebSocketHandler>
-    futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Promise<ReconnectingWebSocketHandler>
+    futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport | AccountUpdate) => void) => Promise<ReconnectingWebSocketHandler>
   }
 
   export type WebSocketCloseOptions = {
@@ -841,6 +841,33 @@ declare module 'binance-api-node' {
     totalTradeQuantity: string // Cumulative filled quantity
     tradeId: number // Trade ID
   }
+
+  
+export interface Balance {
+  asset: string;
+  walletBalance: string;
+  crossWalletBalance: string;
+}
+
+export interface Position {
+  symbol: string;
+  positionAmount: string;
+  entryPrice: string;
+  accumulatedRealized: string;
+  unrealizedPnL: string;
+  marginType: string;
+  isolatedWallet: string;
+  positionSide: string;
+}
+
+export interface AccountUpdate {
+  eventTime: string;
+  eventType: 'ACCOUNT_UPDATE';
+  transactionTime: number;
+  eventReasonType: string;
+  balances: Balance[];
+  positions: Position[]
+}
 
   export interface TradeResult {
     id: number
