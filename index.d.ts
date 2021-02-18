@@ -1,6 +1,6 @@
 // tslint:disable:interface-name
 declare module 'binance-api-node' {
-  export default function (options?: {
+  export default function(options?: {
     apiKey?: string
     apiSecret?: string
     getTime?: () => number | Promise<number>
@@ -160,7 +160,9 @@ declare module 'binance-api-node' {
     }
   }
 
-  export type GetOrderOptions = { symbol: string, orderId: number } | { symbol: string, origClientOrderId: string }
+  export type GetOrderOptions =
+    | { symbol: string; orderId: number }
+    | { symbol: string; origClientOrderId: string }
 
   export interface GetInfo {
     spot: GetInfoDetails
@@ -176,23 +178,24 @@ declare module 'binance-api-node' {
     responseTime?: string
   }
 
-  export type TransferType = 'MAIN_C2C' |
-    'MAIN_UMFUTURE' |
-    'MAIN_CMFUTURE' |
-    'MAIN_MARGIN' |
-    'MAIN_MINING' |
-    'C2C_MAIN' |
-    'C2C_UMFUTURE' |
-    'C2C_MINING' |
-    'UMFUTURE_MAIN' |
-    'UMFUTURE_C2C' |
-    'UMFUTURE_MARGIN' |
-    'CMFUTURE_MAIN' |
-    'MARGIN_MAIN' |
-    'MARGIN_UMFUTURE' |
-    'MINING_MAIN' |
-    'MINING_UMFUTURE' |
-    'MINING_C2C'
+  export type TransferType =
+    | 'MAIN_C2C'
+    | 'MAIN_UMFUTURE'
+    | 'MAIN_CMFUTURE'
+    | 'MAIN_MARGIN'
+    | 'MAIN_MINING'
+    | 'C2C_MAIN'
+    | 'C2C_UMFUTURE'
+    | 'C2C_MINING'
+    | 'UMFUTURE_MAIN'
+    | 'UMFUTURE_C2C'
+    | 'UMFUTURE_MARGIN'
+    | 'CMFUTURE_MAIN'
+    | 'MARGIN_MAIN'
+    | 'MARGIN_UMFUTURE'
+    | 'MINING_MAIN'
+    | 'MINING_UMFUTURE'
+    | 'MINING_C2C'
 
   export interface UniversalTransfer {
     type: TransferType
@@ -211,7 +214,7 @@ declare module 'binance-api-node' {
   }
 
   export interface UniversalTransferHistoryResponse {
-    total: string,
+    total: string
     rows: {
       asset: string
       amount: string
@@ -240,9 +243,7 @@ declare module 'binance-api-node' {
     orderTest(options: NewOrder): Promise<Order>
     orderOco(options: NewOcoOrder): Promise<OcoOrder>
     ping(): Promise<boolean>
-    prices(options?: {
-      symbol?: string
-    }): Promise<{ [index: string]: string }>
+    prices(options?: { symbol?: string }): Promise<{ [index: string]: string }>
     avgPrice(options?: { symbol: string }): Promise<AvgPriceResult | AvgPriceResult[]>
     time(): Promise<number>
     trades(options: { symbol: string; limit?: number }): Promise<TradeResult[]>
@@ -301,7 +302,9 @@ declare module 'binance-api-node' {
       endTime?: number
     }): Promise<DepositHistoryResponse>
     universalTransfer(options: UniversalTransfer): Promise<{ tranId: number }>
-    universalTransferHistory(options: UniversalTransferHistory): Promise<UniversalTransferHistoryResponse>
+    universalTransferHistory(
+      options: UniversalTransferHistory,
+    ): Promise<UniversalTransferHistoryResponse>
     futuresPing(): Promise<boolean>
     futuresTime(): Promise<number>
     futuresExchangeInfo(): Promise<ExchangeInfo>
@@ -349,20 +352,47 @@ declare module 'binance-api-node' {
       recvWindow: number
     }): Promise<ChangePositionModeResult>
     marginOrder(options: NewOrder): Promise<Order>
-    marginAllOrders(options: { symbol: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    marginAllOrders(options: {
+      symbol: string
+      useServerTime?: boolean
+    }): Promise<QueryOrderResult[]>
     marginCancelOrder(options: {
       symbol: string
       orderId?: number
       useServerTime?: boolean
     }): Promise<CancelOrderResult>
-    marginOpenOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
-    marginRepay(options: { asset: string; amount: number; useServerTime?: boolean }): Promise<{ tranId: number }>
-    marginLoan(options: { asset: string; amount: number; useServerTime?: boolean }): Promise<{ tranId: number }>
-    marginIsolatedAccount(options?: { symbols?: string; recvWindow?: number }): Promise<IsolatedMarginAccount>
-    marginMaxBorrow(options: { asset: string, isolatedSymbol?: string, recvWindow?: number }): Promise<{ amount: string, borrowLimit: string }>
-    marginCreateIsolated(options: { base: string, quote: string, recvWindow?: number }): Promise<{ success: boolean, symbol: string }>
+    marginOpenOrders(options: {
+      symbol?: string
+      useServerTime?: boolean
+    }): Promise<QueryOrderResult[]>
+    marginRepay(options: {
+      asset: string
+      amount: number
+      useServerTime?: boolean
+    }): Promise<{ tranId: number }>
+    marginLoan(options: {
+      asset: string
+      amount: number
+      useServerTime?: boolean
+    }): Promise<{ tranId: number }>
+    marginIsolatedAccount(options?: {
+      symbols?: string
+      recvWindow?: number
+    }): Promise<IsolatedMarginAccount>
+    marginMaxBorrow(options: {
+      asset: string
+      isolatedSymbol?: string
+      recvWindow?: number
+    }): Promise<{ amount: string; borrowLimit: string }>
+    marginCreateIsolated(options: {
+      base: string
+      quote: string
+      recvWindow?: number
+    }): Promise<{ success: boolean; symbol: string }>
     marginIsolatedTransfer(options: marginIsolatedTransfer): Promise<{ tranId: string }>
-    marginIsolatedTransferHistory(options: marginIsolatedTransferHistory): Promise<marginIsolatedTransferHistoryResponse>
+    marginIsolatedTransferHistory(
+      options: marginIsolatedTransferHistory,
+    ): Promise<marginIsolatedTransferHistoryResponse>
   }
 
   export interface HttpError extends Error {
@@ -370,28 +400,32 @@ declare module 'binance-api-node' {
     url: string
   }
 
-  export type UserDataStreamEvent = OutboundAccountInfo | ExecutionReport | BalanceUpdate | OutboundAccountPosition
+  export type UserDataStreamEvent =
+    | OutboundAccountInfo
+    | ExecutionReport
+    | BalanceUpdate
+    | OutboundAccountPosition
 
   export interface WebSocket {
     depth: (
       pair: string | string[],
       callback: (depth: Depth) => void,
-      transform?: boolean
+      transform?: boolean,
     ) => ReconnectingWebSocketHandler
     futuresDepth: (
       pair: string | string[],
       callback: (depth: Depth) => void,
-      transform?: boolean
+      transform?: boolean,
     ) => ReconnectingWebSocketHandler
     partialDepth: (
       options: { symbol: string; level: number } | { symbol: string; level: number }[],
       callback: (depth: PartialDepth) => void,
-      transform?: boolean
+      transform?: boolean,
     ) => ReconnectingWebSocketHandler
     futuresPartialDepth: (
       options: { symbol: string; level: number } | { symbol: string; level: number }[],
       callback: (depth: PartialDepth) => void,
-      transform?: boolean
+      transform?: boolean,
     ) => ReconnectingWebSocketHandler
     ticker: (
       pair: string | string[],
@@ -413,19 +447,25 @@ declare module 'binance-api-node' {
     ) => ReconnectingWebSocketHandler
     futuresLiquidations: (
       symbol: string | string[],
-      callback: (forecOrder: ForceOrder) => void) => ReconnectingWebSocketHandler
+      callback: (forecOrder: ForceOrder) => void,
+    ) => ReconnectingWebSocketHandler
     futuresAllLiquidations: (
-      callback: (forecOrder: ForceOrder) => void) => ReconnectingWebSocketHandler
+      callback: (forecOrder: ForceOrder) => void,
+    ) => ReconnectingWebSocketHandler
 
     user: (callback: (msg: UserDataStreamEvent) => void) => Promise<ReconnectingWebSocketHandler>
-    marginUser: (callback: (msg: OutboundAccountInfo | ExecutionReport) => void) => Promise<ReconnectingWebSocketHandler>
-    futuresUser: (callback: (msg: OutboundAccountInfo | ExecutionReport | AccountUpdate) => void) => Promise<ReconnectingWebSocketHandler>
+    marginUser: (
+      callback: (msg: OutboundAccountInfo | ExecutionReport) => void,
+    ) => Promise<ReconnectingWebSocketHandler>
+    futuresUser: (
+      callback: (msg: OutboundAccountInfo | ExecutionReport | AccountUpdate) => void,
+    ) => Promise<ReconnectingWebSocketHandler>
   }
 
   export type WebSocketCloseOptions = {
-    delay: number;
-    fastClose: boolean;
-    keepClosed: boolean;
+    delay: number
+    fastClose: boolean
+    keepClosed: boolean
   }
 
   export type ReconnectingWebSocketHandler = (options?: WebSocketCloseOptions) => void
@@ -593,10 +633,7 @@ declare module 'binance-api-node' {
     useServerTime?: boolean
   }
 
-  export type SideEffectType =
-    | 'NO_SIDE_EFFECT'
-    | 'MARGIN_BUY'
-    | 'AUTO_REPAY'
+  export type SideEffectType = 'NO_SIDE_EFFECT' | 'MARGIN_BUY' | 'AUTO_REPAY'
 
   export interface OrderFill {
     price: string
@@ -842,32 +879,31 @@ declare module 'binance-api-node' {
     tradeId: number // Trade ID
   }
 
-  
-export interface Balance {
-  asset: string;
-  walletBalance: string;
-  crossWalletBalance: string;
-}
+  export interface Balance {
+    asset: string
+    walletBalance: string
+    crossWalletBalance: string
+  }
 
-export interface Position {
-  symbol: string;
-  positionAmount: string;
-  entryPrice: string;
-  accumulatedRealized: string;
-  unrealizedPnL: string;
-  marginType: string;
-  isolatedWallet: string;
-  positionSide: string;
-}
+  export interface Position {
+    symbol: string
+    positionAmount: string
+    entryPrice: string
+    accumulatedRealized: string
+    unrealizedPnL: string
+    marginType: string
+    isolatedWallet: string
+    positionSide: string
+  }
 
-export interface AccountUpdate {
-  eventTime: string;
-  eventType: 'ACCOUNT_UPDATE';
-  transactionTime: number;
-  eventReasonType: string;
-  balances: Balance[];
-  positions: Position[]
-}
+  export interface AccountUpdate {
+    eventTime: string
+    eventType: 'ACCOUNT_UPDATE'
+    transactionTime: number
+    eventReasonType: string
+    balances: Balance[]
+    positions: Position[]
+  }
 
   export interface TradeResult {
     id: number
@@ -1058,7 +1094,12 @@ export interface AccountUpdate {
     symbol: string
     isolatedCreated: boolean
     marginLevel: string
-    marginLevelStatus: 'EXCESSIVE' | 'NORMAL' | 'MARGIN_CALL' | 'PRE_LIQUIDATION' | 'FORCE_LIQUIDATION'
+    marginLevelStatus:
+      | 'EXCESSIVE'
+      | 'NORMAL'
+      | 'MARGIN_CALL'
+      | 'PRE_LIQUIDATION'
+      | 'FORCE_LIQUIDATION'
     marginRatio: string
     indexPrice: string
     liquidatePrice: string
@@ -1082,8 +1123,8 @@ export interface AccountUpdate {
   export interface marginIsolatedTransfer {
     asset: string
     symbol: string
-    transFrom: "SPOT" | "ISOLATED_MARGIN"
-    transTo: "SPOT" | "ISOLATED_MARGIN"
+    transFrom: 'SPOT' | 'ISOLATED_MARGIN'
+    transTo: 'SPOT' | 'ISOLATED_MARGIN'
     amount: number
     recvWindow?: number
   }
@@ -1091,8 +1132,8 @@ export interface AccountUpdate {
   export interface marginIsolatedTransferHistory {
     asset?: string
     symbol: string
-    transFrom?: "SPOT" | "ISOLATED_MARGIN"
-    transTo?: "SPOT" | "ISOLATED_MARGIN"
+    transFrom?: 'SPOT' | 'ISOLATED_MARGIN'
+    transTo?: 'SPOT' | 'ISOLATED_MARGIN'
     startTime?: number
     endTime?: number
     current?: number
@@ -1107,8 +1148,8 @@ export interface AccountUpdate {
       status: string
       timestamp: number
       txId: number
-      transFrom: "SPOT" | "ISOLATED_MARGIN"
-      transTo: "SPOT" | "ISOLATED_MARGIN"
+      transFrom: 'SPOT' | 'ISOLATED_MARGIN'
+      transTo: 'SPOT' | 'ISOLATED_MARGIN'
     }[]
     total: number
   }
