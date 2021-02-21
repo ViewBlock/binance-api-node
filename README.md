@@ -9,7 +9,11 @@ For PRs or issues, head over to the [source repository](https://github.com/Ashla
 
 ### Installation
 
-    yarn add binance-api-node
+    yarn add binance-api-node crypto
+    
+#### React-Native
+
+    yarn add binance-api-node crypto-js
 
 ### Getting started
 
