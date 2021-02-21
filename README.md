@@ -19,22 +19,21 @@ Those additional steps reffers only to `react-native`.
 
 You'll have to modify `http-client.js` in your `node_modules`:
 
-    ```diff
-    -var _crypto = _interopRequireDefault(require("crypto"));
-    +var _cryptoJS = _interopRequireDefault(require("crypto-js"));
-    ```
+```diff
+- var _crypto = _interopRequireDefault(require("crypto"));
++ var _cryptoJS = _interopRequireDefault(require("crypto-js"));
 
-    ```diff
-    -      var signature = _crypto.default.createHmac('sha256', apiSecret).update(makeQueryString(_objectSpread({}, data, {
-    -        timestamp: timestamp
-    -      })).substr(1)).digest('hex');
-    +      var signature = _cryptoJS.algo.HMAC
-    +        .create(_cryptoJS.algo.SHA256, apiSecret)
-    +        .update(makeQueryString({ ...data, timestamp }).substr(1))
-    +        .digest('hex')
-    +        .finalize()
-    +        .toString()
-    ```
+
+-      var signature = _crypto.default.createHmac('sha256', apiSecret).update(makeQueryString(_objectSpread({}, data, {
+-        timestamp: timestamp
+-      })).substr(1)).digest('hex');
++      var signature = _cryptoJS.algo.HMAC
++        .create(_cryptoJS.algo.SHA256, apiSecret)
++        .update(makeQueryString({ ...data, timestamp }).substr(1))
++        .digest('hex')
++        .finalize()
++        .toString()
+```
 
 Then use [patch-package](https://github.com/ds300/patch-package) to create patch.
 
