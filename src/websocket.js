@@ -32,10 +32,11 @@ const futuresDepthTransform = m => ({
 
 const depth = (payload, cb, transform = true, variator) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
+    const [symbolName, updateSpeed] = symbol.toLowerCase().split('@');
     const w = openWebSocket(
       `${
         variator === 'futures' ? endpoints.futures : endpoints.base
-      }/${symbol.toLowerCase()}@depth`,
+      }/${symbolName}@depth${updateSpeed ? `@${updateSpeed}` : ''}`,
     )
     w.onmessage = msg => {
       const obj = JSON.parse(msg.data)
@@ -79,10 +80,11 @@ const futuresPartDepthTransform = (level, m) => ({
 
 const partialDepth = (payload, cb, transform = true, variator) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(({ symbol, level }) => {
+    const [symbolName, updateSpeed] = symbol.toLowerCase().split('@');
     const w = openWebSocket(
       `${
         variator === 'futures' ? endpoints.futures : endpoints.base
-      }/${symbol.toLowerCase()}@depth${level}`,
+      }/${symbolName}@depth${level}${updateSpeed ? `@${updateSpeed}` : ''}`,
     )
     w.onmessage = msg => {
       const obj = JSON.parse(msg.data)

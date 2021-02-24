@@ -2422,7 +2422,10 @@ clean()
 #### depth
 
 Live depth market data feed. The first parameter can either
-be a single symbol string or an array of symbols.
+be a single symbol string or an array of symbols. If you wish
+to specify the update speed (can either be `1000ms` or `100ms`)
+of the stream then append the speed at the end of the symbol
+string as follows: `ETHBTC@100ms` 
 
 ```js
 client.ws.depth('ETHBTC', depth => {
@@ -2456,7 +2459,10 @@ client.ws.depth('ETHBTC', depth => {
 #### partialDepth
 
 Top levels bids and asks, pushed every second. Valid levels are 5, 10, or 20.
-Accepts an array of objects for multiple depths.
+Accepts an array of objects for multiple depths. If you wish
+to specify the update speed (can either be `1000ms` or `100ms`)
+of the stream then append the speed at the end of the symbol
+string as follows: `ETHBTC@100ms` 
 
 ```js
 client.ws.partialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {

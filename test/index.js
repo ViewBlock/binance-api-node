@@ -195,9 +195,35 @@ test('[WS] depth', t => {
   })
 })
 
+test('[WS] depth with update speed', t => {
+  return new Promise(resolve => {
+    client.ws.depth('ETHBTC@100ms', depth => {
+      checkFields(t, depth, [
+        'eventType',
+        'eventTime',
+        'firstUpdateId',
+        'finalUpdateId',
+        'symbol',
+        'bidDepth',
+        'askDepth',
+      ])
+      resolve()
+    })
+  })
+})
+
 test('[WS] partial depth', t => {
   return new Promise(resolve => {
     client.ws.partialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {
+      checkFields(t, depth, ['lastUpdateId', 'bids', 'asks'])
+      resolve()
+    })
+  })
+})
+
+test('[WS] partial depth with update speed', t => {
+  return new Promise(resolve => {
+    client.ws.partialDepth({ symbol: 'ETHBTC@100ms', level: 10 }, depth => {
       checkFields(t, depth, ['lastUpdateId', 'bids', 'asks'])
       resolve()
     })
