@@ -330,7 +330,9 @@ export default opts => {
     orderOco: payload => orderOco(privCall, payload, '/api/v3/order/oco'),
     orderTest: payload => order(privCall, payload, '/api/v3/order/test'),
     getOrder: payload => privCall('/api/v3/order', payload),
+    getOrderOco: payload => privCall('/api/v3/orderList', payload),
     cancelOrder: payload => privCall('/api/v3/order', payload, 'DELETE'),
+    cancelOrderOco: payload => privCall('/api/v3/orderList', payload, 'DELETE'),
 
     cancelOpenOrders: payload => privCall('/api/v3/openOrders', payload, 'DELETE'),
     openOrders: payload => privCall('/api/v3/openOrders', payload),
