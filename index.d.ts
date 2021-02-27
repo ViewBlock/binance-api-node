@@ -543,6 +543,8 @@ declare module 'binance-api-node' {
     quoteAsset: string
     quoteCommissionPrecision: number
     quoteOrderQtyMarketAllowed: boolean
+    pricePrecision: number
+    quantityPrecision: number
     quotePrecision: number
     status: string
     symbol: string
