@@ -351,6 +351,16 @@ declare module 'binance-api-node' {
       dualSidePosition: string
       recvWindow: number
     }): Promise<ChangePositionModeResult>
+    futuresLeverage(options: {
+      symbol: string
+      leverage: number
+      recvWindow?: number
+    }): Promise<FuturesLeverageResult>
+    futuresMarginType(options: {
+      symbol: string
+      marginType: string
+      recvWindow?: number
+    }): Promise<FuturesMarginTypeResult>
     marginOrder(options: NewOrder): Promise<Order>
     marginAllOrders(options: {
       symbol: string
@@ -432,6 +442,9 @@ declare module 'binance-api-node' {
       callback: (ticker: Ticker) => void,
     ) => ReconnectingWebSocketHandler
     allTickers: (callback: (tickers: Ticker[]) => void) => ReconnectingWebSocketHandler
+    futuresAllTickers: (
+      callback: (tickers: Ticker[]) => void,
+    ) => ReconnectingWebSocketHandler
     candles: (
       pair: string | string[],
       period: string,
@@ -578,6 +591,8 @@ declare module 'binance-api-node' {
     quoteAsset: string
     quoteCommissionPrecision: number
     quoteOrderQtyMarketAllowed: boolean
+    pricePrecision: number
+    quantityPrecision: number
     quotePrecision: number
     status: string
     symbol: string
@@ -613,6 +628,7 @@ declare module 'binance-api-node' {
     isIsolated?: boolean
     quoteOrderQty?: string
     sideEffectType?: SideEffectType
+    reduceOnly?: string
   }
 
   export interface NewOcoOrder {
@@ -1070,6 +1086,16 @@ declare module 'binance-api-node' {
     crossUnPnl: string
     availableBalance: string
     maxWithdrawAmount: string
+  }
+
+  export interface FuturesLeverageResult {
+    code: number
+    msg: string
+  }
+
+  export interface FuturesMarginTypeResult {
+    code: number
+    msg: string
   }
 
   export interface ChangePositionModeResult {
