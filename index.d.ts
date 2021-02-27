@@ -353,6 +353,11 @@ declare module 'binance-api-node' {
       leverage: number
       recvWindow?: number
     }): Promise<FuturesLeverageResult>
+    futuresMarginType(options: {
+      symbol: string
+      marginType: string
+      recvWindow?: number
+    }): Promise<FuturesMarginTypeResult>
     marginOrder(options: NewOrder): Promise<Order>
     marginAllOrders(options: { symbol: string, useServerTime?: boolean }): Promise<QueryOrderResult[]>
     marginCancelOrder(options: {
@@ -1021,6 +1026,11 @@ declare module 'binance-api-node' {
   }
 
   export interface FuturesLeverageResult {
+    code: number
+    msg: string
+  }
+
+  export interface FuturesMarginTypeResult {
     code: number
     msg: string
   }
