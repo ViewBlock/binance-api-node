@@ -583,6 +583,7 @@ declare module 'binance-api-node' {
     isIsolated?: boolean
     quoteOrderQty?: string
     sideEffectType?: SideEffectType
+    reduceOnly?: string
   }
 
   export interface NewOcoOrder {
