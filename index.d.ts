@@ -230,23 +230,23 @@ declare module 'binance-api-node' {
     clientOrderId: string
     cumQuote: string
     executedQty: string
-    orderId: number,
+    orderId: number
     origQty: string
     origType: string
     price: string
-    reduceOnly: boolean,
+    reduceOnly: boolean
     side: string
     positionSide: string
     status: string
-    stopPrice: string                // please ignore when order type is TRAILING_STOP_MARKET
-    closePosition: boolean,   // if Close-All
+    stopPrice: string
+    closePosition: boolean
     symbol: string
-    time: number,              // order time
+    time: number
     timeInForce: string
     type: string
-    activatePrice: string          // activation price, only return with TRAILING_STOP_MARKET order
-    priceRate: string                // callback rate, only return with TRAILING_STOP_MARKET order
-    updateTime: number,        // update time
+    activatePrice: string
+    priceRate: string
+    updateTime: number
     workingType: string
     priceProtect: boolean    
   }
