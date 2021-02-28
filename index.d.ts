@@ -225,6 +225,32 @@ declare module 'binance-api-node' {
     }[]
   }
 
+  export interface QueryFuturesOrderResult {
+    avgPrice: string
+    clientOrderId: string
+    cumQuote: string
+    executedQty: string
+    orderId: number,
+    origQty: string
+    origType: string
+    price: string
+    reduceOnly: boolean,
+    side: string
+    positionSide: string
+    status: string
+    stopPrice: string                // please ignore when order type is TRAILING_STOP_MARKET
+    closePosition: boolean,   // if Close-All
+    symbol: string
+    time: number,              // order time
+    timeInForce: string
+    type: string
+    activatePrice: string          // activation price, only return with TRAILING_STOP_MARKET order
+    priceRate: string                // callback rate, only return with TRAILING_STOP_MARKET order
+    updateTime: number,        // update time
+    workingType: string
+    priceProtect: boolean    
+  }
+
   export interface Binance {
     getInfo(): GetInfo
     accountInfo(options?: { useServerTime: boolean }): Promise<Account>
@@ -335,6 +361,7 @@ declare module 'binance-api-node' {
       limit?: number
     }): Promise<FundingRateResult[]>
     futuresOrder(options: NewOrder): Promise<Order>
+    futuresGetOrder(options: GetOrderOptions & { recvWindow?: number }): Promise<QueryFuturesOrderResult>
     futuresCancelOrder(options: {
       symbol: string
       orderId: number
@@ -343,7 +370,15 @@ declare module 'binance-api-node' {
     futuresOpenOrders(options: {
       symbol?: string
       useServerTime?: boolean
-    }): Promise<QueryOrderResult[]>
+    }): Promise<QueryFuturesOrderResult[]>
+    futuresAllOrders(options: {
+      symbol: string
+      orderId?: number
+      startTime?: number
+      endTime?: number
+      limit?: number
+      recvWindow?: number
+    }): Promise<QueryFuturesOrderResult[]>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
     futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
     futuresPositionMode(options?: { recvWindow: number }): Promise<PositionModeResult>
