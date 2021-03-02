@@ -588,11 +588,11 @@ declare module 'binance-api-node' {
     isSpotTradingAllowed: boolean
     ocoAllowed: boolean
     orderTypes: OrderType[]
+    permissions: TradingType[]
     quoteAsset: string
+    quoteAssetPrecision: string
     quoteCommissionPrecision: number
     quoteOrderQtyMarketAllowed: boolean
-    pricePrecision: number
-    quantityPrecision: number
     quotePrecision: number
     status: string
     symbol: string
