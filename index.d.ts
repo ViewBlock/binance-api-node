@@ -346,6 +346,7 @@ declare module 'binance-api-node' {
     }): Promise<QueryOrderResult[]>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
     futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
+    futuresAccountInfo(options?: { recvWindow: number }): Promise<FuturesAccountInfoResult>
     futuresPositionMode(options?: { recvWindow: number }): Promise<PositionModeResult>
     futuresPositionModeChange(options: {
       dualSidePosition: string
@@ -361,6 +362,14 @@ declare module 'binance-api-node' {
       marginType: string
       recvWindow?: number
     }): Promise<FuturesMarginTypeResult>
+    futuresIncome(options: {
+      symbol?: string
+      incomeType?: FuturesIncomeType
+      startTime?: number
+      endTime?: number
+      limit?: number
+      recvWindow?: number
+    }): Promise<FuturesIncomeResult[]>
     marginOrder(options: NewOrder): Promise<Order>
     marginAllOrders(options: {
       symbol: string
@@ -442,9 +451,7 @@ declare module 'binance-api-node' {
       callback: (ticker: Ticker) => void,
     ) => ReconnectingWebSocketHandler
     allTickers: (callback: (tickers: Ticker[]) => void) => ReconnectingWebSocketHandler
-    futuresAllTickers: (
-      callback: (tickers: Ticker[]) => void,
-    ) => ReconnectingWebSocketHandler
+    futuresAllTickers: (callback: (tickers: Ticker[]) => void) => ReconnectingWebSocketHandler
     candles: (
       pair: string | string[],
       period: string,
@@ -1088,6 +1095,42 @@ declare module 'binance-api-node' {
     maxWithdrawAmount: string
   }
 
+  export interface FuturesAccountInfoResult {
+    feeTier: number
+    canTrade: boolean
+    canDeposit: boolean
+    canWithdraw: boolean
+    updateTime: number
+    totalInitialMargin: string
+    totalMaintMargin: string
+    totalWalletBalance: string
+    totalUnrealizedProfit: string
+    totalMarginBalance: string
+    totalPositionInitialMargin: string
+    totalOpenOrderInitialMargin: string
+    totalCrossWalletBalance: string
+    totalCrossUnPnl: string
+    availableBalance: string
+    maxWithdrawAmount: string
+    assets: { [key: string]: string }[]
+    positions: FuturesAccountPosition[]
+  }
+
+  export interface FuturesAccountPosition {
+    symbol: string
+    initialMargin: string
+    maintMargin: string
+    unrealizedProfit: string
+    positionInitialMargin: string
+    openOrderInitialMargin: string
+    leverage: string
+    isolated: boolean
+    entryPrice: string
+    maxNotional: string
+    positionSide: string
+    positionAmt: string
+  }
+
   export interface FuturesLeverageResult {
     code: number
     msg: string
@@ -1096,6 +1139,25 @@ declare module 'binance-api-node' {
   export interface FuturesMarginTypeResult {
     code: number
     msg: string
+  }
+
+  export type FuturesIncomeType =
+    | 'TRANSFER'
+    | 'WELCOME_BONUS'
+    | 'REALIZED_PNL'
+    | 'FUNDING_FEE'
+    | 'COMMISSION'
+    | 'INSURANCE_CLEAR'
+
+  export interface FuturesIncomeResult {
+    symbol: string
+    incomeType: FuturesIncomeType
+    income: string
+    asset: string
+    info: string
+    time: number
+    tranId: string
+    tradeId: string
   }
 
   export interface ChangePositionModeResult {
