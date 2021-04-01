@@ -115,6 +115,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [partialDepth](#partialdepth)
   - [ticker](#ticker)
   - [allTickers](#alltickers)
+  - [miniTicker](#miniTicker)
+  - [allMiniTickers](#allMiniTickers)
   - [candles](#candles-1)
   - [aggTrades](#aggtrades-1)
   - [trades](#trades-1)
@@ -2672,6 +2674,44 @@ Retrieves all the tickers.
 
 ```js
 client.ws.allTickers(tickers => {
+  console.log(tickers)
+})
+```
+#### miniTicker
+
+24hr Mini Ticker statistics for a symbol pushed every second. Accepts an array of symbols.
+
+```js
+client.ws.miniTicker('HSRETH', ticker => {
+  console.log(ticker)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: '24hrMiniTicker',
+  eventTime: 1514670820924,
+  symbol: 'HSRETH',
+  curDayClose: '0.03213800',
+  open: '0.03623500',
+  high: '0.03659900',
+  low: '0.03126000',
+  volume: '100605.15000000',
+  volumeQuote: '3415.49097353'
+}
+```
+
+</details>
+
+#### allMiniTickers
+
+Retrieves all the mini tickers.
+
+```js
+client.ws.allMiniTickers(tickers => {
   console.log(tickers)
 })
 ```
