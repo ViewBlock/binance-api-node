@@ -412,6 +412,14 @@ declare module 'binance-api-node' {
     marginIsolatedTransferHistory(
       options: marginIsolatedTransferHistory,
     ): Promise<marginIsolatedTransferHistoryResponse>
+    marginMyTrades(options: {
+      symbol: string
+      isIsolated?: string
+      startTime?: number
+      endTime?: number
+      limit?: number
+      fromId?: number
+    }): Promise<MyTrade[]>
   }
 
   export interface HttpError extends Error {
