@@ -228,7 +228,7 @@ declare module 'binance-api-node' {
   export interface Binance {
     getInfo(): GetInfo
     accountInfo(options?: { useServerTime: boolean }): Promise<Account>
-    tradeFee(): Promise<TradeFeeResult>
+    tradeFee(options?: { useServerTime: boolean }): Promise<TradeFeeResult>
     aggTrades(options?: {
       symbol: string
       fromId?: string
