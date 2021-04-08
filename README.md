@@ -83,6 +83,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [allOrdersOCO](#allordersoco)  
   - [accountInfo](#accountinfo)
   - [myTrades](#mytrades)
+  - [dailyAccountSnapshot](#dailyAccountSnapshot)
   - [tradesHistory](#tradeshistory)
   - [depositHistory](#deposithistory)
   - [withdrawHistory](#withdrawhistory)
@@ -1541,6 +1542,59 @@ console.log(
     isBestMatch: true,
   },
 ]
+```
+
+</details>
+
+#### dailyAccountSnapshot
+
+Get asset snapshot for the current authenticated account.
+
+```js
+console.log(
+  await client.accountSnapshot({ 
+    "type": "SPOT" 
+  });
+)
+```
+
+| Param      | Type   | Required | Default | Description                                             |
+| ---------- | ------ | -------- | ------- | ------------------------------------------------------- |
+| type       | String | true     |
+| startTime  | Number | false    |
+| endTime    | Number | false    |
+| limit      | Number | false    | `5`     | min `5`, max `30`, default `5`                          |
+| recvWindow | Number | false    |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+   "code":200, // 200 for success; others are error codes
+   "msg":"", // error message
+   "snapshotVos":[
+      {
+         "data":{
+            "balances":[
+               {
+                  "asset":"BTC",
+                  "free":"0.09905021",
+                  "locked":"0.00000000"
+               },
+               {
+                  "asset":"USDT",
+                  "free":"1.89109409",
+                  "locked":"0.00000000"
+               }
+            ],
+            "totalAssetOfBtc":"0.09942700"
+         },
+         "type":"spot",
+         "updateTime":1576281599000
+      }
+   ]
+}
 ```
 
 </details>
