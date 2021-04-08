@@ -160,6 +160,23 @@ declare module 'binance-api-node' {
     }
   }
 
+  export interface AccountSnapshot {
+    code: number
+    msg: string
+    snapshotVos: {
+      data: {
+        balances: {
+          asset: string
+          free: number
+          locked: number
+        }[]
+        totalAssetOfBtc: number
+      }
+      type: string
+      updateTime: number
+    }[]
+  }
+
   export type GetOrderOptions =
     | { symbol: string; orderId: number }
     | { symbol: string; origClientOrderId: string }
@@ -289,6 +306,12 @@ declare module 'binance-api-node' {
       name?: string
     }): Promise<WithrawResponse>
     assetDetail(): Promise<AssetDetail>
+    accountSnapshot(options: {
+      type: string
+      startTime?: number
+      endTime?: number
+      limit?: number
+    }): Promise<AccountSnapshot>
     withdrawHistory(options: {
       asset: string
       status?: number
