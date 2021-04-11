@@ -114,7 +114,7 @@ const checkParams = (name, payload, requires = []) => {
 const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {}) =>
   sendResult(
     fetch(
-      `${!path.includes('/fapi') ? endpoints.base : endpoints.futures}${path}${makeQueryString(
+      `${!(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures}${path}${makeQueryString(
         data,
       )}`,
       {
@@ -180,7 +180,7 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
 
     return sendResult(
       fetch(
-        `${!path.includes('/fapi') ? endpoints.base : endpoints.futures}${path}${
+        `${!(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures}${path}${
           noData ? '' : makeQueryString(newData)
         }`,
         {
@@ -392,6 +392,7 @@ export default opts => {
     futuresAggTrades: payload => aggTrades(pubCall, payload, '/fapi/v1/aggTrades'),
     futuresMarkPrice: payload => pubCall('/fapi/v1/premiumIndex', payload),
     futuresAllForceOrders: payload => pubCall('/fapi/v1/allForceOrders', payload),
+    futuresLongShortRatio: payload => pubCall('/futures/data/globalLongShortAccountRatio', payload),
     futuresCandles: payload => candles(pubCall, payload, '/fapi/v1/klines'),
     futuresTrades: payload =>
       checkParams('trades', payload, ['symbol']) && pubCall('/fapi/v1/trades', payload),
