@@ -1645,6 +1645,8 @@ console.log(await client.depositHistory())
 | asset      | String | false    |
 | status     | Number | false    | 0 (0: pending, 1: success) |
 | startTime  | Number | false    |
+| offset     | Number | false    |
+| limit      | Number | false    |
 | endTime    | Number | false    |
 | recvWindow | Number | false    |
 
@@ -1679,6 +1681,8 @@ console.log(await client.withdrawHistory())
 | ---------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------- |
 | asset      | String | false    |
 | status     | Number | false    | 0 (0: Email Sent, 1: Cancelled 2: Awaiting Approval, 3: Rejected, 4: Processing, 5: Failure, 6: Completed) |
+| offset     | Number | false    |
+| limit      | Number | false    |
 | startTime  | Number | false    |
 | endTime    | Number | false    |
 | recvWindow | Number | false    |
@@ -1745,9 +1749,10 @@ Retrieve the account deposit address for a specific asset.
 console.log(await client.depositAddress({ asset: 'NEO' }))
 ```
 
-| Param | Type   | Required | Description    |
-| ----- | ------ | -------- | -------------- |
-| asset | String | true     | The asset name |
+| Param   | Type   | Required | Description    |
+| ------- | ------ | -------- | -------------- |
+| asset   | String | true     | The asset name |
+| network | String | false    |                |
 
 <details>
 <summary>Output</summary>
