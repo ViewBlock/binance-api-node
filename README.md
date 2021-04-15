@@ -89,6 +89,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [tradeFee](#tradefee)
   - [capitalConfigs](#capitalConfigs)
   - [capitalDepositAddress](#capitalDepositAddress)
+  - [capitalDepositHistory](#capitalDepositHistory)
   - [universalTransfer](#universalTransfer)
   - [universalTransferHistory](#universalTransferHistory)
 - [Margin](#margin)
@@ -1685,6 +1686,59 @@ console.log(await client.capitalDepositAddress({ coin: 'NEO' }))
 
 </details>
 
+
+#### capitalDepositHistory
+
+Fetch deposit address with network.
+
+```js
+console.log(await client.capitalDepositHistory())
+```
+
+| Param      | Type   | Required | Description      |
+| ---------- | ------ | -------- | ---------------- |
+| coin       | String | false    | The coin name    |
+| status     | Number | false    | 0 (0:pending, 6: credited but cannot withdraw, 1:success) |
+| startTime  | Number | false    | Default: 90 days from current timestamp |
+| endTime    | Number | false    | Default: present timestamp |
+| offset     | Number | false    | default: 0       |
+| limit      | Number | false    |                  |
+| recvWindow | Number | false    |                  |
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "amount": "0.00999800",
+        "coin": "PAXG",
+        "network": "ETH",
+        "status": 1,
+        "address": "0x788cabe9236ce061e5a892e1a59395a81fc8d62c",
+        "addressTag": "",
+        "txId": "0xaad4654a3234aa6118af9b4b335f5ae81c360b2394721c019b5d1e75328b09f3",
+        "insertTime": 1599621997000,
+        "transferType": 0,
+        "confirmTimes": "12/12"
+    },
+    {
+        "amount": "0.50000000",
+        "coin": "IOTA",
+        "network": "IOTA",
+        "status": 1,
+        "address": "SIZ9VLMHWATXKV99LH99CIGFJFUMLEHGWVZVNNZXRJJVWBPHYWPPBOSDORZ9EQSHCZAMPVAPGFYQAUUV9DROOXJLNW",
+        "addressTag": "",
+        "txId": "ESBFVQUTPIWQNJSPXFNHNYHSQNTGKRVKPRABQWTAXCDWOAKDKYWPTVG9BGXNVNKTLEJGESAVXIKIZ9999",
+        "insertTime": 1599620082000,
+        "transferType": 0,
+        "confirmTimes": "1/1"
+    }
+]
+```
+
+</details>
+
 #### universalTransfer
 
 You need to enable Permits Universal Transfer option for the api key which requests this endpoint.
@@ -2670,7 +2724,7 @@ Note that this method return a promise which will resolve the `clean` callback.
 
 </details>
 
-#### Futures WebSockets
+### Futures WebSockets
 
 Every websocket utility returns a function you can call to close the opened
 connection and avoid memory issues.
