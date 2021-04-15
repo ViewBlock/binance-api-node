@@ -354,8 +354,6 @@ export default opts => {
     universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
 
     capitalConfigs: () => privCall('/sapi/v1/capital/config/getall'),
-    capitalDepositAddress: payload => privCall('/sapi/v1/capital/deposit/address', payload),
-    capitalDepositHistory: payload => privCall('/sapi/v1/capital/deposit/hisrec', payload),
 
     getDataStream: () => privCall('/api/v3/userDataStream', null, 'POST', true),
     keepDataStream: payload => privCall('/api/v3/userDataStream', payload, 'PUT', false, true),
