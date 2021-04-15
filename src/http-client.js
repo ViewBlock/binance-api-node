@@ -114,7 +114,7 @@ const checkParams = (name, payload, requires = []) => {
 const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {}) =>
   sendResult(
     fetch(
-      `${!path.includes('/fapi') ? endpoints.base : endpoints.futures}${path}${makeQueryString(
+      `${!(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures}${path}${makeQueryString(
         data,
       )}`,
       {
@@ -180,7 +180,7 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
 
     return sendResult(
       fetch(
-        `${!path.includes('/fapi') ? endpoints.base : endpoints.futures}${path}${
+        `${!(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures}${path}${
           noData ? '' : makeQueryString(newData)
         }`,
         {
@@ -330,7 +330,9 @@ export default opts => {
     orderOco: payload => orderOco(privCall, payload, '/api/v3/order/oco'),
     orderTest: payload => order(privCall, payload, '/api/v3/order/test'),
     getOrder: payload => privCall('/api/v3/order', payload),
+    getOrderOco: payload => privCall('/api/v3/orderList', payload),
     cancelOrder: payload => privCall('/api/v3/order', payload, 'DELETE'),
+    cancelOrderOco: payload => privCall('/api/v3/orderList', payload, 'DELETE'),
 
     cancelOpenOrders: payload => privCall('/api/v3/openOrders', payload, 'DELETE'),
     openOrders: payload => privCall('/api/v3/openOrders', payload),
@@ -347,6 +349,7 @@ export default opts => {
     depositAddress: payload => privCall('/wapi/v3/depositAddress.html', payload),
     tradeFee: payload => privCall('/wapi/v3/tradeFee.html', payload),
     assetDetail: payload => privCall('/wapi/v3/assetDetail.html', payload),
+    accountSnapshot: payload => privCall('/sapi/v1/accountSnapshot', payload),
     universalTransfer: payload => privCall('/sapi/v1/asset/transfer', payload, 'POST'),
     universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
 
@@ -390,6 +393,7 @@ export default opts => {
     futuresAggTrades: payload => aggTrades(pubCall, payload, '/fapi/v1/aggTrades'),
     futuresMarkPrice: payload => pubCall('/fapi/v1/premiumIndex', payload),
     futuresAllForceOrders: payload => pubCall('/fapi/v1/allForceOrders', payload),
+    futuresLongShortRatio: payload => pubCall('/futures/data/globalLongShortAccountRatio', payload),
     futuresCandles: payload => candles(pubCall, payload, '/fapi/v1/klines'),
     futuresTrades: payload =>
       checkParams('trades', payload, ['symbol']) && pubCall('/fapi/v1/trades', payload),
@@ -412,6 +416,7 @@ export default opts => {
     futuresAllOrders: payload => privCall('/fapi/v1/allOrders', payload),
     futuresPositionRisk: payload => privCall('/fapi/v2/positionRisk', payload),
     futuresAccountBalance: payload => privCall('/fapi/v2/balance', payload),
+    futuresAccountInfo: payload => privCall('/fapi/v2/account', payload),
     futuresUserTrades: payload => privCall('/fapi/v1/userTrades', payload),
     futuresPositionMode: payload => privCall('/fapi/v1/positionSide/dual', payload),
     futuresPositionModeChange: payload => privCall('/fapi/v1/positionSide/dual', payload, 'POST'),

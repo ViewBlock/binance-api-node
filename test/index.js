@@ -195,9 +195,35 @@ test('[WS] depth', t => {
   })
 })
 
+test('[WS] depth with update speed', t => {
+  return new Promise(resolve => {
+    client.ws.depth('ETHBTC@100ms', depth => {
+      checkFields(t, depth, [
+        'eventType',
+        'eventTime',
+        'firstUpdateId',
+        'finalUpdateId',
+        'symbol',
+        'bidDepth',
+        'askDepth',
+      ])
+      resolve()
+    })
+  })
+})
+
 test('[WS] partial depth', t => {
   return new Promise(resolve => {
     client.ws.partialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {
+      checkFields(t, depth, ['lastUpdateId', 'bids', 'asks'])
+      resolve()
+    })
+  })
+})
+
+test('[WS] partial depth with update speed', t => {
+  return new Promise(resolve => {
+    client.ws.partialDepth({ symbol: 'ETHBTC@100ms', level: 10 }, depth => {
       checkFields(t, depth, ['lastUpdateId', 'bids', 'asks'])
       resolve()
     })
@@ -219,6 +245,26 @@ test('[WS] allTicker', t => {
       t.truthy(Array.isArray(tickers))
       t.is(tickers[0].eventType, '24hrTicker')
       checkFields(t, tickers[0], ['symbol', 'priceChange', 'priceChangePercent'])
+      resolve()
+    })
+  })
+})
+
+test('[WS] miniTicker', t => {
+  return new Promise(resolve => {
+    client.ws.miniTicker('ETHBTC', ticker => {
+      checkFields(t, ticker, ['open', 'high', 'low', 'eventTime', 'symbol', 'volume'])
+      resolve()
+    })
+  })
+})
+
+test('[WS] allMiniTicker', t => {
+  return new Promise(resolve => {
+    client.ws.allMiniTicker('ETHBTC', tickers => {
+      t.truthy(Array.isArray(tickers))
+      t.is(tickers[0].eventType, '24hrMiniTicker')
+      checkFields(t, tickers[0], ['open', 'high', 'low', 'eventTime', 'symbol', 'volume'])
       resolve()
     })
   })
@@ -269,6 +315,48 @@ test('[WS] aggregate trades', t => {
         'symbol',
         'firstId',
         'lastId',
+      ])
+      resolve()
+    })
+  })
+})
+
+test('[WS] liquidations', t => {
+  return new Promise(resolve => {
+    client.ws.futuresLiquidations('ETHBTC', liquidation => {
+      checkFields(t, liquidation, [
+        'symbol',
+        'price',
+        'origQty',
+        'lastFilledQty',
+        'accumulatedQty',
+        'averagePrice',
+        'status',
+        'timeInForce',
+        'type',
+        'side',
+        'time',
+      ])
+      resolve()
+    })
+  })
+})
+
+test('[FUTURES-WS] all liquidations', t => {
+  return new Promise(resolve => {
+    client.ws.futuresAllLiquidations(liquidation => {
+      checkFields(t, liquidation, [
+        'symbol',
+        'price',
+        'origQty',
+        'lastFilledQty',
+        'accumulatedQty',
+        'averagePrice',
+        'status',
+        'timeInForce',
+        'type',
+        'side',
+        'time',
       ])
       resolve()
     })

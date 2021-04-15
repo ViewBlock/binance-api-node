@@ -1,4 +1,4 @@
-import ws from 'ws'
+import ws from 'isomorphic-ws'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 
 export default url => {
