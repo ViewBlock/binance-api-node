@@ -1741,7 +1741,7 @@ console.log(await client.depositAddress({ coin: 'NEO' }))
 </details>
 
 
-#### capitalDepositHistory
+#### depositHistory
 
 Fetch deposit address with network.
 
