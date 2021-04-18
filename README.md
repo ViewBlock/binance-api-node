@@ -121,6 +121,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [aggTrades](#aggtrades-1)
   - [trades](#trades-1)
   - [user](#user)
+  - [customSubStream](#customSubStream)
 - [Futures Websockets](#futures-websockets)
   - [futuresDepth](#futuresDepth)
   - [futuresPartialDepth](#futuresPartialdepth)
@@ -131,6 +132,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [futuresLiquidations](#futuresLiquidations)
   - [futuresAllLiquidations](#futuresAllLiquidations)
   - [futuresUser](#futuresUser)
+  - [futuresCustomSubStream](#customSubStream)
 - [Common](#common)
   - [getInfo](#getInfo)
 - [ErrorCodes](#errorcodes)
@@ -2646,6 +2648,19 @@ client.ws.depth('ETHBTC', depth => {
 ```
 
 </details>
+
+#### customSubStream
+
+you can add custom sub stream by view [docs](#https://binance-docs.github.io/apidocs/futures/cn/#websocket)
+
+```js
+client.ws.futuresCustomSubStream('!markPrice@arr@1s', data => {
+  console.log(data)
+})
+client.ws.futuresCustomSubStream(['!markPrice@arr','ETHBTC@markPrice@1s'], data => {
+  console.log(data)
+})
+```
 
 #### partialDepth
 
