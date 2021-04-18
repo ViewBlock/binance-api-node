@@ -457,6 +457,14 @@ declare module 'binance-api-node' {
     | OutboundAccountPosition
 
   export interface WebSocket {
+    customSubStream: (
+      pair: string | string[],
+      callback: (data: any) => void,
+    ) => ReconnectingWebSocketHandler
+    futuresCustomSubStream: (
+      pair: string | string[],
+      callback: (data: any) => void,
+    ) => ReconnectingWebSocketHandler
     depth: (
       pair: string | string[],
       callback: (depth: Depth) => void,

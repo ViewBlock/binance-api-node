@@ -314,6 +314,24 @@ const allMiniTicker = (payload, cb, transform = true) => {
     cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
+const customSubStream = (payload, cb, variator) => {
+  const cache = (Array.isArray(payload) ? payload : [payload]).map(sub => {
+    const w = openWebSocket(
+      `${ variator === 'futures' ? endpoints.futures : endpoints.base }/${sub}`,
+    )
+
+    w.onmessage = msg => {
+      const data = JSON.parse(msg.data)
+      cb(data)
+    }
+
+    return w
+  })
+
+  return options =>
+    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+}
+
 const aggTradesTransform = m => ({
   eventType: m.e,
   eventTime: m.E,
@@ -698,6 +716,7 @@ export default opts => {
     allTickers,
     miniTicker,
     allMiniTicker,
+    customSubStream,
     user: user(opts),
 
     marginUser: user(opts, 'margin'),
@@ -713,5 +732,6 @@ export default opts => {
     futuresLiquidations,
     futuresAllLiquidations,
     futuresUser: user(opts, 'futures'),
+    futuresCustomSubStream: (payload, cb) => customSubStream(payload, cb, 'futures'),
   }
 }
