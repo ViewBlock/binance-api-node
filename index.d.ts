@@ -675,6 +675,8 @@ declare module 'binance-api-node' {
     quoteOrderQty?: string
     sideEffectType?: SideEffectType
     reduceOnly?: string
+    activationPrice?: string
+    callbackRate?: string
   }
 
   export interface NewOcoOrder {
@@ -750,10 +752,10 @@ declare module 'binance-api-node' {
     | 'LIMIT'
     | 'LIMIT_MAKER'
     | 'MARKET'
-    | 'STOP_LOSS'
-    | 'STOP_LOSS_LIMIT'
-    | 'TAKE_PROFIT'
-    | 'TAKE_PROFIT_LIMIT'
+    | 'STOP'
+    | 'STOP_MARKET'
+    | 'TAKE_PROFIT_MARKET'
+    | 'TRAILING_STOP_MARKET'
 
   export type ListOrderStatus = 'EXECUTING' | 'ALL_DONE' | 'REJECT'
 
