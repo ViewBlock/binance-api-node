@@ -232,6 +232,10 @@ const order = (privCall, payload = {}, url) => {
     requires.push('quantity')
   }
 
+  if (newPayload.type === 'TRAILING_STOP_MARKET') {
+    requires.push('callbackRate')
+  }
+
   return (
     checkParams('order', newPayload, requires) &&
     privCall(url, { type: 'LIMIT', ...newPayload }, 'POST')
