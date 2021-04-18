@@ -222,7 +222,7 @@ const candles = (pubCall, payload, endpoint = '/api/v3/klines') =>
  */
 const order = (privCall, payload = {}, url) => {
   const newPayload =
-    ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type
+    ['LIMIT'].includes(payload.type) || !payload.type
       ? { timeInForce: 'GTC', ...payload }
       : payload
 
@@ -230,6 +230,12 @@ const order = (privCall, payload = {}, url) => {
 
   if (!(newPayload.type === 'MARKET' && newPayload.quoteOrderQty)) {
     requires.push('quantity')
+  }
+
+  if (!(newPayload.type === 'TRAILING_STOP_MARKET' && newPayload.quoteOrderQty)) {
+    requires.push('quantity')
+    requires.push('activationPrice')
+    requires.push('callbackRate')
   }
 
   return (

@@ -899,32 +899,35 @@ console.log(
 
 | Param            | Type   | Required | Default  | Description                                                         |
 | ---------------- | ------ | -------- | -------- | ------------------------------------------------------------------- |
-| symbol           | String | true     |
+| symbol           | String | true     |          |                                                                     |
 | side             | String | true     |          | `BUY`,`SELL`                                                        |
 | type             | String | false    | `LIMIT`  | `LIMIT`, `MARKET`                                                   |
-| quantity         | String | true     |
+| quantity         | String | true     |          |                                                                     |
 | price            | String | true     |          | Optional for `MARKET` orders                                        |
 | timeInForce      | String | false    | `GTC`    | `FOK`, `GTC`, `IOC`                                                 |
 | newClientOrderId | String | false    |          | A unique id for the order. Automatically generated if not sent.     |
 | stopPrice        | Number | false    |          | Used with stop orders                                               |
+| activationPrice  | Number | false    |          | Used with `TRAILING_STOP_MARKET`                                               |
+| callbackRate     | Number | false    |          | Used with `TRAILING_STOP_MARKET`                             |      |
 | newOrderRespType | String | false    | `RESULT` | Returns more complete info of the order. `ACK`, `RESULT`, or `FULL` |
 | icebergQty       | Number | false    |          | Used with iceberg orders                                            |
-| recvWindow       | Number | false    |
+| recvWindow       | Number | false    |          |                                                                     |
 
 Additional mandatory parameters based on `type`:
 
-| Type                | Additional mandatory parameters                 |
-| ------------------- | ----------------------------------------------- |
-| `LIMIT`             | `timeInForce`, `quantity`, `price`              |
-| `MARKET`            | `quantity`                                      |
-| `STOP_LOSS`         | `quantity`, `stopPrice`                         |
-| `STOP_LOSS_LIMIT`   | `timeInForce`, `quantity`, `price`, `stopPrice` |
-| `TAKE_PROFIT`       | `quantity`, `stopPrice`                         |
-| `TAKE_PROFIT_LIMIT` | `timeInForce`, `quantity`, `price`, `stopPrice` |
-| `LIMIT_MAKER`       | `quantity`, `price`                             |
+| Type                   | Additional mandatory parameters                 |
+| -----------------------| ----------------------------------------------- |
+| `LIMIT`                | `timeInForce`, `quantity`, `price`              |
+| `MARKET`               | `quantity`                                      |
+| `STOP`                 | `quantity`, `price`, `stopPrice`                |
+| `STOP_LOSS_MARKET`     | `stopPrice`                                     |
+| `TAKE_PROFIT`          | `quantity`, `price`, `stopPrice`                |
+| `TAKE_PROFIT_MARKET`   | `stopPrice`                                     |
+| `LIMIT_MAKER`          | `quantity`, `price`                             |
+| `TRAILING_STOP_MARKET` | `callbackRate`, `activationPrice`               |
 
 - `LIMIT_MAKER` are `LIMIT` orders that will be rejected if they would immediately match and trade as a taker.
-- `STOP_LOSS` and `TAKE_PROFIT` will execute a `MARKET` order when the `stopPrice` is reached.
+- `STOP` and `TAKE_PROFIT` will execute a `MARKET` order when the `stopPrice` is reached.
 - Any `LIMIT` or `LIMIT_MAKER` type order can be made an iceberg order by sending an `icebergQty`.
 - Any order with an `icebergQty` MUST have `timeInForce` set to `GTC`.
 
