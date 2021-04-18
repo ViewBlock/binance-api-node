@@ -2654,15 +2654,10 @@ client.ws.depth('ETHBTC', depth => {
 
 #### customSubStream
 
-you can add custom sub stream by view [docs](#https://binance-docs.github.io/apidocs/futures/cn/#websocket)
+You can add custom sub streams by view [docs](#https://binance-docs.github.io/apidocs/futures/cn/#websocket)
 
 ```js
-client.ws.futuresCustomSubStream('!markPrice@arr@1s', data => {
-  console.log(data)
-})
-client.ws.futuresCustomSubStream(['!markPrice@arr','ETHBTC@markPrice@1s'], data => {
-  console.log(data)
-})
+client.ws.customSubStream('!markPrice@arr@1s', console.log)
 ```
 
 #### partialDepth
@@ -3215,6 +3210,14 @@ client.ws.futuresAllLiquidations(liquidation => {
 ```
 
 </details>
+
+#### futuresCustomSubStream
+
+You can add custom sub streams by view [docs](#https://binance-docs.github.io/apidocs/futures/cn/#websocket)
+
+```js
+client.ws.futuresCustomSubStream(['!markPrice@arr','ETHBTC@markPrice@1s'], console.log)
+```
 
 #### futuresUser
 
