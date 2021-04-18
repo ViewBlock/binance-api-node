@@ -732,5 +732,6 @@ export default opts => {
     futuresLiquidations,
     futuresAllLiquidations,
     futuresUser: user(opts, 'futures'),
+    futuresCustomSubStream: (payload, cb) => customSubStream(payload, cb, 'futures'),
   }
 }
