@@ -68,12 +68,8 @@ declare module 'binance-api-node' {
   }
   export interface TradeFee {
     symbol: string
-    maker: number
-    taker: number
-  }
-  export interface TradeFeeResult {
-    tradeFee: TradeFee[]
-    success: boolean
+    makerCommission: number
+    takerCommission: number
   }
   export interface AggregatedTrade {
     aggId: number
@@ -245,7 +241,7 @@ declare module 'binance-api-node' {
   export interface Binance {
     getInfo(): GetInfo
     accountInfo(options?: { useServerTime: boolean }): Promise<Account>
-    tradeFee(options?: { useServerTime: boolean }): Promise<TradeFeeResult>
+    tradeFee(options?: { useServerTime: boolean }): Promise<TradeFee[]>
     aggTrades(options?: {
       symbol: string
       fromId?: string
