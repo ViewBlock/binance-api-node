@@ -662,8 +662,10 @@ const user = (opts, variator) => (cb, transform, symbol) => {
   const closeStream = (options, catchErrors) => {
     if (currentListenKey) {
       clearInterval(int)
+      const params = { listenKey: currentListenKey };
+      if (symbol) params.symbol = symbol;
 
-      const p = closeDataStream({ listenKey: currentListenKey, symbol })
+      const p = closeDataStream(params)
 
       if (catchErrors) {
         p.catch(f => f)
