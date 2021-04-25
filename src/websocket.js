@@ -631,7 +631,12 @@ const getStreamMethods = (opts, variator = '') => {
   )
 }
 
-export const keepStreamAlive = (method, listenKey, symbol) => method({ listenKey, symbol })
+export const keepStreamAlive = (method, listenKey, symbol) => {
+  const params = { listenKey };
+  if (symbol) params.symbol = symbol;
+
+  return method(params);
+}
 
 const user = (opts, variator) => (cb, transform, symbol) => {
   const [getDataStream, keepDataStream, closeDataStream] = getStreamMethods(opts, variator)
@@ -643,7 +648,7 @@ const user = (opts, variator) => (cb, transform, symbol) => {
   const keepAlive = isReconnecting => {
     if (currentListenKey) {
       keepStreamAlive(keepDataStream, currentListenKey, symbol).catch(() => {
-        closeStream({}, true)
+        closeStream({}, true, symbol)
 
         if (isReconnecting) {
           setTimeout(() => makeStream(true), 30e3)
