@@ -631,9 +631,9 @@ const getStreamMethods = (opts, variator = '') => {
   )
 }
 
-export const keepStreamAlive = (method, listenKey) => method({ listenKey })
+export const keepStreamAlive = (method, listenKey, symbol) => method({ listenKey, symbol })
 
-const user = (opts, variator) => (cb, transform) => {
+const user = (opts, variator) => (cb, transform, symbol) => {
   const [getDataStream, keepDataStream, closeDataStream] = getStreamMethods(opts, variator)
 
   let currentListenKey = null
@@ -642,7 +642,7 @@ const user = (opts, variator) => (cb, transform) => {
 
   const keepAlive = isReconnecting => {
     if (currentListenKey) {
-      keepStreamAlive(keepDataStream, currentListenKey).catch(() => {
+      keepStreamAlive(keepDataStream, currentListenKey, symbol).catch(() => {
         closeStream({}, true)
 
         if (isReconnecting) {
@@ -658,7 +658,7 @@ const user = (opts, variator) => (cb, transform) => {
     if (currentListenKey) {
       clearInterval(int)
 
-      const p = closeDataStream({ listenKey: currentListenKey })
+      const p = closeDataStream({ listenKey: currentListenKey, symbol })
 
       if (catchErrors) {
         p.catch(f => f)
@@ -670,7 +670,7 @@ const user = (opts, variator) => (cb, transform) => {
   }
 
   const makeStream = isReconnecting => {
-    return getDataStream()
+    return getDataStream({ symbol })
       .then(({ listenKey }) => {
         w = openWebSocket(
           `${variator === 'futures' ? endpoints.futures : endpoints.base}/${listenKey}`,
@@ -720,6 +720,7 @@ export default opts => {
     user: user(opts),
 
     marginUser: user(opts, 'margin'),
+    marginIsolatedUser: user(opts, 'marginIsolated'),
 
     futuresDepth: (payload, cb, transform) => depth(payload, cb, transform, 'futures'),
     futuresPartialDepth: (payload, cb, transform) =>

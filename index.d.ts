@@ -512,6 +512,11 @@ declare module 'binance-api-node' {
     marginUser: (
       callback: (msg: OutboundAccountInfo | ExecutionReport) => void,
     ) => Promise<ReconnectingWebSocketHandler>
+    marginIsolatedUser: (
+      callback: (msg: OutboundAccountInfo | ExecutionReport) => void,
+      transform: boolean,
+      symbol: string
+    ) => Promise<ReconnectingWebSocketHandler>
     futuresUser: (
       callback: (msg: OutboundAccountInfo | ExecutionReport | AccountUpdate) => void,
     ) => Promise<ReconnectingWebSocketHandler>

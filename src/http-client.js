@@ -369,6 +369,12 @@ export default opts => {
     marginCloseDataStream: payload =>
       privCall('/sapi/v1/userDataStream', payload, 'DELETE', false, true),
 
+    marginIsolatedGetDataStream: payload => privCall('/sapi/v1/userDataStream/isolated', payload, 'POST', false, true),
+    marginIsolatedKeepDataStream: payload =>
+      privCall('/sapi/v1/userDataStream/isolated', payload, 'PUT', false, true),
+    marginIsolatedCloseDataStream: payload =>
+      privCall('/sapi/v1/userDataStream/isolated', payload, 'DELETE', false, true),
+
     futuresGetDataStream: () => privCall('/fapi/v1/listenKey', null, 'POST', true),
     futuresKeepDataStream: payload => privCall('/fapi/v1/listenKey', payload, 'PUT', false, true),
     futuresCloseDataStream: payload =>

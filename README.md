@@ -2898,7 +2898,13 @@ const clean = await client.ws.user(msg => {
 There is also equivalent function to query the margin wallet:
 
 ```js
-client.ws.marginUser()
+client.ws.marginUser(callback)
+```
+
+And for the isolated margin wallet:
+
+```js
+client.ws.marginIsolatedUser(callback, transform, symbol);
 ```
 
 Note that this method return a promise which will resolve the `clean` callback.
