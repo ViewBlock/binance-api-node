@@ -498,7 +498,7 @@ declare module 'binance-api-node' {
     ) => ReconnectingWebSocketHandler
     aggTrades: (
       pairs: string | string[],
-      callback: (trade: Trade) => void,
+      callback: (trade: AggregatedTrade) => void,
     ) => ReconnectingWebSocketHandler
     futuresLiquidations: (
       symbol: string | string[],
@@ -506,6 +506,10 @@ declare module 'binance-api-node' {
     ) => ReconnectingWebSocketHandler
     futuresAllLiquidations: (
       callback: (forecOrder: ForceOrder) => void,
+    ) => ReconnectingWebSocketHandler
+    futuresAggTrades: (
+      pairs: string | string[],
+      callback: (trade: AggregatedTrade) => void,
     ) => ReconnectingWebSocketHandler
 
     user: (callback: (msg: UserDataStreamEvent) => void) => Promise<ReconnectingWebSocketHandler>
