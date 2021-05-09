@@ -93,6 +93,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [capitalConfigs](#capitalConfigs)
   - [universalTransfer](#universalTransfer)
   - [universalTransferHistory](#universalTransferHistory)
+  - [dustTransfer](#dustTransfer)
 - [Margin](#margin)
   - [marginRepay](#marginRepay)
   - [marginIsolatedAccount](#marginIsolatedAccount)
@@ -1949,6 +1950,56 @@ console.log(await client.universalTransferHistory({ type: 'MAIN_C2C' }))
     }
   ]
 }
+```
+
+</details>
+
+#### dustTransfer
+
+```js
+console.log(await client.dustTransfer({ asset: ['ETH', 'LTC', 'TRX'] }))
+```
+
+| Param      | Type   | Required | Description         |
+| ---------- | ------ | -------- | ------------------- |
+| asset      | String | true     |
+| recvWindow | Number | true     |
+
+<details>
+<summary>Output</summary>
+```js
+    
+{
+    "totalServiceCharge":"0.02102542",
+    "totalTransfered":"1.05127099",
+    "transferResult":[
+        {
+            "amount":"0.03000000",
+            "fromAsset":"ETH",
+            "operateTime":1563368549307,
+            "serviceChargeAmount":"0.00500000",
+            "tranId":2970932918,
+            "transferedAmount":"0.25000000"
+        },
+        {
+            "amount":"0.09000000",
+            "fromAsset":"LTC",
+            "operateTime":1563368549404,
+            "serviceChargeAmount":"0.01548000",
+            "tranId":2970932918,
+            "transferedAmount":"0.77400000"
+        },
+        {
+            "amount":"248.61878453",
+            "fromAsset":"TRX",
+            "operateTime":1563368549489,
+            "serviceChargeAmount":"0.00054542",
+            "tranId":2970932918,
+            "transferedAmount":"0.02727099"
+        }
+    ]
+}
+    
 ```
 
 </details>
