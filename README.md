@@ -1954,21 +1954,22 @@ console.log(await client.universalTransferHistory({ type: 'MAIN_C2C' }))
 
 </details>
 
+
 #### dustTransfer
 
 ```js
 console.log(await client.dustTransfer({ asset: ['ETH', 'LTC', 'TRX'] }))
 ```
 
-| Param      | Type   | Required | Description         |
-| ---------- | ------ | -------- | ------------------- |
-| asset      | String | true     |
-| recvWindow | Number | true     |
+| Param      | Type     | Required | Description         |
+| ---------- | -------- | -------- | ------------------- |
+| asset      | [String] | true     |
+| recvWindow | Number   | true     |
 
 <details>
 <summary>Output</summary>
+
 ```js
-    
 {
     "totalServiceCharge":"0.02102542",
     "totalTransfered":"1.05127099",
@@ -1998,8 +1999,7 @@ console.log(await client.dustTransfer({ asset: ['ETH', 'LTC', 'TRX'] }))
             "transferedAmount":"0.02727099"
         }
     ]
-}
-    
+}   
 ```
 
 </details>
