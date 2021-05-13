@@ -93,6 +93,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [capitalConfigs](#capitalConfigs)
   - [universalTransfer](#universalTransfer)
   - [universalTransferHistory](#universalTransferHistory)
+  - [assetDetail](#assetDetail)
   - [dustTransfer](#dustTransfer)
 - [Margin](#margin)
   - [marginRepay](#marginRepay)
@@ -1954,6 +1955,41 @@ console.log(await client.universalTransferHistory({ type: 'MAIN_C2C' }))
 
 </details>
 
+#### assetDetail
+
+```js
+console.log(await client.assetDetail())
+```
+
+| Param      | Type     | Required | Description         |
+| ---------- | -------- | -------- | ------------------- |
+| recvWindow | Number   | false    |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "success": true,
+    "assetDetail": {
+        "CTR": {
+            "minWithdrawAmount": "70.00000000", //min withdraw amount
+            "depositStatus": false,//deposit status (false if ALL of networks' are false)
+            "withdrawFee": 35, // withdraw fee
+            "withdrawStatus": true, //withdraw status (false if ALL of networks' are false)
+            "depositTip": "Delisted, Deposit Suspended" //reason
+        },
+        "SKY": {
+            "minWithdrawAmount": "0.02000000",
+            "depositStatus": true,
+            "withdrawFee": 0.01,
+            "withdrawStatus": true
+        }   
+    }
+} 
+```
+
+</details>
 
 #### dustTransfer
 
