@@ -8,6 +8,7 @@ declare module 'binance-api-node' {
     httpFutures?: string
     wsBase?: string
     wsFutures?: string
+    httpsProxy?: string
   }): Binance
 
   export enum ErrorCodes {

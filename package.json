@@ -16,6 +16,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
+    "https-proxy-agent": "^5.0.0",
     "isomorphic-fetch": "^2.2.1",
     "isomorphic-ws": "^4.0.1",
     "lodash.zipobject": "^4.1.3",

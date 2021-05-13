@@ -3,6 +3,8 @@ import zip from 'lodash.zipobject'
 
 import 'isomorphic-fetch'
 
+import proxyAgent from 'https-proxy-agent'
+
 const BASE = 'https://api.binance.com'
 const FUTURES = 'https://fapi.binance.com'
 
@@ -111,19 +113,23 @@ const checkParams = (name, payload, requires = []) => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {}) =>
-  sendResult(
+const publicCall = ({ httpsProxy, endpoints }) => (path, data, method = 'GET', headers = {}) => {
+  let opt = {
+    method,
+    json: true,
+    headers,
+  }
+  if (httpsProxy) opt.agent = new proxyAgent(httpsProxy)
+
+  return sendResult(
     fetch(
       `${!(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures}${path}${makeQueryString(
         data,
-      )}`,
-      {
-        method,
-        json: true,
-        headers,
-      },
+        )}`,
+      opt,
     ),
   )
+}
 
 /**
  * Factory method for partial private calls against the api
@@ -152,13 +158,13 @@ const keyCall = ({ apiKey, pubCall }) => (path, data, method = 'GET') => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, pubCall }) => (
-  path,
-  data = {},
-  method = 'GET',
-  noData,
+const privateCall = ({ apiKey, apiSecret,httpsProxy, endpoints, getTime = defaultGetTime, pubCall }) => (
+  path, 
+  data = {}, 
+  method = 'GET', 
+  noData, 
   noExtra,
-) => {
+  ) => {
   if (!apiKey || !apiSecret) {
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
   }
@@ -177,17 +183,17 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
       .digest('hex')
 
     const newData = noExtra ? data : { ...data, timestamp, signature }
-
+    let opt = {
+      method,
+      headers: { 'X-MBX-APIKEY': apiKey },
+      json: true,
+    }
+    if (httpsProxy) opt.agent = new proxyAgent(httpsProxy)
     return sendResult(
       fetch(
         `${!(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures}${path}${
-          noData ? '' : makeQueryString(newData)
-        }`,
-        {
-          method,
-          headers: { 'X-MBX-APIKEY': apiKey },
-          json: true,
-        },
+          noData ? '' : makeQueryString(newData)}`,
+        opt,
       ),
     )
   })
@@ -223,7 +229,7 @@ const candles = (pubCall, payload, endpoint = '/api/v3/klines') =>
 const order = (privCall, payload = {}, url) => {
   const newPayload =
     ['LIMIT'].includes(payload.type) || !payload.type
-      ? { timeInForce: 'GTC', ...payload }
+     ? { timeInForce: 'GTC', ...payload }
       : payload
 
   const requires = ['symbol', 'side']
@@ -356,7 +362,7 @@ export default opts => {
     accountSnapshot: payload => privCall('/sapi/v1/accountSnapshot', payload),
     universalTransfer: payload => privCall('/sapi/v1/asset/transfer', payload, 'POST'),
     universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
-    
+
     dustTransfer: payload => privCall(' /sapi/v1/asset/dust', payload, 'POST'),
 
     capitalConfigs: () => privCall('/sapi/v1/capital/config/getall'),
