@@ -1,7 +1,7 @@
 import ws from 'isomorphic-ws'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 
-export default url => {
+export default (url,proxyOpt) => {
   const rws = new ReconnectingWebSocket(url, [], {
     WebSocket: ws,
     connectionTimeout: 4e3,
@@ -9,6 +9,7 @@ export default url => {
     maxReconnectionDelay: 10e3,
     maxRetries: Infinity,
     minReconnectionDelay: 4e3,
+    ...proxyOpt
   })
 
   const pong = () => rws._ws.pong(() => null)
