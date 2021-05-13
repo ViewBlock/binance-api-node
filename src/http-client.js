@@ -356,6 +356,7 @@ export default opts => {
     accountSnapshot: payload => privCall('/sapi/v1/accountSnapshot', payload),
     universalTransfer: payload => privCall('/sapi/v1/asset/transfer', payload, 'POST'),
     universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
+    assetDetail: payload => privCall('/sapi/v1/asset/assetDetail', payload),
     
     dustTransfer: payload => privCall(' /sapi/v1/asset/dust', payload, 'POST'),
 
