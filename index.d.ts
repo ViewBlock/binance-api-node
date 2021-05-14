@@ -700,6 +700,7 @@ declare module 'binance-api-node' {
   export type SideEffectType = 'NO_SIDE_EFFECT' | 'MARGIN_BUY' | 'AUTO_REPAY'
 
   export interface OrderFill {
+    tradeId: number
     price: string
     qty: string
     commission: string
