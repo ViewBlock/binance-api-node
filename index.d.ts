@@ -364,6 +364,10 @@ declare module 'binance-api-node' {
       useServerTime?: boolean
     }): Promise<QueryOrderResult[]>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
+    futuresLeverageBracket(options?: { 
+      symbol?: string,
+      recvWindow: number
+    }): Promise<LeverageBracketResult[]>
     futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
     futuresAccountInfo(options?: { recvWindow: number }): Promise<FuturesAccountInfoResult>
     futuresPositionMode(options?: { recvWindow: number }): Promise<PositionModeResult>
@@ -1125,6 +1129,20 @@ declare module 'binance-api-node' {
     symbol: string
     unRealizedProfit: string
     positionSide: string
+  }
+
+  export interface LeverageBracketResult {
+    symbol: string,
+    brackets: Bracket[]
+  }
+
+  export interface Bracket {
+    bracket: number, // Notional bracket
+    initialLeverage: number, // Max initial leverage for this bracket
+    notionalCap: number, // Cap notional of this bracket
+    notionalFloor: number, // Notional threshold of this bracket 
+    maintMarginRatio: number, // Maintenance ratio for this bracket
+    cum: 0, // Auxiliary number for quick calculation 
   }
 
   export interface FuturesBalanceResult {
