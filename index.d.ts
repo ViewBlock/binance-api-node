@@ -378,7 +378,7 @@ declare module 'binance-api-node' {
     }): Promise<FuturesLeverageResult>
     futuresMarginType(options: {
       symbol: string
-      marginType: string
+      marginType: "ISOLATED" | "CROSSED"
       recvWindow?: number
     }): Promise<FuturesMarginTypeResult>
     futuresIncome(options: {
