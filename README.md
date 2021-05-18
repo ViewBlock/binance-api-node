@@ -107,6 +107,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [futuresAllOrders](#futuresAllOrders)
   - [futuresAccountBalance](#futuresAccountBalance)
   - [futuresUserTrades](#futuresUserTrades)
+  - [futuresLeverageBracket](#futuresLeverageBracket)
   - [futuresLeverage](#futuresLeverage)
   - [futuresMarginType](#futuresMarginType)
   - [futuresPositionMargin](#futuresPositionMargin)
@@ -2687,6 +2688,46 @@ console.log(
 ```
 
 </details>
+
+#### futuresLeverageBracket
+
+Get notional and leverage brackets.
+
+```js
+console.log(
+  await client.futuresLeverageBracket({
+    symbol: 'ETHBTC', // Optional
+  }),
+)
+```
+
+| Param      | Type   | Mandatory | Description                                               |
+| ---------- | ------ | --------- | ----------------------------------------------------------|
+| symbol     | STRING | NO        | Use if you are only interested in brackets for one symbol |
+| recvWindow | LONG   | NO        |                                                           |
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "symbol": "ETHUSDT",
+        "brackets": [
+            {
+                "bracket": 1,   // Notional bracket
+                "initialLeverage": 75,  // Max initial leverage for this bracket
+                "notionalCap": 10000,  // Cap notional of this bracket
+                "notionalFloor": 0,  // Notional threshold of this bracket 
+                "maintMarginRatio": 0.0065, // Maintenance ratio for this bracket
+                "cum":0 // Auxiliary number for quick calculation 
+
+            },
+        ]
+    }
+]
+```
+
 
 ### WebSockets
 
