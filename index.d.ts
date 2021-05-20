@@ -162,6 +162,8 @@ declare module 'binance-api-node' {
   }
   
   export interface SetBNBBurnOptions {
+    spotBNBBurn: "true" | "false";
+    interestBNBBurn: "true" | "false"; 
     recvWindow?: number;
  }
 
