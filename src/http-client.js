@@ -358,7 +358,10 @@ export default opts => {
     universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
     assetDetail: payload => privCall('/sapi/v1/asset/assetDetail', payload),
     
-    dustTransfer: payload => privCall(' /sapi/v1/asset/dust', payload, 'POST'),
+    dustTransfer: payload => privCall('/sapi/v1/asset/dust', payload, 'POST'),
+
+    getBnbBurn: payload => privCall('/sapi/v1/bnbBurn', payload),
+    setBnbBurn: payload => privCall('/sapi/v1/bnbBurn', payload, 'POST'),
 
     capitalConfigs: () => privCall('/sapi/v1/capital/config/getall'),
 

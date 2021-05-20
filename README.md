@@ -94,6 +94,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [universalTransfer](#universalTransfer)
   - [universalTransferHistory](#universalTransferHistory)
   - [assetDetail](#assetDetail)
+  - [getBnbBurn](#getBnbBurn)
+  - [setBnbBurn](#setBnbBurn)
   - [dustTransfer](#dustTransfer)
 - [Margin](#margin)
   - [marginRepay](#marginRepay)
@@ -1988,6 +1990,53 @@ console.log(await client.assetDetail())
         }   
     }
 } 
+```
+
+</details>
+
+#### getBnbBurn
+
+```js
+console.log(await client.getBnbBurn())
+```
+
+| Param      | Type     | Required | Description         |
+| ---------- | -------- | -------- | ------------------- |
+| recvWindow | Number   | false    | No more than 60000  |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+   "spotBNBBurn":true,
+   "interestBNBBurn": false   
+}
+```
+
+</details>
+
+#### setBnbBurn
+
+```js
+console.log(await client.setBnbBurn({
+  spotBNBBurn: "true"
+}))
+```
+
+| Param           | Type     | Required | Description         |
+| --------------- | -------- | -------- | ------------------- |
+| spotBNBBurn     | String   | false    | "true" or "false"; Determines whether to use BNB to pay for trading fees on SPOT |
+| interestBNBBurn | String   | false    | "true" or "false"; Determines whether to use BNB to pay for margin loan's interest  |
+| recvWindow      | Number   | false    | No more than 60000 |
+<details>
+<summary>Output</summary>
+
+```js
+{
+   "spotBNBBurn":true,
+   "interestBNBBurn": false   
+}
 ```
 
 </details>
