@@ -156,6 +156,15 @@ declare module 'binance-api-node' {
     }
   }
 
+  export interface BNBBurn {
+    spotBNBBurn: boolean;
+    interestBNBBurn: boolean; 
+  }
+  
+  export interface SetBNBBurnOptions {
+    recvWindow?: number;
+ }
+
   export interface AccountSnapshot {
     code: number
     msg: string
@@ -302,6 +311,8 @@ declare module 'binance-api-node' {
       name?: string
     }): Promise<WithrawResponse>
     assetDetail(): Promise<AssetDetail>
+    getBnbBurn(): Promise<BNBBurn>
+    setBnbBurn(opts: SetBNBBurnOptions): Promise<BNBBurn>
     accountSnapshot(options: {
       type: string
       startTime?: number
