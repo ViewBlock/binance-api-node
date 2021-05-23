@@ -587,41 +587,50 @@ declare module 'binance-api-node' {
     limit: number
   }
 
+  export enum SymbolFilterType {
+    PRICE_FILTER = 'PRICE_FILTER',
+    PERCENT_PRICE = 'PERCENT_PRICE',
+    LOT_SIZE = 'LOT_SIZE',
+    MIN_NOTIONAL = 'MIN_NOTIONAL',
+    MAX_NUM_ORDERS = 'MAX_NUM_ORDERS',
+    MAX_ALGO_ORDERS = 'MAX_ALGO_ORDERS'
+  }
+
   export interface SymbolPriceFilter {
-    filterType: 'PRICE_FILTER'
+    filterType: SymbolFilterType.PRICE_FILTER
     minPrice: string
     maxPrice: string
     tickSize: string
   }
 
   export interface SymbolPercentPriceFilter {
-    filterType: 'PERCENT_PRICE'
+    filterType: SymbolFilterType.PERCENT_PRICE
     multiplierDown: string
     multiplierUp: string
     avgPriceMins: number
   }
 
   export interface SymbolLotSizeFilter {
-    filterType: 'LOT_SIZE'
+    filterType: SymbolFilterType.LOT_SIZE
     minQty: string
     maxQty: string
     stepSize: string
   }
 
   export interface SymbolMinNotionalFilter {
+    filterType: SymbolFilterType.MIN_NOTIONAL
     applyToMarket: boolean
     avgPriceMins: number
-    filterType: 'MIN_NOTIONAL'
     minNotional: string
   }
 
   export interface SymbolMaxNumOrdersFilter {
-    filterType: 'MAX_NUM_ORDERS'
+    filterType: SymbolFilterType.MAX_NUM_ORDERS
     limit: number
   }
 
   export interface SymbolMaxAlgoOrdersFilter {
-    filterType: 'MAX_ALGO_ORDERS'
+    filterType: SymbolFilterType.MAX_ALGO_ORDERS
     limit: number
   }
 
