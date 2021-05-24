@@ -228,7 +228,7 @@ const order = (privCall, payload = {}, url) => {
 
   const requires = ['symbol', 'side']
 
-  if (!(newPayload.type === 'MARKET' && newPayload.quoteOrderQty)) {
+  if (!(newPayload.type === 'MARKET' && newPayload.quoteOrderQty) && !(newPayload.type === 'STOP_MARKET') && !(newPayload.type === 'TAKE_PROFIT_MARKET') && !(newPayload.type === 'TRAILING_STOP_MARKET')) {
     requires.push('quantity')
   }
 
@@ -418,8 +418,10 @@ export default opts => {
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
 
     futuresOrder: payload => order(privCall, payload, '/fapi/v1/order'),
+    futuresBatchOrders: payload => privCall(payload, '/fabi/v1/batchOrders'),
     futuresGetOrder: payload => privCall('/fapi/v1/order', payload),
     futuresCancelOrder: payload => privCall('/fapi/v1/order', payload, 'DELETE'),
+    futuresCancelAllOpenOrders: payload => privCall('/fabi/v1/allOpenOrders', 'DELETE'),
     futuresOpenOrders: payload => privCall('/fapi/v1/openOrders', payload),
     futuresAllOrders: payload => privCall('/fapi/v1/allOrders', payload),
     futuresPositionRisk: payload => privCall('/fapi/v2/positionRisk', payload),
