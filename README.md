@@ -70,6 +70,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [futures markPrice](#futures-markPrice)
   - [futures allForceOrders](#futures-allForceOrders)
 - [Authenticated REST Endpoints](#authenticated-rest-endpoints)
+  - [getAll](#getall)
   - [order](#order)
   - [orderTest](#ordertest)
   - [orderOco](#orderoco)
@@ -887,6 +888,10 @@ console.log(await client.futuresAllForceOrders())
 Note that for all authenticated endpoints, you can pass an extra parameter
 `useServerTime` set to `true` in order to fetch the server time before making
 the request.
+
+#### getAll
+
+Get information of coins (available for deposit and withdraw) for user.
 
 #### order
 

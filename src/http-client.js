@@ -295,12 +295,14 @@ export default opts => {
     getInfo: () => info,
     ping: () => pubCall('/api/v3/ping').then(() => true),
     time: () => pubCall('/api/v3/time').then(r => r.serverTime),
-    exchangeInfo: () => pubCall('/api/v3/exchangeInfo'),
+    exchangeInfo: payload => exchangeInfo(pubCall, payload),
 
     book: payload => book(pubCall, payload),
     aggTrades: payload => aggTrades(pubCall, payload),
     candles: payload => candles(pubCall, payload),
 
+    getAll: payload =>
+      privCall('/sapi/v1/capital/config/getall', payload),
     trades: payload =>
       checkParams('trades', payload, ['symbol']) && pubCall('/api/v3/trades', payload),
     tradesHistory: payload =>
