@@ -187,7 +187,7 @@ console.log(await client.time())
 Get the current exchange trading rules and symbol information.
 
 ```js
-console.log(await client.exchangeInfo())
+console.log(await client.exchangeInfo({symbol: 'ETHBTC'}))
 ```
 
 <details>

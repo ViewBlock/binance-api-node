@@ -254,6 +254,13 @@ const orderOco = (privCall, payload = {}, url) => {
   )
 }
 
+const exchangeInfo = (pubCall, payload) => {
+  var endpoint = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '/api/v3/exchangeInfo';
+  if (payload) {
+    return checkParams('exchangeInfo', payload, ['symbol']) && pubCall(endpoint, payload);
+  } else return pubCall(endpoint);
+};
+
 /**
  * Zip asks and bids reponse from order book
  */
