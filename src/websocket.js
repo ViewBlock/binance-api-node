@@ -32,11 +32,11 @@ const futuresDepthTransform = m => ({
 
 const depth = (payload, cb, transform = true, variator) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const [symbolName, updateSpeed] = symbol.toLowerCase().split('@');
+    const [symbolName, updateSpeed] = symbol.toLowerCase().split('@')
     const w = openWebSocket(
-      `${
-        variator === 'futures' ? endpoints.futures : endpoints.base
-      }/${symbolName}@depth${updateSpeed ? `@${updateSpeed}` : ''}`,
+      `${variator === 'futures' ? endpoints.futures : endpoints.base}/${symbolName}@depth${
+        updateSpeed ? `@${updateSpeed}` : ''
+      }`,
     )
     w.onmessage = msg => {
       const obj = JSON.parse(msg.data)
@@ -80,11 +80,11 @@ const futuresPartDepthTransform = (level, m) => ({
 
 const partialDepth = (payload, cb, transform = true, variator) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(({ symbol, level }) => {
-    const [symbolName, updateSpeed] = symbol.toLowerCase().split('@');
+    const [symbolName, updateSpeed] = symbol.toLowerCase().split('@')
     const w = openWebSocket(
-      `${
-        variator === 'futures' ? endpoints.futures : endpoints.base
-      }/${symbolName}@depth${level}${updateSpeed ? `@${updateSpeed}` : ''}`,
+      `${variator === 'futures' ? endpoints.futures : endpoints.base}/${symbolName}@depth${level}${
+        updateSpeed ? `@${updateSpeed}` : ''
+      }`,
     )
     w.onmessage = msg => {
       const obj = JSON.parse(msg.data)
@@ -179,7 +179,7 @@ const miniTickerTransform = m => ({
   high: m.h,
   low: m.l,
   volume: m.v,
-  volumeQuote: m.q
+  volumeQuote: m.q,
 })
 
 const tickerTransform = m => ({
@@ -276,15 +276,11 @@ const allTickers = (cb, transform = true, variator) => {
 
 const miniTicker = (payload, cb, transform = true) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(
-      `${endpoints.base}/${symbol.toLowerCase()}@miniTicker`,
-    )
+    const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@miniTicker`)
 
     w.onmessage = msg => {
       const obj = JSON.parse(msg.data)
-      cb(
-        transform ? miniTickerTransform(obj) : obj,
-      )
+      cb(transform ? miniTickerTransform(obj) : obj)
     }
 
     return w
@@ -296,15 +292,11 @@ const miniTicker = (payload, cb, transform = true) => {
 
 const allMiniTicker = (payload, cb, transform = true) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(
-      `${endpoints.base}/!miniTicker@arr`,
-    )
+    const w = openWebSocket(`${endpoints.base}/!miniTicker@arr`)
 
     w.onmessage = msg => {
       const arr = JSON.parse(msg.data)
-      cb(
-        transform ? arr.map(m => miniTickerTransform(m)) : arr,
-      )
+      cb(transform ? arr.map(m => miniTickerTransform(m)) : arr)
     }
 
     return w
@@ -316,9 +308,7 @@ const allMiniTicker = (payload, cb, transform = true) => {
 
 const customSubStream = (payload, cb, variator) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(sub => {
-    const w = openWebSocket(
-      `${ variator === 'futures' ? endpoints.futures : endpoints.base }/${sub}`,
-    )
+    const w = openWebSocket(`${variator === 'futures' ? endpoints.futures : endpoints.base}/${sub}`)
 
     w.onmessage = msg => {
       const data = JSON.parse(msg.data)
