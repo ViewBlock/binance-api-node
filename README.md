@@ -521,6 +521,8 @@ console.log(await client.allBookTickers())
 
 </details>
 
+### Futures Public REST Endpoints
+
 #### futures ping
 
 Test connectivity to the API.
