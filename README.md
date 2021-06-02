@@ -2857,7 +2857,7 @@ console.log(
     }
 ]
 ```
-
+</details>
 
 ### WebSockets
 
