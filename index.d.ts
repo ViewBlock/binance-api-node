@@ -188,6 +188,10 @@ declare module 'binance-api-node' {
     | { symbol: string; orderId: number }
     | { symbol: string; origClientOrderId: string }
 
+  export type GetOrderOcoOptions =
+  | { orderListId: number }
+  | { listClientOrderId: string }
+
   export interface GetInfo {
     spot: GetInfoDetails
     futures: GetInfoDetails
@@ -279,11 +283,17 @@ declare module 'binance-api-node' {
       useServerTime?: boolean
     }): Promise<MyTrade[]>
     getOrder(options: GetOrderOptions & { useServerTime?: boolean }): Promise<QueryOrderResult>
+    getOrderOco(options: GetOrderOcoOptions & { useServerTime?: boolean }): Promise<QueryOrderOcoResult>
     cancelOrder(options: {
       symbol: string
       orderId: number
       useServerTime?: boolean
     }): Promise<CancelOrderResult>
+    cancelOrderOco(options: {
+      symbol: string
+      orderListId: number
+      useServerTime?: boolean
+    }): Promise<CancelOrderOcoResult>
     cancelOpenOrders(options: {
       symbol: string
       useServerTime?: boolean
@@ -1034,6 +1044,17 @@ declare module 'binance-api-node' {
     updateTime: number
   }
 
+  export interface QueryOrderOcoResult {
+    orderListId: number
+    contingencyType: ContingencyType
+    listStatusType: ListStatusType
+    listOrderStatus: ListOrderStatus
+    listClientOrderId: string
+    transactionTime: number
+    symbol: string
+    orders: Order[]
+  }
+
   export interface CancelOrderResult {
     symbol: string
     origClientOrderId: string
@@ -1048,6 +1069,18 @@ declare module 'binance-api-node' {
     timeInForce: string
     type: OrderType
     side: OrderSide
+  }
+
+  export interface CancelOrderOcoResult {
+    orderListId: number
+    contingencyType: ContingencyType
+    listStatusType: ListStatusType
+    listOrderStatus: ListOrderStatus
+    listClientOrderId: string
+    transactionTime: number
+    symbol: string
+    orders: Order[]
+    orderReports: Order[]
   }
 
   export interface AvgPriceResult {
