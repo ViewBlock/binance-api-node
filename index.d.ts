@@ -781,8 +781,10 @@ declare module 'binance-api-node' {
     | 'LIMIT_MAKER'
     | 'MARKET'
     | 'STOP'
+    | 'STOP_LOSS_LIMIT'
     | 'STOP_MARKET'
     | 'TAKE_PROFIT_MARKET'
+    | 'TAKE_PROFIT_LIMIT'
     | 'TRAILING_STOP_MARKET'
 
   export type ListOrderStatus = 'EXECUTING' | 'ALL_DONE' | 'REJECT'

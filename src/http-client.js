@@ -224,7 +224,7 @@ const candles = (pubCall, payload, endpoint = '/api/v3/klines') =>
  */
 const order = (privCall, payload = {}, url) => {
   const newPayload =
-    ['LIMIT'].includes(payload.type) || !payload.type ? { timeInForce: 'GTC', ...payload } : payload
+    ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type ? { timeInForce: 'GTC', ...payload } : payload
 
   const requires = ['symbol', 'side']
 
