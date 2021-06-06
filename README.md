@@ -934,9 +934,11 @@ Additional mandatory parameters based on `type`:
 | `LIMIT`                | `timeInForce`, `quantity`, `price`              |
 | `MARKET`               | `quantity`                                      |
 | `STOP`                 | `quantity`, `price`, `stopPrice`                |
+| `STOP_LOSS_LIMIT`      | `timeInForce`, `quantity`, `price`, `stopPrice` |
 | `STOP_LOSS_MARKET`     | `stopPrice`                                     |
 | `TAKE_PROFIT`          | `quantity`, `price`, `stopPrice`                |
 | `TAKE_PROFIT_MARKET`   | `stopPrice`                                     |
+| `STOP_PROFIT_LIMIT`    | `timeInForce`, `quantity`, `price`, `stopPrice` |
 | `LIMIT_MAKER`          | `quantity`, `price`                             |
 | `TRAILING_STOP_MARKET` | `callbackRate`, `activationPrice`               |
 
