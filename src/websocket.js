@@ -544,6 +544,7 @@ const futuresUserTransforms = {
       asset: b.a,
       walletBalance: b.wb,
       crossWalletBalance: b.cw,
+      balanceChange: b.bc,
     })),
     positions: m.a.P.map(p => ({
       symbol: p.s,
