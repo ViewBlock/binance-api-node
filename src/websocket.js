@@ -698,17 +698,15 @@ const futuresAllMarkPricesTransform = m => m.map(x => ({
   nextFundingRate: x.T,
 }))
 
-const futuresAllMarkPrices = (payload, cb, transform = true) => {
-  
+const futuresAllMarkPrices = (payload, cb, transform = true) => {  
   const variant = payload.updateSpeed === '1s' ? '!markPrice@arr@1s' : '!markPrice@arr'
-  
+
   const w = openWebSocket(`${endpoints.futures}/${variant}`)
 
   w.onmessage = msg => {
     const arr = JSON.parse(msg.data)
     cb(transform ? futuresAllMarkPricesTransform(arr) : arr)
   }
-
   return options => cache.close(1000, 'Close handle was called', { keepClosed: true, ...options })
 }
 
