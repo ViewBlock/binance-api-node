@@ -298,8 +298,17 @@ declare module 'binance-api-node' {
       symbol: string
       useServerTime?: boolean
     }): Promise<CancelOrderResult[]>
-    openOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
-    allOrders(options: { symbol?: string; useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    openOrders(options: { symbol?: string; recvWindow?: number; useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    allOrders(options: { 
+       symbol?: string; 
+       orderId?: number; 
+       startTime?: number;
+       endTime?: number;
+       limit?: number;
+       recvWindow?: number;
+       timestamp?: number;
+       useServerTime?: boolean 
+     }): Promise<QueryOrderResult[]>
     allOrdersOCO(options: {
       timestamp: number
       fromId?: number
