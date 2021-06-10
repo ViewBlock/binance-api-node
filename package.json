@@ -38,6 +38,9 @@
     "eslint-config-zavatta": "^6.0.3",
     "nyc": "^14.1.1",
     "prettier": "^1.19.1"
+  }, 
+  "resolutions": {
+    "isomorphic-fetch/node-fetch": "2.6.1"
   },
   "engines": {
     "yarn": ">= 1.0.0"
