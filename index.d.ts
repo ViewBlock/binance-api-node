@@ -449,6 +449,7 @@ declare module 'binance-api-node' {
       amount: number
       useServerTime?: boolean
     }): Promise<{ tranId: number }>
+    marginAccount(options?: {recvWindow?: number}): Promise<IsolatedCrossAccount>
     marginIsolatedAccount(options?: {
       symbols?: string
       recvWindow?: number
@@ -1288,6 +1289,26 @@ declare module 'binance-api-node' {
 
   export interface PositionModeResult {
     dualSidePosition: boolean
+  }
+
+  export interface IsolatedCrossAccount {
+    borrowEnabled: boolean,
+    marginLevel: string,
+    totalAssetOfBtc: string,
+    totalLiabilityOfBtc: string,
+    totalNetAssetOfBtc: string,
+    tradeEnabled: boolean,
+    transferEnabled: boolean,
+    userAssets: CrossAsset[],
+  }
+
+  export interface CrossAsset {
+    asset: string,
+    borrowed: string,
+    free: string,
+    interest: string,
+    locked: string,
+    netAsset: string,
   }
 
   export interface IsolatedMarginAccount {
