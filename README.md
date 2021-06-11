@@ -99,7 +99,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [dustTransfer](#dustTransfer)
   - [accountCoins](#accountCoins)
 - [Margin](#margin)
-  - [marginAccount](#marginAccount)
+  - [marginAccountInfo](#marginAccountInfo)
   - [marginLoan](#marginLoan)
   - [marginRepay](#marginRepay)
   - [marginIsolatedAccount](#marginIsolatedAccount)
@@ -2179,12 +2179,12 @@ console.log(await client.accountCoins())
 
 ### Margin
 
-#### marginAccount
+#### marginAccountInfo
 
 Query cross margin account details (USER_DATA)
 
 ```js
-console.log(await client.marginAccount());
+console.log(await client.marginAccountInfo());
 ```
 
 | Param | Type   | Required | Description    |
