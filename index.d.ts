@@ -449,7 +449,7 @@ declare module 'binance-api-node' {
       amount: number
       useServerTime?: boolean
     }): Promise<{ tranId: number }>
-    marginAccount(options?: {recvWindow?: number}): Promise<IsolatedCrossAccount>
+    marginAccountInfo(options?: {recvWindow?: number}): Promise<IsolatedCrossAccount>
     marginIsolatedAccount(options?: {
       symbols?: string
       recvWindow?: number
