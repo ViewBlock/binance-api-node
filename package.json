@@ -1,6 +1,6 @@
 {
   "name": "binance-api-node",
-  "version": "0.10.45",
+  "version": "0.10.49",
   "description": "A node API wrapper for Binance",
   "main": "dist",
   "files": [
@@ -38,6 +38,9 @@
     "eslint-config-zavatta": "^6.0.3",
     "nyc": "^14.1.1",
     "prettier": "^1.19.1"
+  },
+  "resolutions": {
+    "isomorphic-fetch/node-fetch": "2.6.1"
   },
   "engines": {
     "yarn": ">= 1.0.0"

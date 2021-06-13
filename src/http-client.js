@@ -10,7 +10,7 @@ const defaultGetTime = () => Date.now()
 
 const info = {
   spot: {},
-  futures: {}
+  futures: {},
 }
 
 /**
@@ -114,9 +114,9 @@ const checkParams = (name, payload, requires = []) => {
 const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {}) =>
   sendResult(
     fetch(
-      `${!(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures}${path}${makeQueryString(
-        data,
-      )}`,
+      `${
+        !(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures
+      }${path}${makeQueryString(data)}`,
       {
         method,
         json: true,
@@ -180,9 +180,11 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
 
     return sendResult(
       fetch(
-        `${!(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures}${path}${
-          noData ? '' : makeQueryString(newData)
-        }`,
+        `${
+          !(path.includes('/fapi') || path.includes('/futures'))
+            ? endpoints.base
+            : endpoints.futures
+        }${path}${noData ? '' : makeQueryString(newData)}`,
         {
           method,
           headers: { 'X-MBX-APIKEY': apiKey },
@@ -222,13 +224,16 @@ const candles = (pubCall, payload, endpoint = '/api/v3/klines') =>
  */
 const order = (privCall, payload = {}, url) => {
   const newPayload =
-    ['LIMIT'].includes(payload.type) || !payload.type
-      ? { timeInForce: 'GTC', ...payload }
-      : payload
+    ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type ? { timeInForce: 'GTC', ...payload } : payload
 
   const requires = ['symbol', 'side']
 
-  if (!(newPayload.type === 'MARKET' && newPayload.quoteOrderQty)) {
+  if (
+    !(newPayload.type === 'MARKET' && newPayload.quoteOrderQty) &&
+    !(newPayload.type === 'STOP_MARKET') &&
+    !(newPayload.type === 'TAKE_PROFIT_MARKET') &&
+    !(newPayload.type === 'TRAILING_STOP_MARKET')
+  ) {
     requires.push('quantity')
   }
 
@@ -295,7 +300,7 @@ export default opts => {
     getInfo: () => info,
     ping: () => pubCall('/api/v3/ping').then(() => true),
     time: () => pubCall('/api/v3/time').then(r => r.serverTime),
-    exchangeInfo: () => pubCall('/api/v3/exchangeInfo'),
+    exchangeInfo: payload => pubCall('/api/v3/exchangeInfo', payload),
 
     book: payload => book(pubCall, payload),
     aggTrades: payload => aggTrades(pubCall, payload),
@@ -357,8 +362,9 @@ export default opts => {
     universalTransfer: payload => privCall('/sapi/v1/asset/transfer', payload, 'POST'),
     universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
     assetDetail: payload => privCall('/sapi/v1/asset/assetDetail', payload),
-    
+
     dustTransfer: payload => privCall('/sapi/v1/asset/dust', payload, 'POST'),
+    accountCoins: payload => privCall('/sapi/v1/capital/config/getall', payload),
 
     getBnbBurn: payload => privCall('/sapi/v1/bnbBurn', payload),
     setBnbBurn: payload => privCall('/sapi/v1/bnbBurn', payload, 'POST'),
@@ -391,8 +397,10 @@ export default opts => {
     marginIsolatedAccount: payload => privCall('/sapi/v1/margin/isolated/account', payload),
     marginMaxBorrow: payload => privCall('/sapi/v1/margin/maxBorrowable', payload),
     marginCreateIsolated: payload => privCall('/sapi/v1/margin/isolated/create', payload, 'POST'),
-    marginIsolatedTransfer: payload => privCall('/sapi/v1/margin/isolated/transfer', payload, 'POST'),
-    marginIsolatedTransferHistory: payload => privCall('/sapi/v1/margin/isolated/transfer', payload),
+    marginIsolatedTransfer: payload =>
+      privCall('/sapi/v1/margin/isolated/transfer', payload, 'POST'),
+    marginIsolatedTransferHistory: payload =>
+      privCall('/sapi/v1/margin/isolated/transfer', payload),
 
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
@@ -418,8 +426,10 @@ export default opts => {
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
 
     futuresOrder: payload => order(privCall, payload, '/fapi/v1/order'),
+    futuresBatchOrders: payload => privCall(payload, '/fabi/v1/batchOrders'),
     futuresGetOrder: payload => privCall('/fapi/v1/order', payload),
     futuresCancelOrder: payload => privCall('/fapi/v1/order', payload, 'DELETE'),
+    futuresCancelAllOpenOrders: payload => privCall('/fabi/v1/allOpenOrders', 'DELETE'),
     futuresOpenOrders: payload => privCall('/fapi/v1/openOrders', payload),
     futuresAllOrders: payload => privCall('/fapi/v1/allOrders', payload),
     futuresPositionRisk: payload => privCall('/fapi/v2/positionRisk', payload),
