@@ -1120,7 +1120,7 @@ declare module 'binance-api-node' {
 
   export interface QueryOrderOcoResult {
     orderListId: number
-    contingencyType: ContingencyType
+    contingencyType: OcoOrderType.CONTINGENCY_TYPE
     listStatusType: ListStatusType
     listOrderStatus: ListOrderStatus
     listClientOrderId: string
@@ -1147,7 +1147,7 @@ declare module 'binance-api-node' {
 
   export interface CancelOrderOcoResult {
     orderListId: number
-    contingencyType: ContingencyType
+    contingencyType: OcoOrderType.CONTINGENCY_TYPE
     listStatusType: ListStatusType
     listOrderStatus: ListOrderStatus
     listClientOrderId: string
