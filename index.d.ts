@@ -1314,8 +1314,9 @@ declare module 'binance-api-node' {
   }
 
   export interface FuturesLeverageResult {
-    code: number
-    msg: string
+    leverage: number;
+    maxNotionalValue: number;
+    symbol: string;
   }
 
   export interface FuturesMarginTypeResult {
