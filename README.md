@@ -107,6 +107,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [marginCreateIsolated](#marginCreateIsolated)
   - [marginIsolatedTransfer](#marginIsolatedTransfer)
   - [marginIsolatedTransferHistory](#marginIsolatedTransferHistory)
+  - [marginOrder](#marginorder)
+  - [marginGetOrder](#margingetorder)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
@@ -2478,6 +2480,137 @@ console.log(await client.marginIsolatedTransferHistory({ symbol: 'BNBUSDT'}));
     }
   ],
   "total": 2
+}
+```
+
+</details>
+
+#### marginOrder
+
+```js
+console.log(await client.marginOrder({ 
+  symbol: 'BTCUSDT', 
+  type: 'MARKET',
+  side: 'SELL',
+  quantity: '10',
+  }));
+```
+
+| Param             | Type    | Required | Description               |
+| ----------------- | ------- | -------- | ------------------------- |
+| symbol            | String  | true     | asset, such as `BTC`      |
+| isIsolated        | String  | false    | for isolated margin or not, `TRUE`, `FALSE`, default `FALSE`
+| side              | String  | true     | `BUY` `SELL` |
+| type              | String  | true     |  
+| quantity          | String  | false    |
+| quoteOrderQty     | String  | false    |
+| price             | String  | false    | 
+| stopPrice         | String  | false    | Used with `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders.
+| newClientOrderId  | NuStringmber  | false    | A unique id among open orders. Automatically generated if not sent.
+| icebergQty        | Boolean | false    | Used with `LIMIT`, `STOP_LOSS_LIMIT`, and `TAKE_PROFIT_LIMIT` to create an iceberg order.
+| newOrderRespType  | String  | false    | Set the response JSON. `ACK`, `RESULT`, or `FULL`; `MARKET` and `LIMIT` order types default to `FULL`, all other orders default to `ACK`.
+| sideEffectType    | String  | false    | `NO_SIDE_EFFECT`, `MARGIN_BUY`, `AUTO_REPAY`; default `NO_SIDE_EFFECT`.
+| timeInForce       | String  | false    | `GTC`,`IOC`,`FOK`        |
+| recvWindow        | Number  | false    | No more than 60000        |
+
+<details>
+<summary>Output</summary>
+    
+```js
+{
+  "symbol": "BTCUSDT",
+  "orderId": 28,
+  "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+  "transactTime": 1507725176595,
+  "price": "1.00000000",
+  "origQty": "10.00000000",
+  "executedQty": "10.00000000",
+  "cummulativeQuoteQty": "10.00000000",
+  "status": "FILLED",
+  "timeInForce": "GTC",
+  "type": "MARKET",
+  "side": "SELL",
+  "marginBuyBorrowAmount": 5,       // will not return if no margin trade happens
+  "marginBuyBorrowAsset": "BTC",    // will not return if no margin trade happens
+  "isIsolated": true,       // if isolated margin
+  "fills": [
+    {
+      "price": "4000.00000000",
+      "qty": "1.00000000",
+      "commission": "4.00000000",
+      "commissionAsset": "USDT"
+    },
+    {
+      "price": "3999.00000000",
+      "qty": "5.00000000",
+      "commission": "19.99500000",
+      "commissionAsset": "USDT"
+    },
+    {
+      "price": "3998.00000000",
+      "qty": "2.00000000",
+      "commission": "7.99600000",
+      "commissionAsset": "USDT"
+    },
+    {
+      "price": "3997.00000000",
+      "qty": "1.00000000",
+      "commission": "3.99700000",
+      "commissionAsset": "USDT"
+    },
+    {
+      "price": "3995.00000000",
+      "qty": "1.00000000",
+      "commission": "3.99500000",
+      "commissionAsset": "USDT"
+    }
+  ]
+}
+```
+
+</details>
+
+#### marginGetOrder
+
+Query Margin Account's Order
+
+```js
+console.log(await client.marginGetOrder({ 
+  symbol: 'BNBBTC', 
+  orderId: '213205622',
+  }));
+```
+
+| Param                | Type   | Required | Description               |
+| -------------------- | ------ | -------- | ------------------------- |
+| symbol               | String | true     | asset,such as BTC         |
+| isIsolated           | String | false    | for isolated margin or not, `TRUE`, `FALSE`, default `FALSE`
+| orderId              | String | false    | 
+| origClientOrderId    | String | false    | 
+| recvWindow           | Number | false    | The value cannot be greater than `60000`
+
+<details>
+<summary>Output</summary>
+    
+```js
+{
+   "clientOrderId": "ZwfQzuDIGpceVhKW5DvCmO",
+   "cummulativeQuoteQty": "0.00000000",
+   "executedQty": "0.00000000",
+   "icebergQty": "0.00000000",
+   "isWorking": true,
+   "orderId": 213205622,
+   "origQty": "0.30000000",
+   "price": "0.00493630",
+   "side": "SELL",
+   "status": "NEW",
+   "stopPrice": "0.00000000",
+   "symbol": "BNBBTC",
+   "isIsolated": true,
+   "time": 1562133008725,
+   "timeInForce": "GTC",
+   "type": "LIMIT",
+   "updateTime": 1562133008725
 }
 ```
 
