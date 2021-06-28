@@ -790,7 +790,7 @@ declare module 'binance-api-node' {
     stopPrice?: string
     symbol: string
     timeInForce: TimeInForce
-    transactTime: number
+    transactTime?: number
     type: OrderType
     fills?: OrderFill[]
   }
