@@ -780,7 +780,10 @@ declare module 'binance-api-node' {
     clientOrderId: string
     cummulativeQuoteQty: string
     executedQty: string
+    fills?: OrderFill[]
     icebergQty?: string
+    isIsolated?: boolean
+    isWorking: boolean
     orderId: number
     orderListId: number
     origQty: string
@@ -789,10 +792,11 @@ declare module 'binance-api-node' {
     status: OrderStatus
     stopPrice?: string
     symbol: string
+    time: number
     timeInForce: TimeInForce
     transactTime?: number
     type: OrderType
-    fills?: OrderFill[]
+    updateTime: number
   }
 
   export enum ListOrderStatus {
