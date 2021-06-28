@@ -107,8 +107,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [marginCreateIsolated](#marginCreateIsolated)
   - [marginIsolatedTransfer](#marginIsolatedTransfer)
   - [marginIsolatedTransferHistory](#marginIsolatedTransferHistory)
-  - [marginOrder](#marginorder)
-  - [marginGetOrder](#margingetorder)
+  - [marginOrder](#marginOrder)
+  - [marginGetOrder](#marginGetOrder)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
@@ -2506,7 +2506,7 @@ console.log(await client.marginOrder({
 | quoteOrderQty     | String  | false    |
 | price             | String  | false    | 
 | stopPrice         | String  | false    | Used with `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders.
-| newClientOrderId  | NuStringmber  | false    | A unique id among open orders. Automatically generated if not sent.
+| newClientOrderId  | String  | false    | A unique id among open orders. Automatically generated if not sent.
 | icebergQty        | Boolean | false    | Used with `LIMIT`, `STOP_LOSS_LIMIT`, and `TAKE_PROFIT_LIMIT` to create an iceberg order.
 | newOrderRespType  | String  | false    | Set the response JSON. `ACK`, `RESULT`, or `FULL`; `MARKET` and `LIMIT` order types default to `FULL`, all other orders default to `ACK`.
 | sideEffectType    | String  | false    | `NO_SIDE_EFFECT`, `MARGIN_BUY`, `AUTO_REPAY`; default `NO_SIDE_EFFECT`.
