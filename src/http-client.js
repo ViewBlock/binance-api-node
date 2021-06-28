@@ -361,7 +361,6 @@ export default opts => {
     accountSnapshot: payload => privCall('/sapi/v1/accountSnapshot', payload),
     universalTransfer: payload => privCall('/sapi/v1/asset/transfer', payload, 'POST'),
     universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
-    assetDetail: payload => privCall('/sapi/v1/asset/assetDetail', payload),
 
     dustTransfer: payload => privCall('/sapi/v1/asset/dust', payload, 'POST'),
     accountCoins: payload => privCall('/sapi/v1/capital/config/getall', payload),
@@ -388,6 +387,7 @@ export default opts => {
 
     marginAllOrders: payload => privCall('/sapi/v1/margin/allOrders', payload),
     marginOrder: payload => order(privCall, payload, '/sapi/v1/margin/order'),
+    marginGetOrder: payload => privCall('/sapi/v1/margin/order', payload),
     marginCancelOrder: payload => privCall('/sapi/v1/margin/order', payload, 'DELETE'),
     marginOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload),
     marginAccountInfo: payload => privCall('/sapi/v1/margin/account', payload),

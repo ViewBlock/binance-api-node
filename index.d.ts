@@ -432,6 +432,13 @@ declare module 'binance-api-node' {
       recvWindow?: number
     }): Promise<FuturesIncomeResult[]>
     marginOrder(options: NewOrder): Promise<Order>
+    marginGetOrder(options: {
+      symbol: string
+      isIsolated?: string | boolean
+      orderId?: string
+      origClientOrderId?: string
+      recvWindow?: number
+    }): Promise<Order>
     marginAllOrders(options: {
       symbol: string
       useServerTime?: boolean
@@ -476,7 +483,7 @@ declare module 'binance-api-node' {
     ): Promise<marginIsolatedTransferHistoryResponse>
     marginMyTrades(options: {
       symbol: string
-      isIsolated?: string
+      isIsolated?: string | boolean
       startTime?: number
       endTime?: number
       limit?: number
@@ -729,7 +736,7 @@ declare module 'binance-api-node' {
     useServerTime?: boolean
     type: OrderType
     newOrderRespType?: NewOrderRespType
-    isIsolated?: boolean
+    isIsolated?: string | boolean
     quoteOrderQty?: string
     sideEffectType?: SideEffectType
     reduceOnly?: string
@@ -783,7 +790,7 @@ declare module 'binance-api-node' {
     stopPrice?: string
     symbol: string
     timeInForce: TimeInForce
-    transactTime: number
+    transactTime?: number
     type: OrderType
     fills?: OrderFill[]
   }
