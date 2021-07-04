@@ -1,6 +1,6 @@
 // tslint:disable:interface-name
 declare module 'binance-api-node' {
-  export default function(options?: {
+  export default function (options?: {
     apiKey?: string
     apiSecret?: string
     getTime?: () => number | Promise<number>
@@ -158,14 +158,14 @@ declare module 'binance-api-node' {
 
   export interface BNBBurn {
     spotBNBBurn: boolean;
-    interestBNBBurn: boolean; 
+    interestBNBBurn: boolean;
   }
-  
+
   export interface SetBNBBurnOptions {
     spotBNBBurn: boolean;
-    interestBNBBurn: boolean; 
+    interestBNBBurn: boolean;
     recvWindow?: number;
- }
+  }
 
   export interface AccountSnapshot {
     code: number
@@ -189,8 +189,8 @@ declare module 'binance-api-node' {
     | { symbol: string; origClientOrderId: string }
 
   export type GetOrderOcoOptions =
-  | { orderListId: number }
-  | { listClientOrderId: string }
+    | { orderListId: number }
+    | { listClientOrderId: string }
 
   export interface GetInfo {
     spot: GetInfoDetails
@@ -210,7 +210,7 @@ declare module 'binance-api-node' {
     MAIN_C2C = 'MAIN_C2C',
     MAIN_UMFUTURE = 'MAIN_UMFUTURE',
     MAIN_CMFUTURE = 'MAIN_CMFUTURE',
-    MAIN_MARGIN  = 'MAIN_MARGIN',
+    MAIN_MARGIN = 'MAIN_MARGIN',
     MAIN_MINING = 'MAIN_MINING',
     C2C_MAIN = 'C2C_MAIN',
     C2C_UMFUTURE = 'C2C_UMFUTURE',
@@ -223,7 +223,7 @@ declare module 'binance-api-node' {
     MARGIN_UMFUTURE = 'MARGIN_UMFUTURE',
     MINING_MAIN = 'MINING_MAIN',
     MINING_UMFUTURE = 'MINING_UMFUTURE',
-    MINING_C2C = 'MINING_C2C' 
+    MINING_C2C = 'MINING_C2C'
   }
 
   export interface UniversalTransfer {
@@ -305,16 +305,16 @@ declare module 'binance-api-node' {
       useServerTime?: boolean
     }): Promise<CancelOrderResult[]>
     openOrders(options: { symbol?: string; recvWindow?: number; useServerTime?: boolean }): Promise<QueryOrderResult[]>
-    allOrders(options: { 
-       symbol?: string; 
-       orderId?: number; 
-       startTime?: number;
-       endTime?: number;
-       limit?: number;
-       recvWindow?: number;
-       timestamp?: number;
-       useServerTime?: boolean 
-     }): Promise<QueryOrderResult[]>
+    allOrders(options: {
+      symbol?: string;
+      orderId?: number;
+      startTime?: number;
+      endTime?: number;
+      limit?: number;
+      recvWindow?: number;
+      timestamp?: number;
+      useServerTime?: boolean
+    }): Promise<QueryOrderResult[]>
     allOrdersOCO(options: {
       timestamp: number
       fromId?: number
@@ -375,6 +375,13 @@ declare module 'binance-api-node' {
       limit?: number
     }): Promise<AggregatedTrade[]>
     futuresTrades(options: { symbol: string; limit?: number }): Promise<TradeResult[]>
+    futuresUserTrades(options: {
+      symbol: string
+      startTime?: number
+      endTime?: number
+      fromId?: number
+      limit?: number
+    }): Promise<FuturesUserTradeResult[]>
     futuresDailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>
     futuresPrices(): Promise<{ [index: string]: string }>
     futuresAllBookTickers(): Promise<{ [key: string]: Ticker }>
@@ -391,18 +398,25 @@ declare module 'binance-api-node' {
       endTime?: number
       limit?: number
     }): Promise<FundingRateResult[]>
-    futuresOrder(options: NewOrder): Promise<Order>
+    futuresOrder(options: NewFuturesOrder): Promise<FuturesOrder>
     futuresCancelOrder(options: {
       symbol: string
       orderId: number
       useServerTime?: boolean
     }): Promise<CancelOrderResult>
+    futuresGetOrder(options: {
+      symbol: string
+      orderId?: number
+      origClientOrderId?: string
+      recvWindow?: number,
+      timestamp?: number,
+    }): Promise<QueryFuturesOrderResult>
     futuresOpenOrders(options: {
       symbol?: string
       useServerTime?: boolean
     }): Promise<QueryOrderResult[]>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
-    futuresLeverageBracket(options?: { 
+    futuresLeverageBracket(options?: {
       symbol?: string,
       recvWindow: number
     }): Promise<LeverageBracketResult[]>
@@ -462,7 +476,7 @@ declare module 'binance-api-node' {
       amount: number
       useServerTime?: boolean
     }): Promise<{ tranId: number }>
-    marginAccountInfo(options?: {recvWindow?: number}): Promise<IsolatedCrossAccount>
+    marginAccountInfo(options?: { recvWindow?: number }): Promise<IsolatedCrossAccount>
     marginIsolatedAccount(options?: {
       symbols?: string
       recvWindow?: number
@@ -612,8 +626,8 @@ declare module 'binance-api-node' {
   }
 
   export enum RateLimitInterval {
-    SECOND = 'SECOND', 
-    MINUTE = 'MINUTE', 
+    SECOND = 'SECOND',
+    MINUTE = 'MINUTE',
     DAY = 'DAY'
   }
 
@@ -626,7 +640,7 @@ declare module 'binance-api-node' {
 
   export enum ExchangeFilterType {
     EXCHANGE_MAX_NUM_ORDERS = 'EXCHANGE_MAX_NUM_ORDERS',
-    EXCHANGE_MAX_ALGO_ORDERS = 'EXCHANGE_MAX_ALGO_ORDERS' 
+    EXCHANGE_MAX_ALGO_ORDERS = 'EXCHANGE_MAX_ALGO_ORDERS'
   }
 
   export interface ExchangeFilter {
@@ -744,6 +758,26 @@ declare module 'binance-api-node' {
     callbackRate?: string
   }
 
+  export interface NewFuturesOrder {
+    symbol: string
+    side: OrderSide
+    positionSide?: PositionSide
+    type: OrderType
+    quantity?: string
+    reduceOnly?: 'true' | 'false'
+    price?: number
+    timeInForce?: TimeInForce
+    newClientOrderId?: string
+    stopPrice?: number
+    closePosition?: 'true' | 'false'
+    activationPrice?: number
+    callbackRate?: number
+    workingType?: WorkingType
+    newOrderRespType?: NewOrderRespType
+    recvWindow?: number
+    timestamp?: number
+  }
+
   export interface NewOcoOrder {
     symbol: string
     listClientOrderId?: string
@@ -765,7 +799,7 @@ declare module 'binance-api-node' {
   export enum SideEffectType {
     NO_SIDE_EFFECT = 'NO_SIDE_EFFECT',
     MARGIN_BUY = 'MARGIN_BUY',
-    AUTO_REPAY = 'AUTO_REPAY' 
+    AUTO_REPAY = 'AUTO_REPAY'
   }
 
   export interface OrderFill {
@@ -799,11 +833,36 @@ declare module 'binance-api-node' {
     updateTime: number
   }
 
+  export interface FuturesOrder {
+    clientOrderId: string,
+    cumQty: string,
+    cumQuote: string,
+    executedQty: string,
+    orderId: number,
+    avgPrice: string,
+    origQty: string,
+    price: string,
+    reduceOnly: boolean,
+    side: OrderSide,
+    positionSide: PositionSide,
+    status: OrderStatus,
+    stopPrice: string,        
+    closePosition: boolean, 
+    symbol: string,
+    timeInForce: TimeInForce,
+    type: OrderType,
+    origType: OrderType,
+    activatePrice: string,   
+    priceRate: string,
+    updateTime: number,
+    workingType: WorkingType,
+  }
+
   export enum ListOrderStatus {
-    EXECUTING ='EXECUTING',
+    EXECUTING = 'EXECUTING',
     ALL_DONE = 'ALL_DONE',
     REJECT = 'REJECT'
-  } 
+  }
 
   export enum ListStatusType {
     RESPONSE = 'RESPONSE',
@@ -813,7 +872,7 @@ declare module 'binance-api-node' {
 
   export enum OcoOrderType {
     CONTINGENCY_TYPE = 'OCO',
-  } 
+  }
 
   export interface OcoOrder {
     orderListId: number
@@ -826,7 +885,6 @@ declare module 'binance-api-node' {
     orders: Order[]
     orderReports: Order[]
   }
-
 
   export enum OrderSide {
     BUY = 'BUY',
@@ -844,15 +902,15 @@ declare module 'binance-api-node' {
   }
 
   export enum OrderType {
-  LIMIT = 'LIMIT',
-  LIMIT_MAKER = 'LIMIT_MAKER',
-  MARKET = 'MARKET',
-  STOP = 'STOP',
-  STOP_MARKET ='STOP_MARKET',
-  STOP_LOSS_LIMIT = 'STOP_LOSS_LIMIT',
-  TAKE_PROFIT_LIMIT = 'TAKE_PROFIT_LIMIT',
-  TAKE_PROFIT_MARKET = 'TAKE_PROFIT_MARKET',
-  TRAILING_STOP_MARKET = 'TRAILING_STOP_MARKET'
+    LIMIT = 'LIMIT',
+    LIMIT_MAKER = 'LIMIT_MAKER',
+    MARKET = 'MARKET',
+    STOP = 'STOP',
+    STOP_MARKET = 'STOP_MARKET',
+    STOP_LOSS_LIMIT = 'STOP_LOSS_LIMIT',
+    TAKE_PROFIT_LIMIT = 'TAKE_PROFIT_LIMIT',
+    TAKE_PROFIT_MARKET = 'TAKE_PROFIT_MARKET',
+    TRAILING_STOP_MARKET = 'TRAILING_STOP_MARKET'
   }
 
   export enum NewOrderRespType {
@@ -865,7 +923,7 @@ declare module 'binance-api-node' {
     GTC = 'GTC',
     IOC = 'IOC',
     FOK = 'FOK'
-  } 
+  }
 
   export enum OrderRejectReason {
     ACCOUNT_CANNOT_SETTLE = 'ACCOUNT_CANNOT_SETTLE',
@@ -883,10 +941,10 @@ declare module 'binance-api-node' {
 
   export enum ExecutionType {
     NEW = 'NEW',
-    CANCELED ='CANCELED',
-    REPLACED = 'REPLACED', 
+    CANCELED = 'CANCELED',
+    REPLACED = 'REPLACED',
     REJECTED = 'REJECTED',
-    TRADE = 'TRADE', 
+    TRADE = 'TRADE',
     EXPIRED = 'EXPIRED'
   }
 
@@ -1094,6 +1152,23 @@ declare module 'binance-api-node' {
     isBestMatch: boolean
   }
 
+  export interface FuturesUserTradeResult {
+    buyer: boolean
+    commission: string
+    commissionAsset: string
+    id: number
+    maker: boolean,
+    orderId: number
+    price: string
+    qty: string
+    quoteQty: string
+    realizedPnl: string
+    side: OrderSide
+    positionSide: PositionSide
+    symbol: string
+    time: number
+  }
+
   export interface MyTrade {
     id: number
     symbol: string
@@ -1129,6 +1204,30 @@ declare module 'binance-api-node' {
     timeInForce: TimeInForce
     type: OrderType
     updateTime: number
+  }
+
+  export interface QueryFuturesOrderResult {
+    avgPrice: string
+    clientOrderId: string
+    cumQuote: string
+    executedQty: string
+    orderId: string
+    origQty: string
+    origType: OrderType
+    price: string
+    side: OrderSide
+    positionSide: PositionSide
+    status: OrderStatus
+    stopPrice: string
+    closePosition: boolean
+    symbol: string
+    time: number
+    timeInForce: TimeInForce
+    type: OrderType
+    activatePrice: string
+    priceRate: string
+    updateTime: number
+    workingType: WorkingType
   }
 
   export interface QueryOrderOcoResult {
@@ -1428,7 +1527,7 @@ declare module 'binance-api-node' {
 
   export enum WalletType {
     SPOT = 'SPOT',
-    ISOLATED_MARGIN ='ISOLATED_MARGIN'
+    ISOLATED_MARGIN = 'ISOLATED_MARGIN'
   }
 
   export interface marginIsolatedTransfer {
@@ -1477,5 +1576,42 @@ declare module 'binance-api-node' {
     type: OrderType
     side: OrderSide
     time: number
+  }
+
+  export interface GetFuturesOrder {
+    avgPrice: string
+    clientOrderId: string
+    cumQuote: string
+    executedQty: string
+    orderId: number
+    origQty: string
+    origType: OrderType
+    price: string
+    reduceOnly: boolean
+    side: OrderSide
+    positionSide: PositionSide
+    status: OrderStatus
+    stopPrice: string
+    closePosition: boolean
+    symbol: string
+    time: number
+    timeInForce: TimeInForce
+    type: OrderType
+    activatePrice: string
+    priceRate: string
+    updateTime: number
+    workingType: WorkingType
+    priceProtect: boolean
+  }
+
+  export enum PositionSide {
+    BOTH = 'BOTH',
+    SHORT = 'SHORT',
+    LONG = 'LONG'
+  }
+
+  export enum WorkingType {
+    MARK_PRICE = 'MARK_PRICE',
+    CONTRACT_PRICE = 'CONTRACT_PRICE'
   }
 }
