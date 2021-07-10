@@ -6,7 +6,7 @@ export default (opts = {}) => ({
   ws: wsMethods(opts),
 })
 
-export const ErrorCodes = {
+exports const ErrorCodes = {
   UNKNOWN: -1000,
   DISCONNECTED: -1001,
   UNAUTHORIZED: -1002,
