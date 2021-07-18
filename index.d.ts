@@ -91,15 +91,13 @@ declare module 'binance-api-node' {
 
   export interface DepositAddress {
     address: string
-    addressTag: string
-    asset: string
-    success: boolean
+    tag: string
+    coin: string
+    url: string
   }
 
   export interface WithrawResponse {
     id: string
-    msg: string
-    success: boolean
   }
 
   export enum DepositStatus {
@@ -111,12 +109,15 @@ declare module 'binance-api-node' {
     depositList: {
       insertTime: number
       amount: number
-      asset: string
+      coin: string
+      network: string
       address: string
       txId: string
       status: DepositStatus
+      addressTag?: string
+      transferType?: number
+      confirmTimes?: string
     }[]
-    success: boolean
   }
 
   export enum WithdrawStatus {
@@ -135,12 +136,14 @@ declare module 'binance-api-node' {
       amount: number
       transactionFee: number
       address: string
-      asset: string
+      coin: string
       txId: string
       applyTime: number
       status: WithdrawStatus
+      network: string
+      transferType?: number
+      withdrawOrderId?: string
     }[]
-    success: boolean
   }
 
   export interface AssetDetail {
@@ -330,12 +333,14 @@ declare module 'binance-api-node' {
       limit?: number
       fromId?: number
     }): Promise<TradeResult[]>
-    depositAddress(options: { asset: string }): Promise<DepositAddress>
+    depositAddress(options: { coin: string }): Promise<DepositAddress>
     withdraw(options: {
-      asset: string
+      coin: string
+      network?: string
       address: string
       amount: number
       name?: string
+      transactionFeeFlag?: boolean
     }): Promise<WithrawResponse>
     assetDetail(): Promise<AssetDetail>
     getBnbBurn(): Promise<BNBBurn>
@@ -347,16 +352,20 @@ declare module 'binance-api-node' {
       limit?: number
     }): Promise<AccountSnapshot>
     withdrawHistory(options: {
-      asset: string
+      coin: string
       status?: number
       startTime?: number
       endTime?: number
+      offset?: number
+      limit?: number
     }): Promise<WithdrawHistoryResponse>
     depositHistory(options: {
-      asset: string
+      coin: string
       status?: number
       startTime?: number
       endTime?: number
+      offset?: number
+      limit?: number
     }): Promise<DepositHistoryResponse>
     universalTransfer(options: UniversalTransfer): Promise<{ tranId: number }>
     universalTransferHistory(
@@ -846,13 +855,13 @@ declare module 'binance-api-node' {
     side: OrderSide,
     positionSide: PositionSide,
     status: OrderStatus,
-    stopPrice: string,        
-    closePosition: boolean, 
+    stopPrice: string,
+    closePosition: boolean,
     symbol: string,
     timeInForce: TimeInForce,
     type: OrderType,
     origType: OrderType,
-    activatePrice: string,   
+    activatePrice: string,
     priceRate: string,
     updateTime: number,
     workingType: WorkingType,
