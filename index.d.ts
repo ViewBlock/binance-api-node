@@ -91,15 +91,13 @@ declare module 'binance-api-node' {
 
   export interface DepositAddress {
     address: string
-    addressTag: string
-    asset: string
-    success: boolean
+    tag: string
+    coin: string
+    url: string
   }
 
   export interface WithrawResponse {
     id: string
-    msg: string
-    success: boolean
   }
 
   export enum DepositStatus {
@@ -112,11 +110,15 @@ declare module 'binance-api-node' {
       insertTime: number
       amount: number
       coin: string
+      network: string
       address: string
       txId: string
       status: DepositStatus
+      address?: string
+      addressTag?: string
+      transferType?: number
+      confirmTimes?: string
     }[]
-    success: boolean
   }
 
   export enum WithdrawStatus {
@@ -139,8 +141,10 @@ declare module 'binance-api-node' {
       txId: string
       applyTime: number
       status: WithdrawStatus
+      network: string
+      transferType?: number
+      withdrawOrderId?: string
     }[]
-    success: boolean
   }
 
   export interface AssetDetail {
