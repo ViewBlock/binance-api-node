@@ -114,7 +114,6 @@ declare module 'binance-api-node' {
       address: string
       txId: string
       status: DepositStatus
-      address?: string
       addressTag?: string
       transferType?: number
       confirmTimes?: string
