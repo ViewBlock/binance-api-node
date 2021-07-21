@@ -723,27 +723,6 @@ declare module 'binance-api-node' {
     bids: Bid[]
   }
 
-  export interface NewOrder {
-    icebergQty?: string
-    newClientOrderId?: string
-    price?: string
-    quantity?: string
-    recvWindow?: number
-    side: OrderSide
-    stopPrice?: string
-    symbol: string
-    timeInForce?: TimeInForce
-    useServerTime?: boolean
-    type: OrderType
-    newOrderRespType?: NewOrderRespType
-    isIsolated?: string | boolean
-    quoteOrderQty?: string
-    sideEffectType?: SideEffectType
-    reduceOnly?: string
-    activationPrice?: string
-    callbackRate?: string
-  }
-
   export interface NewOcoOrder {
     symbol: string
     listClientOrderId?: string
