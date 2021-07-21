@@ -276,8 +276,8 @@ declare module 'binance-api-node' {
     allBookTickers(): Promise<{ [key: string]: Ticker }>
     book(options: { symbol: string; limit?: number }): Promise<OrderBook>
     exchangeInfo(): Promise<ExchangeInfo>
-    order(options: NewOrder): Promise<Order>
-    orderTest(options: NewOrder): Promise<Order>
+    order(options: NewOrderSpot): Promise<Order>
+    orderTest(options: NewOrderSpot): Promise<Order>
     orderOco(options: NewOcoOrder): Promise<OcoOrder>
     ping(): Promise<boolean>
     prices(options?: { symbol?: string }): Promise<{ [index: string]: string }>
@@ -454,7 +454,7 @@ declare module 'binance-api-node' {
       limit?: number
       recvWindow?: number
     }): Promise<FuturesIncomeResult[]>
-    marginOrder(options: NewOrder): Promise<Order>
+    marginOrder(options: NewOrderMargin): Promise<Order>
     marginGetOrder(options: {
       symbol: string
       isIsolated?: string | boolean
@@ -746,27 +746,6 @@ declare module 'binance-api-node' {
     bids: Bid[]
   }
 
-  export interface NewOrder {
-    icebergQty?: string
-    newClientOrderId?: string
-    price?: string
-    quantity?: string
-    recvWindow?: number
-    side: OrderSide
-    stopPrice?: string
-    symbol: string
-    timeInForce?: TimeInForce
-    useServerTime?: boolean
-    type: OrderType
-    newOrderRespType?: NewOrderRespType
-    isIsolated?: string | boolean
-    quoteOrderQty?: string
-    sideEffectType?: SideEffectType
-    reduceOnly?: string
-    activationPrice?: string
-    callbackRate?: string
-  }
-
   export interface NewFuturesOrder {
     symbol: string
     side: OrderSide
@@ -804,6 +783,50 @@ declare module 'binance-api-node' {
     recvWindow?: number
     useServerTime?: boolean
   }
+
+  export interface NewOrderParent {
+    symbol: string
+    side: OrderSide
+    type: OrderType
+    newClientOrderId?: string
+    newOrderRespType?: NewOrderRespType
+    recvWindow?: number
+  }
+
+  export interface NewOrderMarketBase extends NewOrderParent {
+    type: OrderType.MARKET
+    quantity: string
+  }
+
+  export interface NewOrderMarketQuote extends NewOrderParent {
+    type: OrderType.MARKET
+    quoteOrderQty: string
+  }
+
+  export interface NewOrderLimit extends NewOrderParent {
+    type: OrderType.LIMIT
+    quantity: string
+    price: string
+    icebergQty?: string
+  }
+
+  export interface NewOrderSL extends NewOrderParent {
+    type: OrderType.STOP_LOSS_LIMIT | OrderType.TAKE_PROFIT_LIMIT
+    quantity: string
+    price: string
+    stopPrice: string
+    icebertQty?: string
+  }
+
+  export interface NewMarginOrderParent {
+    isIsolated?: 'TRUE' | 'FALSE' | boolean
+    sideEffectType?: SideEffectType
+    timeInForce?: TimeInForce
+  }
+
+  export type NewOrderSpot = NewOrderMarketBase | NewOrderMarketQuote | NewOrderLimit | NewOrderSL
+
+  export type NewOrderMargin = NewOrderSpot & NewMarginOrderParent
 
   export enum SideEffectType {
     NO_SIDE_EFFECT = 'NO_SIDE_EFFECT',
