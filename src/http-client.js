@@ -224,7 +224,9 @@ const candles = (pubCall, payload, endpoint = '/api/v3/klines') =>
  */
 const order = (privCall, payload = {}, url) => {
   const newPayload =
-    ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type ? { timeInForce: 'GTC', ...payload } : payload
+    ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type
+      ? { timeInForce: 'GTC', ...payload }
+      : payload
 
   const requires = ['symbol', 'side']
 
@@ -426,7 +428,7 @@ export default opts => {
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
 
     futuresOrder: payload => order(privCall, payload, '/fapi/v1/order'),
-    futuresBatchOrders: payload => privCall(payload, '/fapi/v1/batchOrders'),
+    futuresBatchOrders: payload => privCall('/fapi/v1/batchOrders', payload),
     futuresGetOrder: payload => privCall('/fapi/v1/order', payload),
     futuresCancelOrder: payload => privCall('/fapi/v1/order', payload, 'DELETE'),
     futuresCancelAllOpenOrders: payload => privCall('/fapi/v1/allOpenOrders', payload, 'DELETE'),
