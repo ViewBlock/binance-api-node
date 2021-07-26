@@ -115,7 +115,7 @@ const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {})
   sendResult(
     fetch(
       `${
-        !(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures
+        !(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi') ? endpoints.base : endpoints.futures
       }${path}${makeQueryString(data)}`,
       {
         method,
@@ -181,7 +181,7 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
     return sendResult(
       fetch(
         `${
-          !(path.includes('/fapi') || path.includes('/futures'))
+          !(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
             ? endpoints.base
             : endpoints.futures
         }${path}${noData ? '' : makeQueryString(newData)}`,
