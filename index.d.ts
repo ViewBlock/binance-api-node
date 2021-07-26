@@ -165,9 +165,9 @@ declare module 'binance-api-node' {
   }
 
   export interface SetBNBBurnOptions {
-    spotBNBBurn: boolean;
-    interestBNBBurn: boolean;
-    recvWindow?: number;
+    spotBNBBurn: boolean
+    interestBNBBurn: boolean
+    recvWindow?: number
   }
 
   export interface AccountSnapshot {
@@ -226,7 +226,7 @@ declare module 'binance-api-node' {
     MARGIN_UMFUTURE = 'MARGIN_UMFUTURE',
     MINING_MAIN = 'MINING_MAIN',
     MINING_UMFUTURE = 'MINING_UMFUTURE',
-    MINING_C2C = 'MINING_C2C'
+    MINING_C2C = 'MINING_C2C',
   }
 
   export interface UniversalTransfer {
@@ -257,9 +257,27 @@ declare module 'binance-api-node' {
     }[]
   }
 
+  export interface MarginBorrowParent {
+    asset: string
+    isIsolated?: 'TRUE' | 'FALSE'
+    amount: string
+    recvWindow?: number
+  }
+
+  export interface MarginBorrowCross {
+    isIsolated?: 'FALSE'
+  }
+
+  export interface MarginBorrowIsolated {
+    isIsolated: 'TRUE'
+    symbol: string
+  }
+
+  export type MarginBorrowOptions = MarginBorrowCross | MarginBorrowIsolated
+
   export enum MarginType {
-    ISOLATED = "ISOLATED",
-    CROSSED = "CROSSED"
+    ISOLATED = 'ISOLATED',
+    CROSSED = 'CROSSED',
   }
 
   export interface Binance {
@@ -417,8 +435,8 @@ declare module 'binance-api-node' {
       symbol: string
       orderId?: number
       origClientOrderId?: string
-      recvWindow?: number,
-      timestamp?: number,
+      recvWindow?: number
+      timestamp?: number
     }): Promise<QueryFuturesOrderResult>
     futuresOpenOrders(options: {
       symbol?: string
@@ -426,7 +444,7 @@ declare module 'binance-api-node' {
     }): Promise<QueryOrderResult[]>
     futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
     futuresLeverageBracket(options?: {
-      symbol?: string,
+      symbol?: string
       recvWindow: number
     }): Promise<LeverageBracketResult[]>
     futuresAccountBalance(options?: { recvWindow: number }): Promise<FuturesBalanceResult[]>
@@ -475,16 +493,8 @@ declare module 'binance-api-node' {
       symbol?: string
       useServerTime?: boolean
     }): Promise<QueryOrderResult[]>
-    marginRepay(options: {
-      asset: string
-      amount: number
-      useServerTime?: boolean
-    }): Promise<{ tranId: number }>
-    marginLoan(options: {
-      asset: string
-      amount: number
-      useServerTime?: boolean
-    }): Promise<{ tranId: number }>
+    marginRepay(options: MarginBorrowOptions): Promise<{ tranId: number }>
+    marginLoan(options: MarginBorrowOptions): Promise<{ tranId: number }>
     marginAccountInfo(options?: { recvWindow?: number }): Promise<IsolatedCrossAccount>
     marginIsolatedAccount(options?: {
       symbols?: string
@@ -626,7 +636,7 @@ declare module 'binance-api-node' {
 
   export enum RateLimitType {
     REQUEST_WEIGHT = 'REQUEST_WEIGHT',
-    ORDERS = 'ORDERS'
+    ORDERS = 'ORDERS',
   }
 
   export enum TradingType {
@@ -637,7 +647,7 @@ declare module 'binance-api-node' {
   export enum RateLimitInterval {
     SECOND = 'SECOND',
     MINUTE = 'MINUTE',
-    DAY = 'DAY'
+    DAY = 'DAY',
   }
 
   export interface ExchangeInfoRateLimit {
@@ -649,7 +659,7 @@ declare module 'binance-api-node' {
 
   export enum ExchangeFilterType {
     EXCHANGE_MAX_NUM_ORDERS = 'EXCHANGE_MAX_NUM_ORDERS',
-    EXCHANGE_MAX_ALGO_ORDERS = 'EXCHANGE_MAX_ALGO_ORDERS'
+    EXCHANGE_MAX_ALGO_ORDERS = 'EXCHANGE_MAX_ALGO_ORDERS',
   }
 
   export interface ExchangeFilter {
@@ -663,7 +673,7 @@ declare module 'binance-api-node' {
     LOT_SIZE = 'LOT_SIZE',
     MIN_NOTIONAL = 'MIN_NOTIONAL',
     MAX_NUM_ORDERS = 'MAX_NUM_ORDERS',
-    MAX_ALGO_ORDERS = 'MAX_ALGO_ORDERS'
+    MAX_ALGO_ORDERS = 'MAX_ALGO_ORDERS',
   }
 
   export interface SymbolPriceFilter {
@@ -831,7 +841,7 @@ declare module 'binance-api-node' {
   export enum SideEffectType {
     NO_SIDE_EFFECT = 'NO_SIDE_EFFECT',
     MARGIN_BUY = 'MARGIN_BUY',
-    AUTO_REPAY = 'AUTO_REPAY'
+    AUTO_REPAY = 'AUTO_REPAY',
   }
 
   export interface OrderFill {
@@ -866,40 +876,40 @@ declare module 'binance-api-node' {
   }
 
   export interface FuturesOrder {
-    clientOrderId: string,
-    cumQty: string,
-    cumQuote: string,
-    executedQty: string,
-    orderId: number,
-    avgPrice: string,
-    origQty: string,
-    price: string,
-    reduceOnly: boolean,
-    side: OrderSide,
-    positionSide: PositionSide,
-    status: OrderStatus,
-    stopPrice: string,
-    closePosition: boolean,
-    symbol: string,
-    timeInForce: TimeInForce,
-    type: OrderType,
-    origType: OrderType,
-    activatePrice: string,
-    priceRate: string,
-    updateTime: number,
-    workingType: WorkingType,
+    clientOrderId: string
+    cumQty: string
+    cumQuote: string
+    executedQty: string
+    orderId: number
+    avgPrice: string
+    origQty: string
+    price: string
+    reduceOnly: boolean
+    side: OrderSide
+    positionSide: PositionSide
+    status: OrderStatus
+    stopPrice: string
+    closePosition: boolean
+    symbol: string
+    timeInForce: TimeInForce
+    type: OrderType
+    origType: OrderType
+    activatePrice: string
+    priceRate: string
+    updateTime: number
+    workingType: WorkingType
   }
 
   export enum ListOrderStatus {
     EXECUTING = 'EXECUTING',
     ALL_DONE = 'ALL_DONE',
-    REJECT = 'REJECT'
+    REJECT = 'REJECT',
   }
 
   export enum ListStatusType {
     RESPONSE = 'RESPONSE',
     EXEC_STARTED = 'EXEC_STARTED',
-    ALL_DONE = 'ALL_DONE'
+    ALL_DONE = 'ALL_DONE',
   }
 
   export enum OcoOrderType {
@@ -920,7 +930,7 @@ declare module 'binance-api-node' {
 
   export enum OrderSide {
     BUY = 'BUY',
-    SELL = 'SELL'
+    SELL = 'SELL',
   }
 
   export enum OrderStatus {
@@ -930,7 +940,7 @@ declare module 'binance-api-node' {
     NEW = 'NEW',
     PARTIALLY_FILLED = 'PARTIALLY_FILLED',
     PENDING_CANCEL = 'PENDING_CANCEL',
-    REJECTED = 'REJECTED'
+    REJECTED = 'REJECTED',
   }
 
   export enum OrderType {
@@ -942,19 +952,19 @@ declare module 'binance-api-node' {
     STOP_LOSS_LIMIT = 'STOP_LOSS_LIMIT',
     TAKE_PROFIT_LIMIT = 'TAKE_PROFIT_LIMIT',
     TAKE_PROFIT_MARKET = 'TAKE_PROFIT_MARKET',
-    TRAILING_STOP_MARKET = 'TRAILING_STOP_MARKET'
+    TRAILING_STOP_MARKET = 'TRAILING_STOP_MARKET',
   }
 
   export enum NewOrderRespType {
     ACK = 'ACK',
     RESULT = 'RESULT',
-    FULL = 'FULL'
+    FULL = 'FULL',
   }
 
   export enum TimeInForce {
     GTC = 'GTC',
     IOC = 'IOC',
-    FOK = 'FOK'
+    FOK = 'FOK',
   }
 
   export enum OrderRejectReason {
@@ -977,7 +987,7 @@ declare module 'binance-api-node' {
     REPLACED = 'REPLACED',
     REJECTED = 'REJECTED',
     TRADE = 'TRADE',
-    EXPIRED = 'EXPIRED'
+    EXPIRED = 'EXPIRED',
   }
 
   export interface Depth {
@@ -1083,7 +1093,7 @@ declare module 'binance-api-node' {
     BALANCE_UPDATE = 'balanceUpdate',
     OUTBOUND_ACCOUNT_POSITION = 'outboundAccountPosition',
     EXECUTION_REPORT = 'executionReport',
-    ACCOUNT_UPDATE = 'ACCOUNT_UPDATE'
+    ACCOUNT_UPDATE = 'ACCOUNT_UPDATE',
   }
 
   export interface OutboundAccountInfo {
@@ -1189,7 +1199,7 @@ declare module 'binance-api-node' {
     commission: string
     commissionAsset: string
     id: number
-    maker: boolean,
+    maker: boolean
     orderId: number
     price: string
     qty: string
@@ -1396,17 +1406,17 @@ declare module 'binance-api-node' {
   }
 
   export interface LeverageBracketResult {
-    symbol: string,
+    symbol: string
     brackets: Bracket[]
   }
 
   export interface Bracket {
-    bracket: number, // Notional bracket
-    initialLeverage: number, // Max initial leverage for this bracket
-    notionalCap: number, // Cap notional of this bracket
-    notionalFloor: number, // Notional threshold of this bracket 
-    maintMarginRatio: number, // Maintenance ratio for this bracket
-    cum: 0, // Auxiliary number for quick calculation 
+    bracket: number // Notional bracket
+    initialLeverage: number // Max initial leverage for this bracket
+    notionalCap: number // Cap notional of this bracket
+    notionalFloor: number // Notional threshold of this bracket
+    maintMarginRatio: number // Maintenance ratio for this bracket
+    cum: 0 // Auxiliary number for quick calculation
   }
 
   export interface FuturesBalanceResult {
@@ -1456,9 +1466,9 @@ declare module 'binance-api-node' {
   }
 
   export interface FuturesLeverageResult {
-    leverage: number;
-    maxNotionalValue: number;
-    symbol: string;
+    leverage: number
+    maxNotionalValue: number
+    symbol: string
   }
 
   export interface FuturesMarginTypeResult {
@@ -1472,7 +1482,7 @@ declare module 'binance-api-node' {
     REALIZED_PNL = 'REALIZED_PNL',
     FUNDING_FEE = 'FUNDING_FEE',
     COMMISSION = 'COMMISSION',
-    INSURANCE_CLEAR = 'INSURANCE_CLEAR'
+    INSURANCE_CLEAR = 'INSURANCE_CLEAR',
   }
 
   export interface FuturesIncomeResult {
@@ -1496,23 +1506,23 @@ declare module 'binance-api-node' {
   }
 
   export interface IsolatedCrossAccount {
-    borrowEnabled: boolean,
-    marginLevel: string,
-    totalAssetOfBtc: string,
-    totalLiabilityOfBtc: string,
-    totalNetAssetOfBtc: string,
-    tradeEnabled: boolean,
-    transferEnabled: boolean,
-    userAssets: CrossAsset[],
+    borrowEnabled: boolean
+    marginLevel: string
+    totalAssetOfBtc: string
+    totalLiabilityOfBtc: string
+    totalNetAssetOfBtc: string
+    tradeEnabled: boolean
+    transferEnabled: boolean
+    userAssets: CrossAsset[]
   }
 
   export interface CrossAsset {
-    asset: string,
-    borrowed: string,
-    free: string,
-    interest: string,
-    locked: string,
-    netAsset: string,
+    asset: string
+    borrowed: string
+    free: string
+    interest: string
+    locked: string
+    netAsset: string
   }
 
   export interface IsolatedMarginAccount {
@@ -1527,7 +1537,7 @@ declare module 'binance-api-node' {
     NORMAL = 'NORMAL',
     MARGIN_CALL = 'MARGIN_CALL',
     PRE_LIQUIDATION = 'PRE_LIQUIDATION',
-    FORCE_LIQUIDATION = 'FORCE_LIQUIDATION'
+    FORCE_LIQUIDATION = 'FORCE_LIQUIDATION',
   }
 
   export interface IsolatedAsset {
@@ -1559,7 +1569,7 @@ declare module 'binance-api-node' {
 
   export enum WalletType {
     SPOT = 'SPOT',
-    ISOLATED_MARGIN = 'ISOLATED_MARGIN'
+    ISOLATED_MARGIN = 'ISOLATED_MARGIN',
   }
 
   export interface marginIsolatedTransfer {
@@ -1639,11 +1649,11 @@ declare module 'binance-api-node' {
   export enum PositionSide {
     BOTH = 'BOTH',
     SHORT = 'SHORT',
-    LONG = 'LONG'
+    LONG = 'LONG',
   }
 
   export enum WorkingType {
     MARK_PRICE = 'MARK_PRICE',
-    CONTRACT_PRICE = 'CONTRACT_PRICE'
+    CONTRACT_PRICE = 'CONTRACT_PRICE',
   }
 }
