@@ -264,11 +264,11 @@ declare module 'binance-api-node' {
     recvWindow?: number
   }
 
-  export interface MarginBorrowCross {
+  export interface MarginBorrowCross extends MarginBorrowParent {
     isIsolated?: 'FALSE'
   }
 
-  export interface MarginBorrowIsolated {
+  export interface MarginBorrowIsolated extends MarginBorrowParent {
     isIsolated: 'TRUE'
     symbol: string
   }
