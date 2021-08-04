@@ -188,12 +188,25 @@ declare module 'binance-api-node' {
   }
 
   export type GetOrderOptions =
-    | { symbol: string; orderId: number }
-    | { symbol: string; origClientOrderId: string }
+    | { symbol: string; orderId: number, useServerTime?: boolean }
+    | { symbol: string; origClientOrderId: string, useServerTime?: boolean }
+
+  export type CancelOrderOptions =
+    | { symbol: string; orderId: number, useServerTime?: boolean, newClientOrderId?: string }
+    | { symbol: string; origClientOrderId: string, useServerTime?: boolean, newClientOrderId?: string }
 
   export type GetOrderOcoOptions =
-    | { orderListId: number }
-    | { listClientOrderId: string }
+    | { symbol: string, orderListId: number, useServerTime?: boolean }
+    | { symbol: string, listClientOrderId: string, useServerTime?: boolean }
+
+  export type CancelOrderOcoOptions =
+    | { symbol: string, orderListId: number, useServerTime?: boolean, newClientOrderId?: string }
+    | { symbol: string, listClientOrderId: string, useServerTime?: boolean, newClientOrderId?: string }
+
+  export type cancelOpenOrdersOptions = {
+    symbol: string
+    useServerTime?: boolean
+  }
 
   export interface GetInfo {
     spot: GetInfoDetails
@@ -309,22 +322,11 @@ declare module 'binance-api-node' {
       fromId?: number
       useServerTime?: boolean
     }): Promise<MyTrade[]>
-    getOrder(options: GetOrderOptions & { useServerTime?: boolean }): Promise<QueryOrderResult>
-    getOrderOco(options: GetOrderOcoOptions & { useServerTime?: boolean }): Promise<QueryOrderOcoResult>
-    cancelOrder(options: {
-      symbol: string
-      orderId: number
-      useServerTime?: boolean
-    }): Promise<CancelOrderResult>
-    cancelOrderOco(options: {
-      symbol: string
-      orderListId: number
-      useServerTime?: boolean
-    }): Promise<CancelOrderOcoResult>
-    cancelOpenOrders(options: {
-      symbol: string
-      useServerTime?: boolean
-    }): Promise<CancelOrderResult[]>
+    getOrder(options: GetOrderOptions): Promise<QueryOrderResult>
+    getOrderOco(options: GetOrderOcoOptions): Promise<QueryOrderOcoResult>
+    cancelOrder(options: CancelOrderOptions): Promise<CancelOrderResult>
+    cancelOrderOco(options: CancelOrderOcoOptions): Promise<CancelOrderOcoResult>
+    cancelOpenOrders(options: cancelOpenOrdersOptions): Promise<CancelOrderResult[]>
     openOrders(options: { symbol?: string; recvWindow?: number; useServerTime?: boolean }): Promise<QueryOrderResult[]>
     allOrders(options: {
       symbol?: string;
