@@ -570,6 +570,10 @@ declare module 'binance-api-node' {
       pair: string | string[],
       callback: (ticker: Ticker) => void,
     ) => ReconnectingWebSocketHandler
+    miniTicker: (
+      pair: string | string[],
+      callback: (ticker: MiniTicker) => void,
+    ) => ReconnectingWebSocketHandler
     futuresTicker: (
       pair: string | string[],
       callback: (ticker: Ticker) => void,
@@ -1043,6 +1047,18 @@ declare module 'binance-api-node' {
     firstTradeId: number
     lastTradeId: number
     totalTrades: number
+  }
+
+  export interface MiniTicker {
+    eventType: string,
+    eventTime: number,
+    symbol: string,
+    curDayClose: string,
+    open: string,
+    high: string,
+    low: string,
+    volume: string,
+    volumeQuote: string
   }
 
   export interface Candle {
