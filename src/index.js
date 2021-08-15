@@ -49,6 +49,11 @@ export const ErrorCodes = {
   REJECTED_MBX_KEY: -2015,
 }
 
+export const OrderSide = {
+  BUY: 'BUY',
+  SELL: 'SELL'
+}
+
 export const CandleChartInterval = {
   ONE_MINUTE: '1m',
   THREE_MINUTES: '3m',
