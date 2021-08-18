@@ -96,7 +96,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [assetDetail](#assetDetail)
   - [getBnbBurn](#getBnbBurn)
   - [setBnbBurn](#setBnbBurn)
-	- [dustLog](#dustlog)
+  - [dustLog](#dustlog)
   - [dustTransfer](#dustTransfer)
   - [accountCoins](#accountCoins)
 - [Margin](#margin)
