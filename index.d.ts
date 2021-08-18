@@ -1,6 +1,6 @@
 // tslint:disable:interface-name
 declare module 'binance-api-node' {
-  export default function (options?: {
+  export default function(options?: {
     apiKey?: string
     apiSecret?: string
     getTime?: () => number | Promise<number>
@@ -54,7 +54,7 @@ declare module 'binance-api-node' {
   }
 
   export interface Account {
-    accountType: TradingType.MARGIN | TradingType.SPOT
+    accountType: TradingType
     balances: AssetBalance[]
     buyerCommission: number
     canDeposit: boolean
@@ -160,8 +160,8 @@ declare module 'binance-api-node' {
   }
 
   export interface BNBBurn {
-    spotBNBBurn: boolean;
-    interestBNBBurn: boolean;
+    spotBNBBurn: boolean
+    interestBNBBurn: boolean
   }
 
   export interface SetBNBBurnOptions {
@@ -188,20 +188,30 @@ declare module 'binance-api-node' {
   }
 
   export type GetOrderOptions =
-    | { symbol: string; orderId: number, useServerTime?: boolean }
-    | { symbol: string; origClientOrderId: string, useServerTime?: boolean }
+    | { symbol: string; orderId: number; useServerTime?: boolean }
+    | { symbol: string; origClientOrderId: string; useServerTime?: boolean }
 
   export type CancelOrderOptions =
-    | { symbol: string; orderId: number, useServerTime?: boolean, newClientOrderId?: string }
-    | { symbol: string; origClientOrderId: string, useServerTime?: boolean, newClientOrderId?: string }
+    | { symbol: string; orderId: number; useServerTime?: boolean; newClientOrderId?: string }
+    | {
+        symbol: string
+        origClientOrderId: string
+        useServerTime?: boolean
+        newClientOrderId?: string
+      }
 
   export type GetOrderOcoOptions =
-    | { symbol: string, orderListId: number, useServerTime?: boolean }
-    | { symbol: string, listClientOrderId: string, useServerTime?: boolean }
+    | { symbol: string; orderListId: number; useServerTime?: boolean }
+    | { symbol: string; listClientOrderId: string; useServerTime?: boolean }
 
   export type CancelOrderOcoOptions =
-    | { symbol: string, orderListId: number, useServerTime?: boolean, newClientOrderId?: string }
-    | { symbol: string, listClientOrderId: string, useServerTime?: boolean, newClientOrderId?: string }
+    | { symbol: string; orderListId: number; useServerTime?: boolean; newClientOrderId?: string }
+    | {
+        symbol: string
+        listClientOrderId: string
+        useServerTime?: boolean
+        newClientOrderId?: string
+      }
 
   export type cancelOpenOrdersOptions = {
     symbol: string
@@ -222,25 +232,24 @@ declare module 'binance-api-node' {
     responseTime?: string
   }
 
-  export enum TransferType {
-    MAIN_C2C = 'MAIN_C2C',
-    MAIN_UMFUTURE = 'MAIN_UMFUTURE',
-    MAIN_CMFUTURE = 'MAIN_CMFUTURE',
-    MAIN_MARGIN = 'MAIN_MARGIN',
-    MAIN_MINING = 'MAIN_MINING',
-    C2C_MAIN = 'C2C_MAIN',
-    C2C_UMFUTURE = 'C2C_UMFUTURE',
-    C2C_MINING = 'C2C_MINING',
-    UMFUTURE_MAIN = 'UMFUTURE_MAIN',
-    UMFUTURE_C2C = 'UMFUTURE_C2C',
-    UMFUTURE_MARGIN = 'UMFUTURE_MARGIN',
-    CMFUTURE_MAIN = 'CMFUTURE_MAIN',
-    MARGIN_MAIN = 'MARGIN_MAIN',
-    MARGIN_UMFUTURE = 'MARGIN_UMFUTURE',
-    MINING_MAIN = 'MINING_MAIN',
-    MINING_UMFUTURE = 'MINING_UMFUTURE',
-    MINING_C2C = 'MINING_C2C',
-  }
+  export type TransferType =
+    | 'MAIN_C2C'
+    | 'MAIN_UMFUTURE'
+    | 'MAIN_CMFUTURE'
+    | 'MAIN_MARGIN'
+    | 'MAIN_MINING'
+    | 'C2C_MAIN'
+    | 'C2C_UMFUTURE'
+    | 'C2C_MINING'
+    | 'UMFUTURE_MAIN'
+    | 'UMFUTURE_C2C'
+    | 'UMFUTURE_MARGIN'
+    | 'CMFUTURE_MAIN'
+    | 'MARGIN_MAIN'
+    | 'MARGIN_UMFUTURE'
+    | 'MINING_MAIN'
+    | 'MINING_UMFUTURE'
+    | 'MINING_C2C'
 
   export interface UniversalTransfer {
     type: TransferType
@@ -288,10 +297,7 @@ declare module 'binance-api-node' {
 
   export type MarginBorrowOptions = MarginBorrowCross | MarginBorrowIsolated
 
-  export enum MarginType {
-    ISOLATED = 'ISOLATED',
-    CROSSED = 'CROSSED',
-  }
+  export type MarginType = 'ISOLATED' | 'CROSSED'
 
   export interface Binance {
     getInfo(): GetInfo
@@ -327,15 +333,19 @@ declare module 'binance-api-node' {
     cancelOrder(options: CancelOrderOptions): Promise<CancelOrderResult>
     cancelOrderOco(options: CancelOrderOcoOptions): Promise<CancelOrderOcoResult>
     cancelOpenOrders(options: cancelOpenOrdersOptions): Promise<CancelOrderResult[]>
-    openOrders(options: { symbol?: string; recvWindow?: number; useServerTime?: boolean }): Promise<QueryOrderResult[]>
+    openOrders(options: {
+      symbol?: string
+      recvWindow?: number
+      useServerTime?: boolean
+    }): Promise<QueryOrderResult[]>
     allOrders(options: {
-      symbol?: string;
-      orderId?: number;
-      startTime?: number;
-      endTime?: number;
-      limit?: number;
-      recvWindow?: number;
-      timestamp?: number;
+      symbol?: string
+      orderId?: number
+      startTime?: number
+      endTime?: number
+      limit?: number
+      recvWindow?: number
+      timestamp?: number
       useServerTime?: boolean
     }): Promise<QueryOrderResult[]>
     allOrdersOCO(options: {
@@ -622,39 +632,28 @@ declare module 'binance-api-node' {
 
   export type ReconnectingWebSocketHandler = (options?: WebSocketCloseOptions) => void
 
-  export enum CandleChartInterval {
-    ONE_MINUTE = '1m',
-    THREE_MINUTES = '3m',
-    FIVE_MINUTES = '5m',
-    FIFTEEN_MINUTES = '15m',
-    THIRTY_MINUTES = '30m',
-    ONE_HOUR = '1h',
-    TWO_HOURS = '2h',
-    FOUR_HOURS = '4h',
-    SIX_HOURS = '6h',
-    EIGHT_HOURS = '8h',
-    TWELVE_HOURS = '12h',
-    ONE_DAY = '1d',
-    THREE_DAYS = '3d',
-    ONE_WEEK = '1w',
-    ONE_MONTH = '1M',
-  }
+  export type CandleChartInterval =
+    | '1m'
+    | '3m'
+    | '5m'
+    | '15m'
+    | '30m'
+    | '1h'
+    | '2h'
+    | '4h'
+    | '6h'
+    | '8h'
+    | '12h'
+    | '1d'
+    | '3d'
+    | '1w'
+    | '1M'
 
-  export enum RateLimitType {
-    REQUEST_WEIGHT = 'REQUEST_WEIGHT',
-    ORDERS = 'ORDERS',
-  }
+  export type RateLimitType = 'REQUEST_WEIGHT' | 'ORDERS'
 
-  export enum TradingType {
-    MARGIN = 'MARGIN',
-    SPOT = 'SPOT',
-  }
+  export type TradingType = 'MARGIN' | 'SPOT'
 
-  export enum RateLimitInterval {
-    SECOND = 'SECOND',
-    MINUTE = 'MINUTE',
-    DAY = 'DAY',
-  }
+  export type RateLimitInterval = 'SECOND' | 'MINUTE' | 'DAY'
 
   export interface ExchangeInfoRateLimit {
     rateLimitType: RateLimitType
@@ -663,60 +662,56 @@ declare module 'binance-api-node' {
     limit: number
   }
 
-  export enum ExchangeFilterType {
-    EXCHANGE_MAX_NUM_ORDERS = 'EXCHANGE_MAX_NUM_ORDERS',
-    EXCHANGE_MAX_ALGO_ORDERS = 'EXCHANGE_MAX_ALGO_ORDERS',
-  }
+  export type ExchangeFilterType = 'EXCHANGE_MAX_NUM_ORDERS' | 'EXCHANGE_MAX_ALGO_ORDERS'
 
   export interface ExchangeFilter {
     filterType: ExchangeFilterType
     limit: number
   }
 
-  export enum SymbolFilterType {
-    PRICE_FILTER = 'PRICE_FILTER',
-    PERCENT_PRICE = 'PERCENT_PRICE',
-    LOT_SIZE = 'LOT_SIZE',
-    MIN_NOTIONAL = 'MIN_NOTIONAL',
-    MAX_NUM_ORDERS = 'MAX_NUM_ORDERS',
-    MAX_ALGO_ORDERS = 'MAX_ALGO_ORDERS',
-  }
+  export type SymbolFilterType =
+    | 'PRICE_FILTER'
+    | 'PERCENT_PRICE'
+    | 'LOT_SIZE'
+    | 'MIN_NOTIONAL'
+    | 'MAX_NUM_ORDERS'
+    | 'MAX_ALGO_ORDERS'
 
   export interface SymbolPriceFilter {
-    filterType: SymbolFilterType.PRICE_FILTER
+    filterType: 'PRICE_FILTER'
     minPrice: string
     maxPrice: string
     tickSize: string
   }
 
   export interface SymbolPercentPriceFilter {
-    filterType: SymbolFilterType.PERCENT_PRICE
+    filterType: 'PERCENT_PRICE'
     multiplierDown: string
     multiplierUp: string
     avgPriceMins: number
   }
 
   export interface SymbolLotSizeFilter {
-    filterType: SymbolFilterType.LOT_SIZE
+    filterType: 'LOT_SIZE'
     minQty: string
     maxQty: string
     stepSize: string
   }
 
   export interface SymbolMinNotionalFilter {
-    filterType: SymbolFilterType.MIN_NOTIONAL
+    filterType: 'MIN_NOTIONAL'
     applyToMarket: boolean
     avgPriceMins: number
     minNotional: string
   }
 
   export interface SymbolMaxNumOrdersFilter {
-    filterType: SymbolFilterType.MAX_NUM_ORDERS
+    filterType: 'MAX_NUM_ORDERS'
     limit: number
   }
 
   export interface SymbolMaxAlgoOrdersFilter {
-    filterType: SymbolFilterType.MAX_ALGO_ORDERS
+    filterType: 'MAX_ALGO_ORDERS'
     limit: number
   }
 
@@ -810,24 +805,24 @@ declare module 'binance-api-node' {
   }
 
   export interface NewOrderMarketBase extends NewOrderParent {
-    type: OrderType.MARKET
+    type: 'MARKET'
     quantity: string
   }
 
   export interface NewOrderMarketQuote extends NewOrderParent {
-    type: OrderType.MARKET
+    type: 'MARKET'
     quoteOrderQty: string
   }
 
   export interface NewOrderLimit extends NewOrderParent {
-    type: OrderType.LIMIT
+    type: 'LIMIT'
     quantity: string
     price: string
     icebergQty?: string
   }
 
   export interface NewOrderSL extends NewOrderParent {
-    type: OrderType.STOP_LOSS_LIMIT | OrderType.TAKE_PROFIT_LIMIT
+    type: 'STOP_LOSS_LIMIT' | 'TAKE_PROFIT_LIMIT'
     quantity: string
     price: string
     stopPrice: string
@@ -844,11 +839,7 @@ declare module 'binance-api-node' {
 
   export type NewOrderMargin = NewOrderSpot & NewMarginOrderParent
 
-  export enum SideEffectType {
-    NO_SIDE_EFFECT = 'NO_SIDE_EFFECT',
-    MARGIN_BUY = 'MARGIN_BUY',
-    AUTO_REPAY = 'AUTO_REPAY',
-  }
+  export type SideEffectType = 'NO_SIDE_EFFECT' | 'MARGIN_BUY' | 'AUTO_REPAY'
 
   export interface OrderFill {
     tradeId: number
@@ -906,25 +897,15 @@ declare module 'binance-api-node' {
     workingType: WorkingType
   }
 
-  export enum ListOrderStatus {
-    EXECUTING = 'EXECUTING',
-    ALL_DONE = 'ALL_DONE',
-    REJECT = 'REJECT',
-  }
+  export type ListOrderStatus = 'EXECUTING' | 'ALL_DONE' | 'REJECT'
 
-  export enum ListStatusType {
-    RESPONSE = 'RESPONSE',
-    EXEC_STARTED = 'EXEC_STARTED',
-    ALL_DONE = 'ALL_DONE',
-  }
+  export type ListStatusType = 'RESPONSE' | 'EXEC_STARTED' | 'ALL_DONE'
 
-  export enum OcoOrderType {
-    CONTINGENCY_TYPE = 'OCO',
-  }
+  export type OcoOrderType = 'OCO'
 
   export interface OcoOrder {
     orderListId: number
-    contingencyType: OcoOrderType.CONTINGENCY_TYPE
+    contingencyType: OcoOrderType
     listStatusType: ListStatusType
     listOrderStatus: ListOrderStatus
     listClientOrderId: string
@@ -934,67 +915,46 @@ declare module 'binance-api-node' {
     orderReports: Order[]
   }
 
-  export enum OrderSide {
-    BUY = 'BUY',
-    SELL = 'SELL',
-  }
+  export type OrderSide = 'BUY' | 'SELL'
 
-  export enum OrderStatus {
-    CANCELED = 'CANCELED',
-    EXPIRED = 'EXPIRED',
-    FILLED = 'FILLED',
-    NEW = 'NEW',
-    PARTIALLY_FILLED = 'PARTIALLY_FILLED',
-    PENDING_CANCEL = 'PENDING_CANCEL',
-    REJECTED = 'REJECTED',
-  }
+  export type OrderStatus =
+    | 'CANCELED'
+    | 'EXPIRED'
+    | 'FILLED'
+    | 'NEW'
+    | 'PARTIALLY_FILLED'
+    | 'PENDING_CANCEL'
+    | 'REJECTED'
 
-  export enum OrderType {
-    LIMIT = 'LIMIT',
-    LIMIT_MAKER = 'LIMIT_MAKER',
-    MARKET = 'MARKET',
-    STOP = 'STOP',
-    STOP_MARKET = 'STOP_MARKET',
-    STOP_LOSS_LIMIT = 'STOP_LOSS_LIMIT',
-    TAKE_PROFIT_LIMIT = 'TAKE_PROFIT_LIMIT',
-    TAKE_PROFIT_MARKET = 'TAKE_PROFIT_MARKET',
-    TRAILING_STOP_MARKET = 'TRAILING_STOP_MARKET',
-  }
+  export type OrderType =
+    | 'LIMIT'
+    | 'LIMIT_MAKER'
+    | 'MARKET'
+    | 'STOP'
+    | 'STOP_MARKET'
+    | 'STOP_LOSS_LIMIT'
+    | 'TAKE_PROFIT_LIMIT'
+    | 'TAKE_PROFIT_MARKET'
+    | 'TRAILING_STOP_MARKET'
 
-  export enum NewOrderRespType {
-    ACK = 'ACK',
-    RESULT = 'RESULT',
-    FULL = 'FULL',
-  }
+  export type NewOrderRespType = 'ACK' | 'RESULT' | 'FULL'
 
-  export enum TimeInForce {
-    GTC = 'GTC',
-    IOC = 'IOC',
-    FOK = 'FOK',
-  }
+  export type TimeInForce = 'GTC' | 'IOC' | 'FOK'
 
-  export enum OrderRejectReason {
-    ACCOUNT_CANNOT_SETTLE = 'ACCOUNT_CANNOT_SETTLE',
-    ACCOUNT_INACTIVE = 'ACCOUNT_INACTIVE',
-    DUPLICATE_ORDER = 'DUPLICATE_ORDER',
-    INSUFFICIENT_BALANCE = 'INSUFFICIENT_BALANCE',
-    MARKET_CLOSED = 'MARKET_CLOSED',
-    NONE = 'NONE',
-    ORDER_WOULD_TRIGGER_IMMEDIATELY = 'ORDER_WOULD_TRIGGER_IMMEDIATELY',
-    PRICE_QTY_EXCEED_HARD_LIMITS = 'PRICE_QTY_EXCEED_HARD_LIMITS',
-    UNKNOWN_ACCOUNT = 'UNKNOWN_ACCOUNT',
-    UNKNOWN_INSTRUMENT = 'UNKNOWN_INSTRUMENT',
-    UNKNOWN_ORDER = 'UNKNOWN_ORDER',
-  }
+  export type OrderRejectReason =
+    | 'ACCOUNT_CANNOT_SETTLE'
+    | 'ACCOUNT_INACTIVE'
+    | 'DUPLICATE_ORDER'
+    | 'INSUFFICIENT_BALANCE'
+    | 'MARKET_CLOSED'
+    | 'NONE'
+    | 'ORDER_WOULD_TRIGGER_IMMEDIATELY'
+    | 'PRICE_QTY_EXCEED_HARD_LIMITS'
+    | 'UNKNOWN_ACCOUNT'
+    | 'UNKNOWN_INSTRUMENT'
+    | 'UNKNOWN_ORDER'
 
-  export enum ExecutionType {
-    NEW = 'NEW',
-    CANCELED = 'CANCELED',
-    REPLACED = 'REPLACED',
-    REJECTED = 'REJECTED',
-    TRADE = 'TRADE',
-    EXPIRED = 'EXPIRED',
-  }
+  export type ExecutionType = 'NEW' | 'CANCELED' | 'REPLACED' | 'REJECTED' | 'TRADE' | 'EXPIRED'
 
   export interface Depth {
     eventType: string
@@ -1050,14 +1010,14 @@ declare module 'binance-api-node' {
   }
 
   export interface MiniTicker {
-    eventType: string,
-    eventTime: number,
-    symbol: string,
-    curDayClose: string,
-    open: string,
-    high: string,
-    low: string,
-    volume: string,
+    eventType: string
+    eventTime: number
+    symbol: string
+    curDayClose: string
+    open: string
+    high: string
+    low: string
+    volume: string
     volumeQuote: string
   }
 
@@ -1106,13 +1066,12 @@ declare module 'binance-api-node' {
     }
   }
 
-  export enum EventType {
-    ACCOUNT = 'account',
-    BALANCE_UPDATE = 'balanceUpdate',
-    OUTBOUND_ACCOUNT_POSITION = 'outboundAccountPosition',
-    EXECUTION_REPORT = 'executionReport',
-    ACCOUNT_UPDATE = 'ACCOUNT_UPDATE',
-  }
+  export type EventType =
+    | 'account'
+    | 'balanceUpdate'
+    | 'outboundAccountPosition'
+    | 'executionReport'
+    | 'ACCOUNT_UPDATE'
 
   export interface OutboundAccountInfo {
     balances: Balances
@@ -1124,7 +1083,7 @@ declare module 'binance-api-node' {
     canWithdraw: boolean
     canDeposit: boolean
     lastAccountUpdate: number
-    eventType: EventType.ACCOUNT
+    eventType: 'account'
     eventTime: number
   }
 
@@ -1133,13 +1092,13 @@ declare module 'binance-api-node' {
     balanceDelta: string
     clearTime: number
     eventTime: number
-    eventType: EventType.BALANCE_UPDATE
+    eventType: 'balanceUpdate'
   }
 
   export interface OutboundAccountPosition {
     balances: AssetBalance[]
     eventTime: number
-    eventType: EventType.OUTBOUND_ACCOUNT_POSITION
+    eventType: 'outboundAccountPosition'
     lastAccountUpdate: number
   }
 
@@ -1148,7 +1107,7 @@ declare module 'binance-api-node' {
     commissionAsset: string | null // Commission asset
     creationTime: number // Order creation time
     eventTime: number
-    eventType: EventType.EXECUTION_REPORT
+    eventType: 'executionReport'
     executionType: ExecutionType // Current execution type
     icebergQuantity: string // Iceberg quantity
     isBuyerMaker: boolean // Is this trade the maker side?
@@ -1195,7 +1154,7 @@ declare module 'binance-api-node' {
 
   export interface AccountUpdate {
     eventTime: string
-    eventType: EventType.ACCOUNT_UPDATE
+    eventType: 'ACCOUNT_UPDATE'
     transactionTime: number
     eventReasonType: string
     balances: Balance[]
@@ -1292,7 +1251,7 @@ declare module 'binance-api-node' {
 
   export interface QueryOrderOcoResult {
     orderListId: number
-    contingencyType: OcoOrderType.CONTINGENCY_TYPE
+    contingencyType: OcoOrderType
     listStatusType: ListStatusType
     listOrderStatus: ListOrderStatus
     listClientOrderId: string
@@ -1319,7 +1278,7 @@ declare module 'binance-api-node' {
 
   export interface CancelOrderOcoResult {
     orderListId: number
-    contingencyType: OcoOrderType.CONTINGENCY_TYPE
+    contingencyType: OcoOrderType
     listStatusType: ListStatusType
     listOrderStatus: ListOrderStatus
     listClientOrderId: string
@@ -1494,14 +1453,13 @@ declare module 'binance-api-node' {
     msg: string
   }
 
-  export enum FuturesIncomeType {
-    TRANSFER = 'TRANSFER',
-    WELCOME_BONUS = 'WELCOME_BONUS',
-    REALIZED_PNL = 'REALIZED_PNL',
-    FUNDING_FEE = 'FUNDING_FEE',
-    COMMISSION = 'COMMISSION',
-    INSURANCE_CLEAR = 'INSURANCE_CLEAR',
-  }
+  export type FuturesIncomeType =
+    | 'TRANSFER'
+    | 'WELCOME_BONUS'
+    | 'REALIZED_PNL'
+    | 'FUNDING_FEE'
+    | 'COMMISSION'
+    | 'INSURANCE_CLEAR'
 
   export interface FuturesIncomeResult {
     symbol: string
@@ -1550,13 +1508,12 @@ declare module 'binance-api-node' {
     totalNetAssetOfBtc: string
   }
 
-  export enum MarginLevelStatus {
-    EXCESSIVE = 'EXCESSIVE',
-    NORMAL = 'NORMAL',
-    MARGIN_CALL = 'MARGIN_CALL',
-    PRE_LIQUIDATION = 'PRE_LIQUIDATION',
-    FORCE_LIQUIDATION = 'FORCE_LIQUIDATION',
-  }
+  export type MarginLevelStatus =
+    | 'EXCESSIVE'
+    | 'NORMAL'
+    | 'MARGIN_CALL'
+    | 'PRE_LIQUIDATION'
+    | 'FORCE_LIQUIDATION'
 
   export interface IsolatedAsset {
     baseAsset: IsolatedAssetSingle
@@ -1585,10 +1542,7 @@ declare module 'binance-api-node' {
     totalAsset: string
   }
 
-  export enum WalletType {
-    SPOT = 'SPOT',
-    ISOLATED_MARGIN = 'ISOLATED_MARGIN',
-  }
+  export type WalletType = 'SPOT' | 'ISOLATED_MARGIN'
 
   export interface marginIsolatedTransfer {
     asset: string
@@ -1664,14 +1618,7 @@ declare module 'binance-api-node' {
     priceProtect: boolean
   }
 
-  export enum PositionSide {
-    BOTH = 'BOTH',
-    SHORT = 'SHORT',
-    LONG = 'LONG',
-  }
+  export type PositionSide = 'BOTH' | 'SHORT' | 'LONG'
 
-  export enum WorkingType {
-    MARK_PRICE = 'MARK_PRICE',
-    CONTRACT_PRICE = 'CONTRACT_PRICE',
-  }
+  export type WorkingType = 'MARK_PRICE' | 'CONTRACT_PRICE'
 }
