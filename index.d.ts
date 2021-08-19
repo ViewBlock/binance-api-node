@@ -10,7 +10,7 @@ declare module 'binance-api-node' {
     wsFutures?: string
   }): Binance
 
-  export enum ErrorCodes {
+  export const enum ErrorCodes {
     UNKNOWN = -1000,
     DISCONNECTED = -1001,
     UNAUTHORIZED = -1002,
@@ -100,7 +100,7 @@ declare module 'binance-api-node' {
     id: string
   }
 
-  export enum DepositStatus {
+  export const enum DepositStatus {
     PENDING = 0,
     SUCCESS = 1,
   }
@@ -120,7 +120,7 @@ declare module 'binance-api-node' {
     }[]
   }
 
-  export enum WithdrawStatus {
+  export const enum WithdrawStatus {
     EMAIL_SENT = 0,
     CANCELLED = 1,
     AWAITING_APPROVAL = 2,
@@ -222,7 +222,7 @@ declare module 'binance-api-node' {
     responseTime?: string
   }
 
-  export enum TransferType {
+  export const enum TransferType {
     MAIN_C2C = 'MAIN_C2C',
     MAIN_UMFUTURE = 'MAIN_UMFUTURE',
     MAIN_CMFUTURE = 'MAIN_CMFUTURE',
@@ -288,7 +288,7 @@ declare module 'binance-api-node' {
 
   export type MarginBorrowOptions = MarginBorrowCross | MarginBorrowIsolated
 
-  export enum MarginType {
+  export const enum MarginType {
     ISOLATED = 'ISOLATED',
     CROSSED = 'CROSSED',
   }
@@ -622,7 +622,7 @@ declare module 'binance-api-node' {
 
   export type ReconnectingWebSocketHandler = (options?: WebSocketCloseOptions) => void
 
-  export enum CandleChartInterval {
+  export const enum CandleChartInterval {
     ONE_MINUTE = '1m',
     THREE_MINUTES = '3m',
     FIVE_MINUTES = '5m',
@@ -640,17 +640,17 @@ declare module 'binance-api-node' {
     ONE_MONTH = '1M',
   }
 
-  export enum RateLimitType {
+  export const enum RateLimitType {
     REQUEST_WEIGHT = 'REQUEST_WEIGHT',
     ORDERS = 'ORDERS',
   }
 
-  export enum TradingType {
+  export const enum TradingType {
     MARGIN = 'MARGIN',
     SPOT = 'SPOT',
   }
 
-  export enum RateLimitInterval {
+  export const enum RateLimitInterval {
     SECOND = 'SECOND',
     MINUTE = 'MINUTE',
     DAY = 'DAY',
@@ -663,7 +663,7 @@ declare module 'binance-api-node' {
     limit: number
   }
 
-  export enum ExchangeFilterType {
+  export const enum ExchangeFilterType {
     EXCHANGE_MAX_NUM_ORDERS = 'EXCHANGE_MAX_NUM_ORDERS',
     EXCHANGE_MAX_ALGO_ORDERS = 'EXCHANGE_MAX_ALGO_ORDERS',
   }
@@ -673,7 +673,7 @@ declare module 'binance-api-node' {
     limit: number
   }
 
-  export enum SymbolFilterType {
+  export const enum SymbolFilterType {
     PRICE_FILTER = 'PRICE_FILTER',
     PERCENT_PRICE = 'PERCENT_PRICE',
     LOT_SIZE = 'LOT_SIZE',
@@ -844,7 +844,7 @@ declare module 'binance-api-node' {
 
   export type NewOrderMargin = NewOrderSpot & NewMarginOrderParent
 
-  export enum SideEffectType {
+  export const enum SideEffectType {
     NO_SIDE_EFFECT = 'NO_SIDE_EFFECT',
     MARGIN_BUY = 'MARGIN_BUY',
     AUTO_REPAY = 'AUTO_REPAY',
@@ -906,19 +906,19 @@ declare module 'binance-api-node' {
     workingType: WorkingType
   }
 
-  export enum ListOrderStatus {
+  export const enum ListOrderStatus {
     EXECUTING = 'EXECUTING',
     ALL_DONE = 'ALL_DONE',
     REJECT = 'REJECT',
   }
 
-  export enum ListStatusType {
+  export const enum ListStatusType {
     RESPONSE = 'RESPONSE',
     EXEC_STARTED = 'EXEC_STARTED',
     ALL_DONE = 'ALL_DONE',
   }
 
-  export enum OcoOrderType {
+  export const enum OcoOrderType {
     CONTINGENCY_TYPE = 'OCO',
   }
 
@@ -934,12 +934,12 @@ declare module 'binance-api-node' {
     orderReports: Order[]
   }
 
-  export enum OrderSide {
+  export const enum OrderSide {
     BUY = 'BUY',
     SELL = 'SELL',
   }
 
-  export enum OrderStatus {
+  export const enum OrderStatus {
     CANCELED = 'CANCELED',
     EXPIRED = 'EXPIRED',
     FILLED = 'FILLED',
@@ -949,7 +949,7 @@ declare module 'binance-api-node' {
     REJECTED = 'REJECTED',
   }
 
-  export enum OrderType {
+  export const enum OrderType {
     LIMIT = 'LIMIT',
     LIMIT_MAKER = 'LIMIT_MAKER',
     MARKET = 'MARKET',
@@ -961,19 +961,19 @@ declare module 'binance-api-node' {
     TRAILING_STOP_MARKET = 'TRAILING_STOP_MARKET',
   }
 
-  export enum NewOrderRespType {
+  export const enum NewOrderRespType {
     ACK = 'ACK',
     RESULT = 'RESULT',
     FULL = 'FULL',
   }
 
-  export enum TimeInForce {
+  export const enum TimeInForce {
     GTC = 'GTC',
     IOC = 'IOC',
     FOK = 'FOK',
   }
 
-  export enum OrderRejectReason {
+  export const enum OrderRejectReason {
     ACCOUNT_CANNOT_SETTLE = 'ACCOUNT_CANNOT_SETTLE',
     ACCOUNT_INACTIVE = 'ACCOUNT_INACTIVE',
     DUPLICATE_ORDER = 'DUPLICATE_ORDER',
@@ -987,7 +987,7 @@ declare module 'binance-api-node' {
     UNKNOWN_ORDER = 'UNKNOWN_ORDER',
   }
 
-  export enum ExecutionType {
+  export const enum ExecutionType {
     NEW = 'NEW',
     CANCELED = 'CANCELED',
     REPLACED = 'REPLACED',
@@ -1106,7 +1106,7 @@ declare module 'binance-api-node' {
     }
   }
 
-  export enum EventType {
+  export const enum EventType {
     ACCOUNT = 'account',
     BALANCE_UPDATE = 'balanceUpdate',
     OUTBOUND_ACCOUNT_POSITION = 'outboundAccountPosition',
@@ -1494,7 +1494,7 @@ declare module 'binance-api-node' {
     msg: string
   }
 
-  export enum FuturesIncomeType {
+  export const enum FuturesIncomeType {
     TRANSFER = 'TRANSFER',
     WELCOME_BONUS = 'WELCOME_BONUS',
     REALIZED_PNL = 'REALIZED_PNL',
@@ -1550,7 +1550,7 @@ declare module 'binance-api-node' {
     totalNetAssetOfBtc: string
   }
 
-  export enum MarginLevelStatus {
+  export const enum MarginLevelStatus {
     EXCESSIVE = 'EXCESSIVE',
     NORMAL = 'NORMAL',
     MARGIN_CALL = 'MARGIN_CALL',
@@ -1585,7 +1585,7 @@ declare module 'binance-api-node' {
     totalAsset: string
   }
 
-  export enum WalletType {
+  export const enum WalletType {
     SPOT = 'SPOT',
     ISOLATED_MARGIN = 'ISOLATED_MARGIN',
   }
@@ -1664,13 +1664,13 @@ declare module 'binance-api-node' {
     priceProtect: boolean
   }
 
-  export enum PositionSide {
+  export const enum PositionSide {
     BOTH = 'BOTH',
     SHORT = 'SHORT',
     LONG = 'LONG',
   }
 
-  export enum WorkingType {
+  export const enum WorkingType {
     MARK_PRICE = 'MARK_PRICE',
     CONTRACT_PRICE = 'CONTRACT_PRICE',
   }
