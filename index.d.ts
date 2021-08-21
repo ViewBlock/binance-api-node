@@ -89,6 +89,8 @@ declare module 'binance-api-node' {
     locked: string
   }
 
+  export type booleanString = 'true' | 'false'
+
   export interface positionAmount {
     amount: string
     amountInBTC: string
