@@ -448,6 +448,6 @@ export default opts => {
     futuresMarginHistory: payload => privCall('/fapi/v1/positionMargin/history', payload),
     futuresIncome: payload => privCall('/fapi/v1/income', payload),
     lendingAccount: payload => privCall('/sapi/v1/lending/union/account', payload),
-    binanceCard: payload => privCall('/sapi/v1/asset/get-funding-asset', payload, 'POST'),
+    fundingWallet: payload => privCall('/sapi/v1/asset/get-funding-asset', payload, 'POST'),
   }
 }
