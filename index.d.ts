@@ -745,12 +745,12 @@ declare module 'binance-api-node' {
 
   export interface SymbolMaxNumOrdersFilter {
     filterType: SymbolFilterType.MAX_NUM_ORDERS
-    limit: number
+    maxNumOrders: number
   }
 
   export interface SymbolMaxAlgoOrdersFilter {
     filterType: SymbolFilterType.MAX_ALGO_ORDERS
-    limit: number
+    maxNumAlgoOrders: number
   }
 
   export type SymbolFilter =
@@ -773,7 +773,7 @@ declare module 'binance-api-node' {
     orderTypes: OrderType_LT[]
     permissions: TradingType_LT[]
     quoteAsset: string
-    quoteAssetPrecision: string
+    quoteAssetPrecision: number
     quoteCommissionPrecision: number
     quoteOrderQtyMarketAllowed: boolean
     quotePrecision: number
