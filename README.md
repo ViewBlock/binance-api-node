@@ -99,6 +99,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [dustLog](#dustlog)
   - [dustTransfer](#dustTransfer)
   - [accountCoins](#accountCoins)
+  - [lendingAccount](#lendingAccount)
+  - [fundingWallet](#fundingWallet)
 - [Margin](#margin)
   - [marginAccountInfo](#marginAccountInfo)
   - [marginLoan](#marginLoan)
@@ -1902,7 +1904,6 @@ console.log(await client.capitalConfigs())
 
 </details>
 
-
 #### universalTransfer
 
 You need to enable Permits Universal Transfer option for the api key which requests this endpoint.
@@ -2248,6 +2249,75 @@ console.log(await client.accountCoins())
         "trading": true,
         "withdrawAllEnable": true,
         "withdrawing": "0.00000000"
+    }
+]
+```
+
+</details>
+
+#### lendingAccount
+
+Get information of lending assets for user.
+
+```js
+console.log(await client.lendingAccount())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "positionAmountVos": [
+        {
+            "amount": "75.46000000",
+            "amountInBTC": "0.01044819",
+            "amountInUSDT": "75.46000000",
+            "asset": "USDT"
+        },
+        {
+            "amount": "1.67072036",
+            "amountInBTC": "0.00023163",
+            "amountInUSDT": "1.67289230",
+            "asset": "BUSD"
+        }
+    ],
+    "totalAmountInBTC": "0.01067982",
+    "totalAmountInUSDT": "77.13289230",
+    "totalFixedAmountInBTC": "0.00000000",
+    "totalFixedAmountInUSDT": "0.00000000",
+    "totalFlexibleInBTC": "0.01067982",
+    "totalFlexibleInUSDT": "77.13289230"
+ }
+```
+
+</details>
+
+#### fundingWallet
+
+Query funding wallet, includes Binance Pay, Binance Card, Binance Gift Card, Stock Token.
+
+```js
+console.log(await client.fundingWallet())
+```
+
+| Param      | Type     | Required | Description         |
+| ---------- | -------- | -------- | ------------------- |
+| asset      | STRING   | false    |
+| needBtcValuation      | STRING   | false    | 'true' or 'false'
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "asset": "USDT",
+        "free": "1",
+        "locked": "0",
+        "freeze": "0",
+        "withdrawing": "0",  
+        "btcValuation": "0.00000091"  
     }
 ]
 ```
