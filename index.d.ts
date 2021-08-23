@@ -110,7 +110,7 @@ declare module 'binance-api-node' {
 
   export interface FundingWallet {
     asset: string
-    free: string    // avalible balance
+    free: string    // available balance
     locked: string  // locked asset
     freeze: string  // freeze asset
     withdrawing: string
