@@ -95,6 +95,34 @@ declare module 'binance-api-node' {
     locked: string
   }
 
+  export type booleanString = 'true' | 'false'
+
+  export interface positionAmount {
+    amount: string
+    amountInBTC: string
+    amountInUSDT: string
+    asset: string
+  }
+
+  export interface LendingAccount {
+    positionAmountVos: positionAmount[]
+    totalAmountInBTC: string
+    totalAmountInUSDT: string
+    totalFixedAmountInBTC: string
+    totalFixedAmountInUSDT: string
+    totalFlexibleInBTC: string
+    totalFlexibleInUSDT: string
+  }
+
+  export interface FundingWallet {
+    asset: string
+    free: string    // available balance
+    locked: string  // locked asset
+    freeze: string  // freeze asset
+    withdrawing: string
+    btcValuation: string
+  }
+
   export interface DepositAddress {
     address: string
     tag: string
@@ -326,6 +354,8 @@ declare module 'binance-api-node' {
     allBookTickers(): Promise<{ [key: string]: Ticker }>
     book(options: { symbol: string; limit?: number }): Promise<OrderBook>
     exchangeInfo(): Promise<ExchangeInfo>
+    lendingAccount(options?: { useServerTime: boolean }): Promise<LendingAccount>
+    fundingWallet(options?: { asset?: string, needBtcValuation?: booleanString, useServerTime?: boolean }): Promise<FundingWallet[]>
     order(options: NewOrderSpot): Promise<Order>
     orderTest(options: NewOrderSpot): Promise<Order>
     orderOco(options: NewOcoOrder): Promise<OcoOrder>
