@@ -449,5 +449,6 @@ export default opts => {
     futuresIncome: payload => privCall('/fapi/v1/income', payload),
     lendingAccount: payload => privCall('/sapi/v1/lending/union/account', payload),
     fundingWallet: payload => privCall('/sapi/v1/asset/get-funding-asset', payload, 'POST'),
+    apiPermission: payload => privCall('/sapi/v1/account/apiRestrictions', payload),
   }
 }
