@@ -203,8 +203,8 @@ declare module 'binance-api-node' {
   }
 
   export interface SetBNBBurnOptions {
-    spotBNBBurn: boolean
-    interestBNBBurn: boolean
+    spotBNBBurn?: boolean | booleanString
+    interestBNBBurn?: boolean | booleanString
     recvWindow?: number
   }
 
@@ -340,6 +340,20 @@ declare module 'binance-api-node' {
     CROSSED = 'CROSSED',
   }
 
+  export interface ApiPermission {
+    ipRestrict: boolean,
+    createTime: number,   
+    enableWithdrawals: boolean,
+    enableInternalTransfer: boolean,
+    permitsUniversalTransfer: boolean,
+    enableVanillaOptions: boolean,
+    enableReading: boolean,
+    enableFutures: boolean,
+    enableMargin: boolean,
+    enableSpotAndMarginTrading: boolean,
+    tradingAuthorityExpirationTime: number,
+  }
+
   export interface Binance {
     getInfo(): GetInfo
     accountInfo(options?: { useServerTime: boolean }): Promise<Account>
@@ -356,6 +370,7 @@ declare module 'binance-api-node' {
     exchangeInfo(): Promise<ExchangeInfo>
     lendingAccount(options?: { useServerTime: boolean }): Promise<LendingAccount>
     fundingWallet(options?: { asset?: string, needBtcValuation?: booleanString, useServerTime?: boolean }): Promise<FundingWallet[]>
+    apiPermission(options?: {recvWindow?: number}): Promise<ApiPermission>
     order(options: NewOrderSpot): Promise<Order>
     orderTest(options: NewOrderSpot): Promise<Order>
     orderOco(options: NewOcoOrder): Promise<OcoOrder>
