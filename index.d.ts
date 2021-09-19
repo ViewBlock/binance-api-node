@@ -508,7 +508,10 @@ declare module 'binance-api-node' {
       symbol?: string
       useServerTime?: boolean
     }): Promise<QueryOrderResult[]>
-    futuresPositionRisk(options?: { recvWindow: number }): Promise<PositionRiskResult[]>
+    futuresPositionRisk(options?: {
+      symbol?: string
+      recvWindow?: number
+    }): Promise<PositionRiskResult[]>
     futuresLeverageBracket(options?: {
       symbol?: string
       recvWindow: number
