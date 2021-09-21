@@ -542,6 +542,7 @@ declare module 'binance-api-node' {
       recvWindow?: number
     }): Promise<FuturesIncomeResult[]>
     marginOrder(options: NewOrderMargin): Promise<Order>
+    marginOrderOco(options: NewOcoOrderMargin): Promise<MarginOcoOrder>
     marginGetOrder(options: {
       symbol: string
       isIsolated?: string | boolean
@@ -924,6 +925,10 @@ declare module 'binance-api-node' {
   export type NewOrderSpot = NewOrderMarketBase | NewOrderMarketQuote | NewOrderLimit | NewOrderSL
 
   export type NewOrderMargin = NewOrderSpot & NewMarginOrderParent
+
+  export type NewOcoOrderMargin = NewOrderSpot & NewOcoOrder & NewMarginOrderParent & {}
+
+  export type MarginOcoOrder = OcoOrder & { isIsolated?: 'TRUE' | 'FALSE' | boolean }
 
   export type SideEffectType_LT = 'NO_SIDE_EFFECT' | 'MARGIN_BUY' | 'AUTO_REPAY'
 
