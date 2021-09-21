@@ -291,7 +291,7 @@ const miniTicker = (payload, cb, transform = true) => {
 }
 
 const allMiniTicker = (payload, cb, transform = true) => {
-  const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
+  const cache = (Array.isArray(payload) ? payload : [payload]).map(() => {
     const w = openWebSocket(`${endpoints.base}/!miniTicker@arr`)
 
     w.onmessage = msg => {
@@ -610,7 +610,7 @@ export const userEventHandler = (cb, transform = true, variator) => msg => {
 }
 
 const userErrorHandler = (cb, transform = true) => error => {
-  cb({[transform ? 'eventType' : 'type']: 'error', error})
+  cb({ [transform ? 'eventType' : 'type']: 'error', error })
 }
 
 const STREAM_METHODS = ['get', 'keep', 'close']
@@ -635,7 +635,7 @@ const user = (opts, variator) => (cb, transform) => {
   let int = null
   let w = null
   let keepClosed = false
-  let errorHandler = userErrorHandler(cb, transform)
+  const errorHandler = userErrorHandler(cb, transform)
 
   const keepAlive = isReconnecting => {
     if (currentListenKey) {
@@ -648,7 +648,9 @@ const user = (opts, variator) => (cb, transform) => {
           makeStream(true)
         }
 
-        opts.emitStreamErrors && errorHandler(err)
+        if (opts.emitStreamErrors) {
+          errorHandler(err)
+        }
       })
     }
   }
@@ -671,34 +673,45 @@ const user = (opts, variator) => (cb, transform) => {
   }
 
   const makeStream = isReconnecting => {
-    return !keepClosed && getDataStream()
-      .then(({ listenKey }) => {
-        if (keepClosed) {
-          return closeDataStream({ listenKey }).catch(f => f)
-        }
+    return (
+      !keepClosed &&
+      getDataStream()
+        .then(({ listenKey }) => {
+          if (keepClosed) {
+            return closeDataStream({ listenKey }).catch(f => f)
+          }
 
-        w = openWebSocket(
-          `${variator === 'futures' ? endpoints.futures : endpoints.base}/${listenKey}`,
-        )
-        w.onmessage = msg => userEventHandler(cb, transform, variator)(msg)
-        opts.emitSocketErrors && (w.onerror = ({error}) => errorHandler(error))
+          w = openWebSocket(
+            `${variator === 'futures' ? endpoints.futures : endpoints.base}/${listenKey}`,
+          )
 
-        currentListenKey = listenKey
+          w.onmessage = msg => userEventHandler(cb, transform, variator)(msg)
+          if (opts.emitSocketErrors) {
+            w.onerror = ({ error }) => errorHandler(error)
+          }
 
-        int = setInterval(() => keepAlive(false), 50e3)
+          currentListenKey = listenKey
 
-        keepAlive(true)
+          int = setInterval(() => keepAlive(false), 50e3)
 
-        return options => closeStream(options, false, true)
-      })
-      .catch(err => {
-        if (isReconnecting) {
-          !keepClosed && setTimeout(() => makeStream(true), 30e3)
-          opts.emitStreamErrors && errorHandler(err)
-        } else {
-          throw err
-        }
-      })
+          keepAlive(true)
+
+          return options => closeStream(options, false, true)
+        })
+        .catch(err => {
+          if (isReconnecting) {
+            if (!keepClosed) {
+              setTimeout(() => makeStream(true), 30e3)
+            }
+
+            if (opts.emitStreamErrors) {
+              errorHandler(err)
+            }
+          } else {
+            throw err
+          }
+        })
+    )
   }
 
   return makeStream(false)
