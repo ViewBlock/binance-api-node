@@ -112,6 +112,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [marginIsolatedTransfer](#marginIsolatedTransfer)
   - [marginIsolatedTransferHistory](#marginIsolatedTransferHistory)
   - [marginOrder](#marginOrder)
+  - [marginOrderOco](#marginOrderOco)
   - [marginGetOrder](#marginGetOrder)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
@@ -2742,6 +2743,98 @@ console.log(await client.marginOrder({
       "qty": "1.00000000",
       "commission": "3.99500000",
       "commissionAsset": "USDT"
+    }
+  ]
+}
+```
+
+</details>
+
+#### marginOrderOco
+
+```js
+console.log(await client.marginOrderOco({ 
+  symbol: 'AUDIOUSDT', 
+  type: 'MARKET',
+  side: 'SELL',
+  quantity: '10',
+  }));
+```
+
+| Param             | Type    | Required | Description               |
+| ----------------- | ------- | -------- | ------------------------- |
+| symbol            | String  | true     | asset, such as `BTC`      |
+| isIsolated        | String  | false    | for isolated margin or not, `TRUE`, `FALSE`, default `FALSE`
+| side              | String  | true     | `BUY` `SELL` |
+| type              | String  | true     |  
+| quantity          | String  | false    |
+| quoteOrderQty     | String  | false    |
+| price             | String  | false    | 
+| stopPrice         | String  | false    | Used with `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders.
+| stopLimitPrice    | String  | false    | Used with `STOP_LOSS_LIMIT` orders.
+| newClientOrderId  | String  | false    | A unique id among open orders. Automatically generated if not sent.
+| icebergQty        | Boolean | false    | Used with `LIMIT`, `STOP_LOSS_LIMIT`, and `TAKE_PROFIT_LIMIT` to create an iceberg order.
+| newOrderRespType  | String  | false    | Set the response JSON. `ACK`, `RESULT`, or `FULL`; `MARKET` and `LIMIT` order types default to `FULL`, all other orders default to `ACK`.
+| sideEffectType    | String  | false    | `NO_SIDE_EFFECT`, `MARGIN_BUY`, `AUTO_REPAY`; default `NO_SIDE_EFFECT`.
+| timeInForce       | String  | false    | `GTC`,`IOC`,`FOK`        |
+| recvWindow        | Number  | false    | No more than 60000        |
+
+<details>
+<summary>Output</summary>
+    
+```js
+{
+  "orderListId": 45514668,
+  "contingencyType": 'OCO',
+  "listStatusType": 'EXEC_STARTED',
+  "listOrderStatus": 'EXECUTING',
+  "listClientOrderId": 'CD9UzEJfmcGZ4kLfZT2ga2',
+  "transactionTime": 1632192162785,
+  "symbol": 'AUDIOUSDT',
+  "isIsolated": true,
+  "orders": [
+    {
+      "symbol": 'AUDIOUSDT',
+      "orderId": 239313661,
+      "clientOrderId": 'ZbUwgKv6UB8eMzf2yfXENl'
+    },
+    {
+      "symbol": 'AUDIOUSDT',
+      "orderId": 239313662,
+      "clientOrderId": 'f5u1RIHAPRd4W3fFhFykBo'
+    }
+  ],
+  "orderReports": [
+    {
+      "symbol": 'AUDIOUSDT',
+      "orderId": 239313661,
+      "orderListId": 45514668,
+      "clientOrderId": 'ZbUwgKv6UB8eMzf2yfXENl',
+      "transactTime": 1632192162785,
+      "price": '2.20000000',
+      "origQty": '12.80000000',
+      "executedQty": '0',
+      "cummulativeQuoteQty": '0',
+      "status": 'NEW',
+      "timeInForce": 'GTC',
+      "type": 'STOP_LOSS_LIMIT',
+      "side": 'SELL',
+      "stopPrice": '2.20000000'
+    },
+    {
+      "symbol": 'AUDIOUSDT',
+      "orderId": 239313662,
+      "orderListId": 45514668,
+      "clientOrderId": 'f5u1RIHAPRd4W3fFhFykBo',
+      "transactTime": 1632192162785,
+      "price": '2.50000000',
+      "origQty": '12.80000000',
+      "executedQty": '0',
+      "cummulativeQuoteQty": '0',
+      "status": 'NEW',
+      "timeInForce": 'GTC',
+      "type": 'LIMIT_MAKER',
+      "side": 'SELL'
     }
   ]
 }
