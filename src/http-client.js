@@ -115,7 +115,9 @@ const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {})
   sendResult(
     fetch(
       `${
-        !(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi') ? endpoints.base : endpoints.futures
+        !(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
+          ? endpoints.base
+          : endpoints.futures
       }${path}${makeQueryString(data)}`,
       {
         method,
