@@ -592,6 +592,9 @@ declare module 'binance-api-node' {
       limit?: number
       fromId?: number
     }): Promise<MyTrade[]>
+    disableMarginAccount(options: {
+      symbol: string,
+    }): Promise<{ success: boolean, symbol: string }>
   }
 
   export interface HttpError extends Error {

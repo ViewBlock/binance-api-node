@@ -2540,6 +2540,31 @@ console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
 
 </details>
 
+#### disableMarginAccount
+
+Inactive Isolated Margin trading pair for symbol
+
+```js
+console.log(await client.disableMarginAccount({ symbol: 'BTCUSDT'}));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| symbol | String | true     |  |
+| recvWindow | Number | false     | No more than 60000 |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+   "success": true,
+   "symbol": "BTCUSDT"
+}
+```
+
+</details>
+
 #### marginMaxBorrow
 
 If isolatedSymbol is not sent, crossed margin data will be sent.

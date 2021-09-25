@@ -407,6 +407,8 @@ export default opts => {
       privCall('/sapi/v1/margin/isolated/transfer', payload, 'POST'),
     marginIsolatedTransferHistory: payload =>
       privCall('/sapi/v1/margin/isolated/transfer', payload),
+    disableMarginAccount: payload =>
+      privCall('/sapi/v1/margin/isolated/account', payload, 'DELETE'),
 
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
