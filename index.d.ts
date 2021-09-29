@@ -592,8 +592,9 @@ declare module 'binance-api-node' {
       limit?: number
       fromId?: number
     }): Promise<MyTrade[]>
-    disableMarginAccount(options: {
+    activeMarginAccount(options: {
       symbol: string,
+      active: boolean
     }): Promise<{ success: boolean, symbol: string }>
   }
 

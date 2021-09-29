@@ -2542,15 +2542,16 @@ console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
 
 #### disableMarginAccount
 
-Inactive Isolated Margin trading pair for symbol
+Active or inactive Isolated Margin trading pair for symbol
 
 ```js
-console.log(await client.disableMarginAccount({ symbol: 'BTCUSDT'}));
+console.log(await client.activeMarginAccount({ symbol: 'BTCUSDT', active: true }));
 ```
 
 | Param | Type   | Required | Description    |
 | ----- | ------ | -------- | -------------- |
 | symbol | String | true     |  |
+| active | Boolean | true     |  |
 | recvWindow | Number | false     | No more than 60000 |
 
 <details>
