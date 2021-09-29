@@ -892,6 +892,7 @@ declare module 'binance-api-node' {
     newClientOrderId?: string
     newOrderRespType?: NewOrderRespType_LT
     recvWindow?: number
+    timeInForce?: TimeInForce_LT
   }
 
   export interface NewOrderMarketBase extends NewOrderParent {
@@ -922,7 +923,6 @@ declare module 'binance-api-node' {
   export interface NewMarginOrderParent {
     isIsolated?: 'TRUE' | 'FALSE' | boolean
     sideEffectType?: SideEffectType_LT
-    timeInForce?: TimeInForce_LT
   }
 
   export type NewOrderSpot = NewOrderMarketBase | NewOrderMarketQuote | NewOrderLimit | NewOrderSL
