@@ -2545,7 +2545,7 @@ console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
 Active or inactive Isolated Margin trading pair for symbol
 
 ```js
-console.log(await client.activeMarginAccount({ symbol: 'BTCUSDT', active: true }));
+console.log(await client.marginActiveAccount({ symbol: 'BTCUSDT', active: true }));
 ```
 
 | Param | Type   | Required | Description    |
