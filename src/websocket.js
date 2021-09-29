@@ -609,6 +609,10 @@ export const userEventHandler = (cb, transform = true, variator) => msg => {
   )
 }
 
+const userOpenHandler = (cb, transform = true) => () => {
+  cb({ [transform ? 'eventType' : 'type']: 'open' })
+}
+
 const userErrorHandler = (cb, transform = true) => error => {
   cb({ [transform ? 'eventType' : 'type']: 'error', error })
 }
@@ -655,21 +659,25 @@ const user = (opts, variator) => (cb, transform) => {
     }
   }
 
-  const closeStream = (options, catchErrors = false, setKeepClosed = false) => {
+  const closeStream = (options, catchErrors, setKeepClosed = false) => {
     keepClosed = setKeepClosed
 
-    if (currentListenKey) {
-      clearInterval(int)
-
-      const p = closeDataStream({ listenKey: currentListenKey })
-
-      if (catchErrors) {
-        p.catch(f => f)
-      }
-
-      w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
-      currentListenKey = null
+    if (!currentListenKey) {
+      return Promise.resolve()
     }
+
+    clearInterval(int)
+
+    const p = closeDataStream({ listenKey: currentListenKey })
+
+    if (catchErrors) {
+      p.catch(f => f)
+    }
+
+    w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
+    currentListenKey = null
+
+    return p
   }
 
   const makeStream = isReconnecting => {
@@ -686,6 +694,9 @@ const user = (opts, variator) => (cb, transform) => {
           )
 
           w.onmessage = msg => userEventHandler(cb, transform, variator)(msg)
+          if (opts.emitSocketOpens) {
+            w.onopen = () => userOpenHandler(cb, transform)()
+          }
           if (opts.emitSocketErrors) {
             w.onerror = ({ error }) => errorHandler(error)
           }
