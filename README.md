@@ -114,6 +114,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [marginOrder](#marginOrder)
   - [marginOrderOco](#marginOrderOco)
   - [marginGetOrder](#marginGetOrder)
+  - [disableMarginAccount](#disableMarginAccount)
+  - [enableMarginAccount](#enableMarginAccount)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
@@ -2542,16 +2544,39 @@ console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
 
 #### disableMarginAccount
 
-Active or inactive Isolated Margin trading pair for symbol
+Inactive Isolated Margin trading pair for symbol
 
 ```js
-console.log(await client.marginActiveAccount({ symbol: 'BTCUSDT', active: true }));
+console.log(await client.disableMarginAccount({ symbol: 'BTCUSDT' }));
 ```
 
 | Param | Type   | Required | Description    |
 | ----- | ------ | -------- | -------------- |
 | symbol | String | true     |  |
-| active | Boolean | true     |  |
+| recvWindow | Number | false     | No more than 60000 |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+   "success": true,
+   "symbol": "BTCUSDT"
+}
+```
+
+</details>
+#### enableMarginAccount
+
+Active Isolated Margin trading pair for symbol
+
+```js
+console.log(await client.enableMarginAccount({ symbol: 'BTCUSDT' }));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| symbol | String | true     |  |
 | recvWindow | Number | false     | No more than 60000 |
 
 <details>
