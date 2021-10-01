@@ -497,6 +497,9 @@ declare module 'binance-api-node' {
       orderId: number
       useServerTime?: boolean
     }): Promise<CancelOrderResult>
+    futuresCancelAllOpenOrders(options: {
+      symbol: string
+    }): Promise<FuturesCancelAllOpenOrdersResult>
     futuresGetOrder(options: {
       symbol: string
       orderId?: number
@@ -681,7 +684,7 @@ declare module 'binance-api-node' {
       callback: (msg: OutboundAccountInfo | ExecutionReport) => void,
     ) => Promise<ReconnectingWebSocketHandler>
     futuresUser: (
-      callback: (msg: OutboundAccountInfo | ExecutionReport | AccountUpdate) => void,
+      callback: (msg: OutboundAccountInfo | ExecutionReport | AccountUpdate | OrderUpdate) => void,
     ) => Promise<ReconnectingWebSocketHandler>
   }
 
@@ -1232,6 +1235,7 @@ declare module 'binance-api-node' {
     OUTBOUND_ACCOUNT_POSITION = 'outboundAccountPosition',
     EXECUTION_REPORT = 'executionReport',
     ACCOUNT_UPDATE = 'ACCOUNT_UPDATE',
+    ORDER_TRADE_UPDATE = 'ORDER_TRADE_UPDATE',
   }
 
   export interface OutboundAccountInfo {
@@ -1320,6 +1324,42 @@ declare module 'binance-api-node' {
     eventReasonType: string
     balances: Balance[]
     positions: Position[]
+  }
+
+  export interface OrderUpdate {
+    eventType: EventType.ORDER_TRADE_UPDATE
+    eventTime: number
+    transactionTime: number
+    symbol: string
+    clientOrderId: string
+    side: OrderSide
+    orderType: OrderType
+    timeInForce: TimeInForce
+    quantity: string
+    price: string
+    averagePrice: string
+    stopPrice: string
+    executionType: ExecutionType
+    orderStatus: OrderStatus
+    orderId: number
+    lastTradeQuantity: string
+    totalTradeQuantity: string
+    priceLastTrade: string
+    commissionAsset: string | null
+    commission: string
+    orderTime: number
+    tradeId: number
+    bidsNotional: string
+    asksNotional: string
+    isMaker: boolean
+    isReduceOnly: boolean
+    workingType: WorkingType
+    originalOrderType: OrderType
+    positionSide: PositionSide
+    closePosition: boolean
+    activationPrice: string
+    callbackRate: string
+    realizedProfit: string
   }
 
   export interface TradeResult {
@@ -1435,6 +1475,11 @@ declare module 'binance-api-node' {
     timeInForce: string
     type: OrderType_LT
     side: OrderSide_LT
+  }
+
+  export interface FuturesCancelAllOpenOrdersResult {
+    code: number
+    msg: string
   }
 
   export interface CancelOrderOcoResult {
