@@ -598,6 +598,9 @@ declare module 'binance-api-node' {
     disableMarginAccount(options: {
       symbol: string,
     }): Promise<{ success: boolean, symbol: string }>
+    enableMarginAccount(options: {
+      symbol: string,
+    }): Promise<{ success: boolean, symbol: string }>
   }
 
   export interface HttpError extends Error {
