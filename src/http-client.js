@@ -115,7 +115,9 @@ const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {})
   sendResult(
     fetch(
       `${
-        !(path.includes('/fapi') || path.includes('/futures')) ? endpoints.base : endpoints.futures
+        !(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
+          ? endpoints.base
+          : endpoints.futures
       }${path}${makeQueryString(data)}`,
       {
         method,
@@ -181,7 +183,7 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
     return sendResult(
       fetch(
         `${
-          !(path.includes('/fapi') || path.includes('/futures'))
+          !(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
             ? endpoints.base
             : endpoints.futures
         }${path}${noData ? '' : makeQueryString(newData)}`,
@@ -224,7 +226,9 @@ const candles = (pubCall, payload, endpoint = '/api/v3/klines') =>
  */
 const order = (privCall, payload = {}, url) => {
   const newPayload =
-    ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type ? { timeInForce: 'GTC', ...payload } : payload
+    ['LIMIT', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'].includes(payload.type) || !payload.type
+      ? { timeInForce: 'GTC', ...payload }
+      : payload
 
   const requires = ['symbol', 'side']
 
@@ -362,6 +366,7 @@ export default opts => {
     universalTransfer: payload => privCall('/sapi/v1/asset/transfer', payload, 'POST'),
     universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
 
+    dustLog: payload => privCall('/sapi/v1/asset/dribblet', payload),
     dustTransfer: payload => privCall('/sapi/v1/asset/dust', payload, 'POST'),
     accountCoins: payload => privCall('/sapi/v1/capital/config/getall', payload),
 
@@ -387,6 +392,7 @@ export default opts => {
 
     marginAllOrders: payload => privCall('/sapi/v1/margin/allOrders', payload),
     marginOrder: payload => order(privCall, payload, '/sapi/v1/margin/order'),
+    marginOrderOco: payload => _orderOco(privCall, payload, '/sapi/v1/margin/order/oco'),
     marginGetOrder: payload => privCall('/sapi/v1/margin/order', payload),
     marginCancelOrder: payload => privCall('/sapi/v1/margin/order', payload, 'DELETE'),
     marginOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload),
@@ -401,6 +407,10 @@ export default opts => {
       privCall('/sapi/v1/margin/isolated/transfer', payload, 'POST'),
     marginIsolatedTransferHistory: payload =>
       privCall('/sapi/v1/margin/isolated/transfer', payload),
+    disableMarginAccount: payload =>
+      privCall('/sapi/v1/margin/isolated/account', payload, 'DELETE'),
+    enableMarginAccount: payload =>
+      privCall('/sapi/v1/margin/isolated/account', payload, 'POST'),
 
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
@@ -426,7 +436,7 @@ export default opts => {
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
 
     futuresOrder: payload => order(privCall, payload, '/fapi/v1/order'),
-    futuresBatchOrders: payload => privCall(payload, '/fapi/v1/batchOrders'),
+    futuresBatchOrders: payload => privCall('/fapi/v1/batchOrders', payload),
     futuresGetOrder: payload => privCall('/fapi/v1/order', payload),
     futuresCancelOrder: payload => privCall('/fapi/v1/order', payload, 'DELETE'),
     futuresCancelAllOpenOrders: payload => privCall('/fapi/v1/allOpenOrders', payload, 'DELETE'),
@@ -444,5 +454,8 @@ export default opts => {
     futuresPositionMargin: payload => privCall('/fapi/v1/positionMargin', payload, 'POST'),
     futuresMarginHistory: payload => privCall('/fapi/v1/positionMargin/history', payload),
     futuresIncome: payload => privCall('/fapi/v1/income', payload),
+    lendingAccount: payload => privCall('/sapi/v1/lending/union/account', payload),
+    fundingWallet: payload => privCall('/sapi/v1/asset/get-funding-asset', payload, 'POST'),
+    apiPermission: payload => privCall('/sapi/v1/account/apiRestrictions', payload),
   }
 }

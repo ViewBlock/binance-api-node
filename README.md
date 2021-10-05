@@ -96,8 +96,12 @@ Following examples will use the `await` form, which requires some configuration 
   - [assetDetail](#assetDetail)
   - [getBnbBurn](#getBnbBurn)
   - [setBnbBurn](#setBnbBurn)
+  - [dustLog](#dustlog)
   - [dustTransfer](#dustTransfer)
   - [accountCoins](#accountCoins)
+  - [lendingAccount](#lendingAccount)
+  - [fundingWallet](#fundingWallet)
+  - [apiPermission](#apiPermission)
 - [Margin](#margin)
   - [marginAccountInfo](#marginAccountInfo)
   - [marginLoan](#marginLoan)
@@ -108,7 +112,10 @@ Following examples will use the `await` form, which requires some configuration 
   - [marginIsolatedTransfer](#marginIsolatedTransfer)
   - [marginIsolatedTransferHistory](#marginIsolatedTransferHistory)
   - [marginOrder](#marginOrder)
+  - [marginOrderOco](#marginOrderOco)
   - [marginGetOrder](#marginGetOrder)
+  - [disableMarginAccount](#disableMarginAccount)
+  - [enableMarginAccount](#enableMarginAccount)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
@@ -1901,7 +1908,6 @@ console.log(await client.capitalConfigs())
 
 </details>
 
-
 #### universalTransfer
 
 You need to enable Permits Universal Transfer option for the api key which requests this endpoint.
@@ -2054,6 +2060,80 @@ console.log(await client.setBnbBurn({ spotBNBBurn: "true" }))
 
 </details>
 
+#### dustLog
+
+```js
+console.log(await client.dustLog())
+```
+
+| Param      | Type     | Required | Description         |
+| ---------- | -------- | -------- | ------------------- |
+| startTime  | Number   | false    |
+| endTime    | Number   | false    |
+| recvWindow | Number   | false    |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+        "total": 8,   //Total counts of exchange
+        "userAssetDribblets": [
+            {
+                "operateTime": 1615985535000,
+                "totalTransferedAmount": "0.00132256",
+                "totalServiceChargeAmount": "0.00002699",
+                "transId": 45178372831,
+                "userAssetDribbletDetails": [
+                    {
+                        "transId": 4359321,
+                        "serviceChargeAmount": "0.000009",
+                        "amount": "0.0009",
+                        "operateTime": 1615985535000,
+                        "transferedAmount": "0.000441",
+                        "fromAsset": "USDT"
+                    },
+                    {
+                        "transId": 4359321,
+                        "serviceChargeAmount": "0.00001799",
+                        "amount": "0.0009",
+                        "operateTime": 1615985535000,
+                        "transferedAmount": "0.00088156",
+                        "fromAsset": "ETH"
+                    }
+                ]
+            },
+            {
+                "operateTime":1616203180000,
+                "totalTransferedAmount": "0.00058795",
+                "totalServiceChargeAmount": "0.000012",
+                "transId": 4357015,
+                "userAssetDribbletDetails": [
+                    {
+                        "transId": 4357015,
+                        "serviceChargeAmount": "0.00001",
+                        "amount": "0.001",
+                        "operateTime": 1616203180000,
+                        "transferedAmount": "0.00049",
+                        "fromAsset": "USDT"
+                    },
+                    {
+                        "transId": 4357015,
+                        "serviceChargeAmount": "0.000002",
+                        "amount": "0.0001",
+                        "operateTime": 1616203180000,
+                        "transferedAmount": "0.00009795",
+                        "fromAsset": "ETH"
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
+
+</details>
+
 #### dustTransfer
 
 ```js
@@ -2175,6 +2255,108 @@ console.log(await client.accountCoins())
         "withdrawing": "0.00000000"
     }
 ]
+```
+
+</details>
+
+#### lendingAccount
+
+Get information of lending assets for user.
+
+```js
+console.log(await client.lendingAccount())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "positionAmountVos": [
+        {
+            "amount": "75.46000000",
+            "amountInBTC": "0.01044819",
+            "amountInUSDT": "75.46000000",
+            "asset": "USDT"
+        },
+        {
+            "amount": "1.67072036",
+            "amountInBTC": "0.00023163",
+            "amountInUSDT": "1.67289230",
+            "asset": "BUSD"
+        }
+    ],
+    "totalAmountInBTC": "0.01067982",
+    "totalAmountInUSDT": "77.13289230",
+    "totalFixedAmountInBTC": "0.00000000",
+    "totalFixedAmountInUSDT": "0.00000000",
+    "totalFlexibleInBTC": "0.01067982",
+    "totalFlexibleInUSDT": "77.13289230"
+ }
+```
+
+</details>
+
+#### fundingWallet
+
+Query funding wallet, includes Binance Pay, Binance Card, Binance Gift Card, Stock Token.
+
+```js
+console.log(await client.fundingWallet())
+```
+
+| Param      | Type     | Required | Description         |
+| ---------- | -------- | -------- | ------------------- |
+| asset      | String   | false    |
+| needBtcValuation      | String   | false    | 'true' or 'false'
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "asset": "USDT",
+        "free": "1",
+        "locked": "0",
+        "freeze": "0",
+        "withdrawing": "0",  
+        "btcValuation": "0.00000091"  
+    }
+]
+```
+
+</details>
+
+#### apiPermission
+
+Get API Key Permission.
+
+```js
+console.log(await client.apiPermission())
+```
+
+| Param      | Type     | Required | Description         |
+| ---------- | -------- | -------- | ------------------- |
+| recvWindow      | Number   | false    |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+   "ipRestrict": false,
+   "createTime": 1623840271000,   
+   "enableWithdrawals": false,   // This option allows you to withdraw via API. You must apply the IP Access Restriction filter in order to withdrawals
+   "enableInternalTransfer": true,  // This option authorizes this key to transfer funds between your master account and your sub account instantly
+   "permitsUniversalTransfer": true,  // Authorizes this key to be used for a dedicated universal transfer API to transfer multiple supported currencies. Each business's own transfer API rights are not affected by this authorization
+   "enableVanillaOptions": false,  //  Authorizes this key to Vanilla options trading
+   "enableReading": true,
+   "enableFutures": false,  //  API Key created before your futures account opened does not support futures API service
+   "enableMargin": false,   //  This option can be adjusted after the Cross Margin account transfer is completed
+   "enableSpotAndMarginTrading": false, // Spot and margin trading
+   "tradingAuthorityExpirationTime": 1628985600000  // Expiration time for spot and margin trading permission
+}
 ```
 
 </details>
@@ -2355,6 +2537,55 @@ console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
     "totalAssetOfBtc": "0.00000000",
     "totalLiabilityOfBtc": "0.00000000",
     "totalNetAssetOfBtc": "0.00000000" 
+}
+```
+
+</details>
+
+#### disableMarginAccount
+
+Inactive Isolated Margin trading pair for symbol
+
+```js
+console.log(await client.disableMarginAccount({ symbol: 'BTCUSDT' }));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| symbol | String | true     |  |
+| recvWindow | Number | false     | No more than 60000 |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+   "success": true,
+   "symbol": "BTCUSDT"
+}
+```
+
+</details>
+#### enableMarginAccount
+
+Active Isolated Margin trading pair for symbol
+
+```js
+console.log(await client.enableMarginAccount({ symbol: 'BTCUSDT' }));
+```
+
+| Param | Type   | Required | Description    |
+| ----- | ------ | -------- | -------------- |
+| symbol | String | true     |  |
+| recvWindow | Number | false     | No more than 60000 |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+   "success": true,
+   "symbol": "BTCUSDT"
 }
 ```
 
@@ -2563,6 +2794,98 @@ console.log(await client.marginOrder({
       "qty": "1.00000000",
       "commission": "3.99500000",
       "commissionAsset": "USDT"
+    }
+  ]
+}
+```
+
+</details>
+
+#### marginOrderOco
+
+```js
+console.log(await client.marginOrderOco({ 
+  symbol: 'AUDIOUSDT', 
+  type: 'MARKET',
+  side: 'SELL',
+  quantity: '10',
+  }));
+```
+
+| Param             | Type    | Required | Description               |
+| ----------------- | ------- | -------- | ------------------------- |
+| symbol            | String  | true     | asset, such as `BTC`      |
+| isIsolated        | String  | false    | for isolated margin or not, `TRUE`, `FALSE`, default `FALSE`
+| side              | String  | true     | `BUY` `SELL` |
+| type              | String  | true     |  
+| quantity          | String  | false    |
+| quoteOrderQty     | String  | false    |
+| price             | String  | false    | 
+| stopPrice         | String  | false    | Used with `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders.
+| stopLimitPrice    | String  | false    | Used with `STOP_LOSS_LIMIT` orders.
+| newClientOrderId  | String  | false    | A unique id among open orders. Automatically generated if not sent.
+| icebergQty        | Boolean | false    | Used with `LIMIT`, `STOP_LOSS_LIMIT`, and `TAKE_PROFIT_LIMIT` to create an iceberg order.
+| newOrderRespType  | String  | false    | Set the response JSON. `ACK`, `RESULT`, or `FULL`; `MARKET` and `LIMIT` order types default to `FULL`, all other orders default to `ACK`.
+| sideEffectType    | String  | false    | `NO_SIDE_EFFECT`, `MARGIN_BUY`, `AUTO_REPAY`; default `NO_SIDE_EFFECT`.
+| timeInForce       | String  | false    | `GTC`,`IOC`,`FOK`        |
+| recvWindow        | Number  | false    | No more than 60000        |
+
+<details>
+<summary>Output</summary>
+    
+```js
+{
+  "orderListId": 45514668,
+  "contingencyType": 'OCO',
+  "listStatusType": 'EXEC_STARTED',
+  "listOrderStatus": 'EXECUTING',
+  "listClientOrderId": 'CD9UzEJfmcGZ4kLfZT2ga2',
+  "transactionTime": 1632192162785,
+  "symbol": 'AUDIOUSDT',
+  "isIsolated": true,
+  "orders": [
+    {
+      "symbol": 'AUDIOUSDT',
+      "orderId": 239313661,
+      "clientOrderId": 'ZbUwgKv6UB8eMzf2yfXENl'
+    },
+    {
+      "symbol": 'AUDIOUSDT',
+      "orderId": 239313662,
+      "clientOrderId": 'f5u1RIHAPRd4W3fFhFykBo'
+    }
+  ],
+  "orderReports": [
+    {
+      "symbol": 'AUDIOUSDT',
+      "orderId": 239313661,
+      "orderListId": 45514668,
+      "clientOrderId": 'ZbUwgKv6UB8eMzf2yfXENl',
+      "transactTime": 1632192162785,
+      "price": '2.20000000',
+      "origQty": '12.80000000',
+      "executedQty": '0',
+      "cummulativeQuoteQty": '0',
+      "status": 'NEW',
+      "timeInForce": 'GTC',
+      "type": 'STOP_LOSS_LIMIT',
+      "side": 'SELL',
+      "stopPrice": '2.20000000'
+    },
+    {
+      "symbol": 'AUDIOUSDT',
+      "orderId": 239313662,
+      "orderListId": 45514668,
+      "clientOrderId": 'f5u1RIHAPRd4W3fFhFykBo',
+      "transactTime": 1632192162785,
+      "price": '2.50000000',
+      "origQty": '12.80000000',
+      "executedQty": '0',
+      "cummulativeQuoteQty": '0',
+      "status": 'NEW',
+      "timeInForce": 'GTC',
+      "type": 'LIMIT_MAKER',
+      "side": 'SELL'
     }
   ]
 }
