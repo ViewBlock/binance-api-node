@@ -142,9 +142,9 @@ declare module 'binance-api-node' {
   }
 
   export interface DepositHistoryResponse {
-    depositList: {
+    [index: number]: {
       insertTime: number
-      amount: number
+      amount: string
       coin: string
       network: string
       address: string
@@ -169,10 +169,10 @@ declare module 'binance-api-node' {
   }
 
   export interface WithdrawHistoryResponse {
-    withdrawList: {
+    [index: number]: {
       id: string
-      amount: number
-      transactionFee: number
+      amount: string
+      transactionFee: string
       address: string
       coin: string
       txId: string
@@ -185,15 +185,12 @@ declare module 'binance-api-node' {
   }
 
   export interface AssetDetail {
-    success: boolean
-    assetDetail: {
-      [asset: string]: {
-        minWithdrawAmount: number
-        depositStatus: boolean
-        withdrawFee: number
-        withdrawStatus: boolean
-        depositTip?: string
-      }
+    [asset: string]: {
+      minWithdrawAmount: string
+      depositStatus: boolean
+      withdrawFee: string
+      withdrawStatus: boolean
+      depositTip?: string
     }
   }
 

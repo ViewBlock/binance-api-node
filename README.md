@@ -1993,11 +1993,9 @@ console.log(await client.assetDetail())
 
 ```js
 {
-    "success": true,
-    "assetDetail": {
         "CTR": {
             "minWithdrawAmount": "70.00000000", //min withdraw amount
-            "depositStatus": false, //deposit status (false if ALL of networks' are false)
+            "depositStatus": false,//deposit status (false if ALL of networks' are false)
             "withdrawFee": 35, // withdraw fee
             "withdrawStatus": true, //withdraw status (false if ALL of networks' are false)
             "depositTip": "Delisted, Deposit Suspended" //reason
@@ -2007,8 +2005,7 @@ console.log(await client.assetDetail())
             "depositStatus": true,
             "withdrawFee": 0.01,
             "withdrawStatus": true
-        }
-    }
+        }   
 }
 ```
 
