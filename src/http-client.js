@@ -190,7 +190,11 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
         `${!(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
           ? endpoints.base
           : endpoints.futures
-        }${path}${noData ? '' : makeQueryString(newData)}`,
+        }${global.subName === "dapi"
+          ? path.replace(FUTURES, FUTURES_DAPI)
+          : path}${makeQueryString(data)}${noData
+          ? ''
+          : makeQueryString(newData)}`,
         {
           method,
           headers: { 'X-MBX-APIKEY': apiKey },
