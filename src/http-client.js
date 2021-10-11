@@ -5,12 +5,14 @@ import 'isomorphic-fetch'
 
 const BASE = 'https://api.binance.com'
 const FUTURES = 'https://fapi.binance.com'
+const FUTURES_DAPI = 'https://dapi.binance.com'
 
 const defaultGetTime = () => Date.now()
 
 const info = {
   spot: {},
   futures: {},
+  FUTURES_DAPI: {}
 }
 
 /**
@@ -19,8 +21,8 @@ const info = {
 const makeQueryString = q =>
   q
     ? `?${Object.keys(q)
-        .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(q[k])}`)
-        .join('&')}`
+      .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(q[k])}`)
+      .join('&')}`
     : ''
 
 /**
@@ -40,7 +42,9 @@ const responseHandler = res => {
     return
   }
 
-  const marketName = res.url.includes(FUTURES) ? 'futures' : 'spot'
+  const marketName = (res.url.includes(FUTURES)
+    || res.url.includes(FUTURES_DAPI))
+    ? 'futures' : 'spot'
 
   Object.keys(headersMapping).forEach(key => {
     const outKey = headersMapping[key]
@@ -114,11 +118,12 @@ const checkParams = (name, payload, requires = []) => {
 const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {}) =>
   sendResult(
     fetch(
-      `${
-        !(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
-          ? endpoints.base
-          : endpoints.futures
-      }${path}${makeQueryString(data)}`,
+      `${!(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
+        ? endpoints.base
+        : endpoints.futures
+      }${global.subName === "dapi"
+        ? path.replace(FUTURES, FUTURES_DAPI)
+        : path}${makeQueryString(data)}`,
       {
         method,
         json: true,
@@ -182,10 +187,9 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
 
     return sendResult(
       fetch(
-        `${
-          !(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
-            ? endpoints.base
-            : endpoints.futures
+        `${!(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
+          ? endpoints.base
+          : endpoints.futures
         }${path}${noData ? '' : makeQueryString(newData)}`,
         {
           method,

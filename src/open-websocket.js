@@ -1,6 +1,6 @@
 import ws from 'isomorphic-ws'
 import ReconnectingWebSocket from 'reconnecting-websocket'
-
+ 
 export default url => {
   const rws = new ReconnectingWebSocket(url, [], {
     WebSocket: ws,
