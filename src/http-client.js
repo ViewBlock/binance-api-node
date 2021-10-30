@@ -436,7 +436,7 @@ export default opts => {
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
 
     futuresOrder: payload => order(privCall, payload, '/fapi/v1/order'),
-    futuresBatchOrders: payload => privCall('/fapi/v1/batchOrders', payload),
+    futuresBatchOrders: payload => privCall('/fapi/v1/batchOrders', payload, 'POST'),
     futuresGetOrder: payload => privCall('/fapi/v1/order', payload),
     futuresCancelOrder: payload => privCall('/fapi/v1/order', payload, 'DELETE'),
     futuresCancelAllOpenOrders: payload => privCall('/fapi/v1/allOpenOrders', payload, 'DELETE'),
