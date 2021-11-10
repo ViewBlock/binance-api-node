@@ -896,6 +896,7 @@ declare module 'binance-api-node' {
     newOrderRespType?: NewOrderRespType_LT
     recvWindow?: number
     timeInForce?: TimeInForce_LT
+    useServerTime?: boolean;
   }
 
   export interface NewOrderMarketBase extends NewOrderParent {
