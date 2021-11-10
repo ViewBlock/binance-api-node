@@ -7,7 +7,8 @@ declare module 'binance-api-node' {
     httpBase?: string
     httpFutures?: string
     wsBase?: string
-    wsFutures?: string
+    wsFutures?: string,
+    proxy?: string
   }): Binance
 
   export type ErrorCodes_LT = -1000 | -1001 | -1002 | -1003 | -1006 | -1007 | -1013 | -1014
@@ -457,6 +458,8 @@ declare module 'binance-api-node' {
     futuresExchangeInfo(): Promise<ExchangeInfo>
     futuresBook(options: { symbol: string; limit?: number }): Promise<OrderBook>
     futuresCandles(options: CandlesOptions): Promise<CandleChartResult[]>
+    futuresMarkPriceCandles(options: CandlesOptions): Promise<CandleChartResult[]>
+    futuresIndexPriceCandles(options: IndexPriceCandlesOptions): Promise<CandleChartResult[]>
     futuresAggTrades(options?: {
       symbol: string
       fromId?: string
@@ -677,6 +680,11 @@ declare module 'binance-api-node' {
     futuresAggTrades: (
       pairs: string | string[],
       callback: (trade: AggregatedTrade) => void,
+    ) => ReconnectingWebSocketHandler
+    futuresCandles: (
+      pair: string | string[],
+      period: string,
+      callback: (ticker: Candle) => void,
     ) => ReconnectingWebSocketHandler
 
     user: (callback: (msg: UserDataStreamEvent) => void) => Promise<ReconnectingWebSocketHandler>
@@ -1530,6 +1538,8 @@ declare module 'binance-api-node' {
     startTime?: number
     endTime?: number
   }
+
+  export type IndexPriceCandlesOptions = Omit<CandlesOptions, "symbol"> & { pair: string };
 
   export interface CandleChartResult {
     openTime: number

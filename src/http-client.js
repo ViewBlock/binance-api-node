@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import zip from 'lodash.zipobject'
+import HttpsProxyAgent from 'https-proxy-agent'
 
 import 'isomorphic-fetch'
 
@@ -111,21 +112,26 @@ const checkParams = (name, payload, requires = []) => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {}) =>
-  sendResult(
+const publicCall = ({ proxy, endpoints }) => (path, data, method = 'GET', headers = {}) => {
+  const opts = {
+    method,
+    json: true,
+    headers,
+  }
+  if (proxy) {
+    opts.agent = new HttpsProxyAgent(proxy)
+  }
+  return sendResult(
     fetch(
       `${
         !(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
           ? endpoints.base
           : endpoints.futures
       }${path}${makeQueryString(data)}`,
-      {
-        method,
-        json: true,
-        headers,
-      },
+      opts,
     ),
   )
+}
 
 /**
  * Factory method for partial private calls against the api
@@ -154,13 +160,14 @@ const keyCall = ({ apiKey, pubCall }) => (path, data, method = 'GET') => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, pubCall }) => (
-  path,
-  data = {},
-  method = 'GET',
-  noData,
-  noExtra,
-) => {
+const privateCall = ({
+  apiKey,
+  apiSecret,
+  proxy,
+  endpoints,
+  getTime = defaultGetTime,
+  pubCall,
+}) => (path, data = {}, method = 'GET', noData, noExtra) => {
   if (!apiKey || !apiSecret) {
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
   }
@@ -180,6 +187,15 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
 
     const newData = noExtra ? data : { ...data, timestamp, signature }
 
+    const opts = {
+      method,
+      headers: { 'X-MBX-APIKEY': apiKey },
+      json: true,
+    }
+    if (proxy) {
+      opts.agent = new HttpsProxyAgent(proxy)
+    }
+
     return sendResult(
       fetch(
         `${
@@ -187,11 +203,7 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
             ? endpoints.base
             : endpoints.futures
         }${path}${noData ? '' : makeQueryString(newData)}`,
-        {
-          method,
-          headers: { 'X-MBX-APIKEY': apiKey },
-          json: true,
-        },
+        opts,
       ),
     )
   })
@@ -216,7 +228,7 @@ export const candleFields = [
  * to a user friendly collection.
  */
 const candles = (pubCall, payload, endpoint = '/api/v3/klines') =>
-  checkParams('candles', payload, ['symbol']) &&
+  checkParams('candles', payload, endpoint.includes('indexPrice') ? ['pair'] : ['symbol']) &&
   pubCall(endpoint, { interval: '5m', ...payload }).then(candles =>
     candles.map(candle => zip(candleFields, candle)),
   )
@@ -409,8 +421,7 @@ export default opts => {
       privCall('/sapi/v1/margin/isolated/transfer', payload),
     disableMarginAccount: payload =>
       privCall('/sapi/v1/margin/isolated/account', payload, 'DELETE'),
-    enableMarginAccount: payload =>
-      privCall('/sapi/v1/margin/isolated/account', payload, 'POST'),
+    enableMarginAccount: payload => privCall('/sapi/v1/margin/isolated/account', payload, 'POST'),
 
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
@@ -421,6 +432,8 @@ export default opts => {
     futuresAllForceOrders: payload => pubCall('/fapi/v1/allForceOrders', payload),
     futuresLongShortRatio: payload => pubCall('/futures/data/globalLongShortAccountRatio', payload),
     futuresCandles: payload => candles(pubCall, payload, '/fapi/v1/klines'),
+    futuresMarkPriceCandles: payload => candles(pubCall, payload, '/fapi/v1/markPriceKlines'),
+    futuresIndexPriceCandles: payload => candles(pubCall, payload, '/fapi/v1/indexPriceKlines'),
     futuresTrades: payload =>
       checkParams('trades', payload, ['symbol']) && pubCall('/fapi/v1/trades', payload),
     futuresDailyStats: payload => pubCall('/fapi/v1/ticker/24hr', payload),

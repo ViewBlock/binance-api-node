@@ -1,11 +1,16 @@
 import zip from 'lodash.zipobject'
 
 import httpMethods from 'http-client'
-import openWebSocket from 'open-websocket'
+import _openWebSocket from 'open-websocket'
 
 const endpoints = {
   base: 'wss://stream.binance.com:9443/ws',
   futures: 'wss://fstream.binance.com/ws',
+}
+
+const wsOptions = {}
+function openWebSocket(url) {
+  return _openWebSocket(url, wsOptions)
 }
 
 const depthTransform = m => ({
@@ -735,6 +740,10 @@ export default opts => {
 
   if (opts && opts.wsFutures) {
     endpoints.futures = opts.wsFutures
+  }
+
+  if (opts && opts.proxy) {
+    wsOptions.proxy = opts.proxy
   }
 
   return {
