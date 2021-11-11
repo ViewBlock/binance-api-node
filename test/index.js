@@ -642,7 +642,37 @@ test('[FUTURES-REST] candles', async t => {
     t.is(e.message, 'Method candles requires symbol parameter.')
   }
 
-  const candles = await client.candles({ symbol: 'BTCUSDT' })
+  const candles = await client.futuresCandles({ symbol: 'BTCUSDT' })
+
+  t.truthy(candles.length)
+
+  const [candle] = candles
+  checkFields(t, candle, candleFields)
+})
+
+test('[FUTURES-REST] mark price candles', async t => {
+  try {
+    await client.futuresMarkPriceCandles({})
+  } catch (e) {
+    t.is(e.message, 'Method candles requires symbol parameter.')
+  }
+
+  const candles = await client.futuresMarkPriceCandles({ symbol: 'BTCUSDT' })
+
+  t.truthy(candles.length)
+
+  const [candle] = candles
+  checkFields(t, candle, candleFields)
+})
+
+test('[FUTURES-REST] index price candles', async t => {
+  try {
+    await client.futuresIndexPriceCandles({})
+  } catch (e) {
+    t.is(e.message, 'Method candles requires pair parameter.')
+  }
+
+  const candles = await client.futuresIndexPriceCandles({ pair: 'BTCUSDT' })
 
   t.truthy(candles.length)
 

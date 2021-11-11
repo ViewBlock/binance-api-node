@@ -113,14 +113,6 @@ const checkParams = (name, payload, requires = []) => {
  * @returns {object} The api response
  */
 const publicCall = ({ proxy, endpoints }) => (path, data, method = 'GET', headers = {}) => {
-  const opts = {
-    method,
-    json: true,
-    headers,
-  }
-  if (proxy) {
-    opts.agent = new HttpsProxyAgent(proxy)
-  }
   return sendResult(
     fetch(
       `${
@@ -128,7 +120,12 @@ const publicCall = ({ proxy, endpoints }) => (path, data, method = 'GET', header
           ? endpoints.base
           : endpoints.futures
       }${path}${makeQueryString(data)}`,
-      opts,
+      {
+        method,
+        json: true,
+        headers,
+        ...(proxy ? { agent: new HttpsProxyAgent(proxy) } : {}),
+      },
     ),
   )
 }
@@ -187,15 +184,6 @@ const privateCall = ({
 
     const newData = noExtra ? data : { ...data, timestamp, signature }
 
-    const opts = {
-      method,
-      headers: { 'X-MBX-APIKEY': apiKey },
-      json: true,
-    }
-    if (proxy) {
-      opts.agent = new HttpsProxyAgent(proxy)
-    }
-
     return sendResult(
       fetch(
         `${
@@ -203,7 +191,12 @@ const privateCall = ({
             ? endpoints.base
             : endpoints.futures
         }${path}${noData ? '' : makeQueryString(newData)}`,
-        opts,
+        {
+          method,
+          headers: { 'X-MBX-APIKEY': apiKey },
+          json: true,
+          ...(proxy ? { agent: new HttpsProxyAgent(proxy) } : {}),
+        },
       ),
     )
   })
