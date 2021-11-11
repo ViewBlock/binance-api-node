@@ -733,18 +733,19 @@ const user = (opts, variator) => (cb, transform) => {
   return makeStream(false)
 }
 
-const futuresAllMarkPricesTransform = m => m.map(x => ({
-  eventType: x.e,
-  eventTime: x.E,
-  symbol: x.s,
-  markPrice: x.p,
-  indexPrice: x.i,
-  settlePrice: x.P,
-  fundingRate: x.r,
-  nextFundingRate: x.T,
-}))
+const futuresAllMarkPricesTransform = m =>
+  m.map(x => ({
+    eventType: x.e,
+    eventTime: x.E,
+    symbol: x.s,
+    markPrice: x.p,
+    indexPrice: x.i,
+    settlePrice: x.P,
+    fundingRate: x.r,
+    nextFundingRate: x.T,
+  }))
 
-const futuresAllMarkPrices = (payload, cb, transform = true) => {  
+const futuresAllMarkPrices = (payload, cb, transform = true) => {
   const variant = payload.updateSpeed === '1s' ? '!markPrice@arr@1s' : '!markPrice@arr'
 
   const w = openWebSocket(`${endpoints.futures}/${variant}`)
@@ -753,7 +754,8 @@ const futuresAllMarkPrices = (payload, cb, transform = true) => {
     const arr = JSON.parse(msg.data)
     cb(transform ? futuresAllMarkPricesTransform(arr) : arr)
   }
-  return options => cache.close(1000, 'Close handle was called', { keepClosed: true, ...options })
+
+  return options => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
 }
 
 export default opts => {
