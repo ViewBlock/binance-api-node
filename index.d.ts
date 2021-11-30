@@ -104,6 +104,10 @@ declare module 'binance-api-node' {
     asset: string
   }
 
+  export interface MultiAssetsMargin {
+    multiAssetsMargin: boolean
+  }
+
   export interface LendingAccount {
     positionAmountVos: positionAmount[]
     totalAmountInBTC: string
@@ -489,6 +493,10 @@ declare module 'binance-api-node' {
       limit?: number
     }): Promise<FundingRateResult[]>
     futuresOrder(options: NewFuturesOrder): Promise<FuturesOrder>
+
+    getMultiAssetsMargin(): Promise<MultiAssetsMargin>
+    setMultiAssetsMargin(options: MultiAssetsMargin): Promise<MultiAssetsMargin>
+
     futuresCancelOrder(options: {
       symbol: string
       orderId: number
