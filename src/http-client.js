@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import zip from 'lodash.zipobject'
 import HttpsProxyAgent from 'https-proxy-agent'
+import JSONbig from 'json-bigint'
 
 import 'isomorphic-fetch'
 
@@ -71,7 +72,7 @@ const sendResult = call =>
     return res.text().then(text => {
       let error
       try {
-        const json = JSON.parse(text)
+        const json = JSONbig.parse(text)
         // The body was JSON parseable, assume it is an API response error
         error = new Error(json.msg || `${res.status} ${res.statusText}`)
         error.code = json.code
