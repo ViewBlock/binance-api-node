@@ -1,4 +1,5 @@
 import zip from 'lodash.zipobject'
+import JSONbig from 'json-bigint'
 
 import httpMethods from 'http-client'
 import _openWebSocket from 'open-websocket'
@@ -44,7 +45,7 @@ const depth = (payload, cb, transform = true, variator) => {
       }`,
     )
     w.onmessage = msg => {
-      const obj = JSON.parse(msg.data)
+      const obj = JSONbig.parse(msg.data)
 
       cb(
         transform
@@ -92,7 +93,7 @@ const partialDepth = (payload, cb, transform = true, variator) => {
       }`,
     )
     w.onmessage = msg => {
-      const obj = JSON.parse(msg.data)
+      const obj = JSONbig.parse(msg.data)
 
       cb(
         transform
@@ -122,7 +123,7 @@ const candles = (payload, interval, cb, transform = true, variator) => {
       }/${symbol.toLowerCase()}@kline_${interval}`,
     )
     w.onmessage = msg => {
-      const obj = JSON.parse(msg.data)
+      const obj = JSONbig.parse(msg.data)
       const { e: eventType, E: eventTime, s: symbol, k: tick } = obj
       const {
         t: startTime,
@@ -243,7 +244,7 @@ const ticker = (payload, cb, transform = true, variator) => {
     )
 
     w.onmessage = msg => {
-      const obj = JSON.parse(msg.data)
+      const obj = JSONbig.parse(msg.data)
       cb(
         transform
           ? variator === 'futures'
@@ -266,7 +267,7 @@ const allTickers = (cb, transform = true, variator) => {
   )
 
   w.onmessage = msg => {
-    const arr = JSON.parse(msg.data)
+    const arr = JSONbig.parse(msg.data)
     cb(
       transform
         ? variator === 'futures'
@@ -284,7 +285,7 @@ const miniTicker = (payload, cb, transform = true) => {
     const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@miniTicker`)
 
     w.onmessage = msg => {
-      const obj = JSON.parse(msg.data)
+      const obj = JSONbig.parse(msg.data)
       cb(transform ? miniTickerTransform(obj) : obj)
     }
 
@@ -300,7 +301,7 @@ const allMiniTicker = (payload, cb, transform = true) => {
     const w = openWebSocket(`${endpoints.base}/!miniTicker@arr`)
 
     w.onmessage = msg => {
-      const arr = JSON.parse(msg.data)
+      const arr = JSONbig.parse(msg.data)
       cb(transform ? arr.map(m => miniTickerTransform(m)) : arr)
     }
 
@@ -316,7 +317,7 @@ const customSubStream = (payload, cb, variator) => {
     const w = openWebSocket(`${variator === 'futures' ? endpoints.futures : endpoints.base}/${sub}`)
 
     w.onmessage = msg => {
-      const data = JSON.parse(msg.data)
+      const data = JSONbig.parse(msg.data)
       cb(data)
     }
 
@@ -362,7 +363,7 @@ const aggTrades = (payload, cb, transform = true, variator) => {
       }/${symbol.toLowerCase()}@aggTrade`,
     )
     w.onmessage = msg => {
-      const obj = JSON.parse(msg.data)
+      const obj = JSONbig.parse(msg.data)
 
       cb(
         transform
@@ -398,7 +399,7 @@ const futuresLiquidations = (payload, cb, transform = true) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
     const w = openWebSocket(`${endpoints.futures}/${symbol.toLowerCase()}@forceOrder`)
     w.onmessage = msg => {
-      const obj = JSON.parse(msg.data)
+      const obj = JSONbig.parse(msg.data)
 
       cb(transform ? futuresLiqsTransform(obj.o) : obj)
     }
@@ -414,7 +415,7 @@ const futuresAllLiquidations = (cb, transform = true) => {
   const w = new openWebSocket(`${endpoints.futures}/!forceOrder@arr`)
 
   w.onmessage = msg => {
-    const obj = JSON.parse(msg.data)
+    const obj = JSONbig.parse(msg.data)
     cb(transform ? futuresLiqsTransform(obj.o) : obj)
   }
 
@@ -439,7 +440,7 @@ const trades = (payload, cb, transform = true) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
     const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@trade`)
     w.onmessage = msg => {
-      const obj = JSON.parse(msg.data)
+      const obj = JSONbig.parse(msg.data)
 
       cb(transform ? tradesTransform(obj) : obj)
     }
@@ -601,7 +602,7 @@ const futuresUserTransforms = {
 }
 
 export const userEventHandler = (cb, transform = true, variator) => msg => {
-  const { e: type, ...rest } = JSON.parse(msg.data)
+  const { e: type, ...rest } = JSONbig.parse(msg.data)
 
   cb(
     variator === 'futures'
@@ -751,7 +752,7 @@ const futuresAllMarkPrices = (payload, cb, transform = true) => {
   const w = openWebSocket(`${endpoints.futures}/${variant}`)
 
   w.onmessage = msg => {
-    const arr = JSON.parse(msg.data)
+    const arr = JSONbig.parse(msg.data)
     cb(transform ? futuresAllMarkPricesTransform(arr) : arr)
   }
 
