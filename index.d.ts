@@ -873,10 +873,10 @@ declare module 'binance-api-node' {
     type: OrderType_LT
     quantity?: string
     reduceOnly?: 'true' | 'false'
-    price?: number
+    price?: string
     timeInForce?: TimeInForce_LT
     newClientOrderId?: string
-    stopPrice?: number
+    stopPrice?: string
     closePosition?: 'true' | 'false'
     activationPrice?: number
     callbackRate?: number
