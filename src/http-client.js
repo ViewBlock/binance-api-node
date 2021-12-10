@@ -63,7 +63,7 @@ const sendResult = call =>
 
     // If response is ok, we can safely assume it is valid JSON
     if (res.ok) {
-      return res.json()
+      return res.text().then(text => JSONbig.parse(text))
     }
 
     // Errors might come from the API itself or the proxy Binance is using.
