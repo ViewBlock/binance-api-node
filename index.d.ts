@@ -659,6 +659,9 @@ declare module 'binance-api-node' {
       pair: string | string[],
       callback: (ticker: MiniTicker) => void,
     ) => ReconnectingWebSocketHandler
+    allMiniTickers: (
+      callback: (ticker: MiniTicker[]) => void,
+    ) => ReconnectingWebSocketHandler
     futuresTicker: (
       pair: string | string[],
       callback: (ticker: Ticker) => void,

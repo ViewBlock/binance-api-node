@@ -253,18 +253,36 @@ test('[WS] allTicker', t => {
 test('[WS] miniTicker', t => {
   return new Promise(resolve => {
     client.ws.miniTicker('ETHBTC', ticker => {
-      checkFields(t, ticker, ['open', 'high', 'low', 'eventTime', 'symbol', 'volume'])
+      checkFields(t, ticker, [
+        'open',
+        'high',
+        'low',
+        'curDayClose',
+        'eventTime',
+        'symbol',
+        'volume',
+        'volumeQuote',
+      ])
       resolve()
     })
   })
 })
 
-test('[WS] allMiniTicker', t => {
+test('[WS] allMiniTickers', t => {
   return new Promise(resolve => {
-    client.ws.allMiniTicker('ETHBTC', tickers => {
+    client.ws.allMiniTickers(tickers => {
       t.truthy(Array.isArray(tickers))
       t.is(tickers[0].eventType, '24hrMiniTicker')
-      checkFields(t, tickers[0], ['open', 'high', 'low', 'eventTime', 'symbol', 'volume'])
+      checkFields(t, tickers[0], [
+        'open',
+        'high',
+        'low',
+        'curDayClose',
+        'eventTime',
+        'symbol',
+        'volume',
+        'volumeQuote',
+      ])
       resolve()
     })
   })

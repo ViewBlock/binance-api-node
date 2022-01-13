@@ -296,20 +296,15 @@ const miniTicker = (payload, cb, transform = true) => {
     cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
-const allMiniTicker = (payload, cb, transform = true) => {
-  const cache = (Array.isArray(payload) ? payload : [payload]).map(() => {
-    const w = openWebSocket(`${endpoints.base}/!miniTicker@arr`)
+const allMiniTickers = (cb, transform = true) => {
+  const w = openWebSocket(`${endpoints.base}/!miniTicker@arr`)
 
-    w.onmessage = msg => {
-      const arr = JSONbig.parse(msg.data)
-      cb(transform ? arr.map(m => miniTickerTransform(m)) : arr)
-    }
+  w.onmessage = msg => {
+    const arr = JSONbig.parse(msg.data)
+    cb(transform ? arr.map(m => miniTickerTransform(m)) : arr)
+  }
 
-    return w
-  })
-
-  return options =>
-    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+  return options => w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
 }
 
 const customSubStream = (payload, cb, variator) => {
@@ -781,7 +776,7 @@ export default opts => {
     ticker,
     allTickers,
     miniTicker,
-    allMiniTicker,
+    allMiniTickers,
     customSubStream,
     user: user(opts),
 
