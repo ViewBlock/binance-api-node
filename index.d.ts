@@ -1332,9 +1332,9 @@ declare module 'binance-api-node' {
     entryPrice: string
     accumulatedRealized: string
     unrealizedPnL: string
-    marginType: string
+    marginType: Lowercase<MarginType_LT>
     isolatedWallet: string
-    positionSide: string
+    positionSide: PositionSide_LT
   }
 
   export interface AccountUpdate {
@@ -1597,7 +1597,7 @@ declare module 'binance-api-node' {
 
   export interface PositionRiskResult {
     entryPrice: string
-    marginType: string
+    marginType: Lowercase<MarginType_LT>
     isAutoAddMargin: string
     isolatedMargin: string
     leverage: string
@@ -1607,7 +1607,10 @@ declare module 'binance-api-node' {
     positionAmt: string
     symbol: string
     unRealizedProfit: string
-    positionSide: string
+    positionSide: PositionSide_LT
+    notional: string
+    isolatedWallet: string
+    updateTime: number
   }
 
   export interface LeverageBracketResult {
@@ -1666,8 +1669,13 @@ declare module 'binance-api-node' {
     isolated: boolean
     entryPrice: string
     maxNotional: string
-    positionSide: string
+    positionSide: PositionSide_LT
     positionAmt: string
+    notional: string
+    isolatedWallet: string
+    updateTime: number
+    bidNotional: string
+    askNotional: string
   }
 
   export interface FuturesLeverageResult {
