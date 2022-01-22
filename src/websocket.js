@@ -593,6 +593,19 @@ const futuresUserTransforms = {
     activationPrice: m.o.AP,
     callbackRate: m.o.cr,
     realizedProfit: m.o.rp,
+	}),
+	// https://binance-docs.github.io/apidocs/futures/en/#event-account-configuration-update-previous-leverage-update
+	ACCOUNT_CONFIG_UPDATE: m => ({
+		eventType: 'ACCOUNT_CONFIG_UPDATE',
+		eventTime: m.E,
+		transactionTime: m.T,
+		type: m.ac ? 'ACCOUNT_CONFIG' : 'MULTI_ASSETS',
+		...(m.ac ? {
+			symbol: m.ac.s,
+			leverage: m.ac.l,
+		} : {
+			multiAssets: m.ai.j
+		}),
   }),
 }
 
