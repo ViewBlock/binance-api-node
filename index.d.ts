@@ -1988,4 +1988,3 @@ declare module 'binance-api-node' {
 		CONTRACT_PRICE = 'CONTRACT_PRICE',
 	}
 }
-
