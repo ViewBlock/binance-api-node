@@ -344,7 +344,7 @@ declare module 'binance-api-node' {
 
   export interface ApiPermission {
     ipRestrict: boolean,
-    createTime: number,   
+    createTime: number,
     enableWithdrawals: boolean,
     enableInternalTransfer: boolean,
     permitsUniversalTransfer: boolean,
@@ -614,6 +614,17 @@ declare module 'binance-api-node' {
   export interface HttpError extends Error {
     code: number
     url: string
+	}
+
+	export type MarkPrice = {
+    eventType: string
+    eventTime: number
+    symbol: string
+    markPrice: string
+    indexPrice: string
+    settlePrice: string
+    fundingRate: string
+    nextFundingRate: number
   }
 
   export type UserDataStreamEvent =
@@ -627,7 +638,11 @@ declare module 'binance-api-node' {
       pair: string | string[],
       callback: (data: any) => void,
     ) => ReconnectingWebSocketHandler
-    futuresCustomSubStream: (
+    futuresAllMarkPrices: (
+      payload: { updateSpeed: "1s" | "3s" },
+      callback: (data: MarkPrice[]) => void,
+    ) => ReconnectingWebSocketHandler
+		futuresCustomSubStream: (
       pair: string | string[],
       callback: (data: any) => void,
     ) => ReconnectingWebSocketHandler
@@ -1324,6 +1339,7 @@ declare module 'binance-api-node' {
     asset: string
     walletBalance: string
     crossWalletBalance: string
+		balanceChange: string
   }
 
   export interface Position {
@@ -1332,13 +1348,13 @@ declare module 'binance-api-node' {
     entryPrice: string
     accumulatedRealized: string
     unrealizedPnL: string
-    marginType: Lowercase<MarginType_LT>
+    marginType: "isolated" | "cross"
     isolatedWallet: string
     positionSide: PositionSide_LT
   }
 
   export interface AccountUpdate {
-    eventTime: string
+    eventTime: number
     eventType: EventType.ACCOUNT_UPDATE
     transactionTime: number
     eventReasonType: string
@@ -1597,7 +1613,7 @@ declare module 'binance-api-node' {
 
   export interface PositionRiskResult {
     entryPrice: string
-    marginType: Lowercase<MarginType_LT>
+    marginType: "isolated" | "cross"
     isAutoAddMargin: string
     isolatedMargin: string
     leverage: string
