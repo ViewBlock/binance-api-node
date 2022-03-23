@@ -1,6 +1,6 @@
 // tslint:disable:interface-name
 declare module 'binance-api-node' {
-  export default function(options?: {
+  export default function (options?: {
     apiKey?: string
     apiSecret?: string
     getTime?: () => number | Promise<number>
@@ -678,16 +678,16 @@ declare module 'binance-api-node' {
     url: string
   }
 
-	export type MarkPrice = {
-		eventType: string
-		eventTime: number
-		symbol: string
-		markPrice: string
-		indexPrice: string
-		settlePrice: string
-		fundingRate: string
-		nextFundingRate: number
-	}
+  export type MarkPrice = {
+    eventType: string
+    eventTime: number
+    symbol: string
+    markPrice: string
+    indexPrice: string
+    settlePrice: string
+    fundingRate: string
+    nextFundingRate: number
+  }
 
   export type UserDataStreamEvent =
     | OutboundAccountInfo
@@ -702,10 +702,10 @@ declare module 'binance-api-node' {
       callback: (data: any) => void,
     ) => ReconnectingWebSocketHandler
     futuresAllMarkPrices: (
-			payload: { updateSpeed: "1s" | "3s" },
-			callback: (data: MarkPrice[]) => void,
-		) => ReconnectingWebSocketHandler
-		futuresCustomSubStream: (
+      payload: { updateSpeed: '1s' | '3s' },
+      callback: (data: MarkPrice[]) => void,
+    ) => ReconnectingWebSocketHandler
+    futuresCustomSubStream: (
       pair: string | string[],
       callback: (data: any) => void,
     ) => ReconnectingWebSocketHandler
@@ -1481,7 +1481,7 @@ declare module 'binance-api-node' {
     asset: string
     walletBalance: string
     crossWalletBalance: string
-		balanceChange: string
+    balanceChange: string
   }
 
   export interface Position {
@@ -1490,7 +1490,7 @@ declare module 'binance-api-node' {
     entryPrice: string
     accumulatedRealized: string
     unrealizedPnL: string
-    marginType: "isolated" | "cross"
+    marginType: 'isolated' | 'cross'
     isolatedWallet: string
     positionSide: PositionSide_LT
   }
@@ -1792,7 +1792,7 @@ declare module 'binance-api-node' {
 
   export interface PositionRiskResult {
     entryPrice: string
-    marginType: "isolated" | "cross"
+    marginType: 'isolated' | 'cross'
     isAutoAddMargin: string
     isolatedMargin: string
     leverage: string
