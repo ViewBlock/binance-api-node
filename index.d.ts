@@ -164,6 +164,41 @@ declare module 'binance-api-node' {
     btcValuation: string
   }
 
+  export interface NetworkInformation {
+    addressRegex: string
+    coin: string
+    depositDesc: string
+    depositEnable: boolean
+    isDefault: boolean
+    memoRegex: string
+    minConfirm: number
+    name: string
+    network: string
+    resetAddressStatus: boolean
+    specialTips: string
+    unLockConfirm: number
+    withdrawDesc: string
+    withdrawEnable: boolean
+    withdrawFee: number
+    withdrawIntegerMultiple: number
+    withdrawMax: number
+    withdrawMin: number
+    sameAddress: string
+  }
+  
+  export interface CoinInformation {
+    coin: string,
+    depositAllEnable: boolean,
+    free: number,
+    freeze: number,
+    ipoable: number,
+    ipoing: number,
+    isLegalMoney: boolean,
+    locked: number,
+    name: string,
+    networkList: NetworkInformation[]
+  }
+
   export interface DepositAddress {
     address: string
     tag: string
@@ -270,11 +305,11 @@ declare module 'binance-api-node' {
   export type CancelOrderOptions =
     | { symbol: string; orderId: number; useServerTime?: boolean; newClientOrderId?: string }
     | {
-        symbol: string
-        origClientOrderId: string
-        useServerTime?: boolean
-        newClientOrderId?: string
-      }
+      symbol: string
+      origClientOrderId: string
+      useServerTime?: boolean
+      newClientOrderId?: string
+    }
 
   export type GetOrderOcoOptions =
     | { symbol: string; orderListId: number; useServerTime?: boolean }
@@ -283,11 +318,11 @@ declare module 'binance-api-node' {
   export type CancelOrderOcoOptions =
     | { symbol: string; orderListId: number; useServerTime?: boolean; newClientOrderId?: string }
     | {
-        symbol: string
-        listClientOrderId: string
-        useServerTime?: boolean
-        newClientOrderId?: string
-      }
+      symbol: string
+      listClientOrderId: string
+      useServerTime?: boolean
+      newClientOrderId?: string
+    }
 
   export type cancelOpenOrdersOptions = {
     symbol: string
@@ -485,7 +520,8 @@ declare module 'binance-api-node' {
       limit?: number
       fromId?: number
     }): Promise<TradeResult[]>
-    depositAddress(options: { coin: string }): Promise<DepositAddress>
+    capitalConfigs(options?: { recvWindow?: number }): Promise<CoinInformation[]>;
+    depositAddress(options: { coin: string, network?: string, recvWindow?: number }): Promise<DepositAddress>
     withdraw(options: {
       coin: string
       network?: string
