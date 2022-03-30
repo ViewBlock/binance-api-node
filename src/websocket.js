@@ -517,24 +517,21 @@ const userTransforms = {
 
 const futuresUserTransforms = {
   // https://binance-docs.github.io/apidocs/futures/en/#event-margin-call
-  MARGIN_CALL: m => ({
-    eventTime: m.E,
-    crossWalletBalance: m.cw,
-    eventType: 'MARGIN_CALL',
-    positions: m.p.reduce((out, cur) => {
-      out[cur.a] = {
-        symbol: cur.s,
-        positionSide: cur.ps,
-        positionAmount: cur.pa,
-        marginType: cur.mt,
-        isolatedWallet: cur.iw,
-        markPrice: cur.mp,
-        unrealizedPnL: cur.up,
-        maintenanceMarginRequired: cur.mm,
-      }
-      return out
-    }, {}),
-  }),
+	MARGIN_CALL: m => ({
+		eventTime: m.E,
+		crossWalletBalance: m.cw,
+		eventType: 'MARGIN_CALL',
+		positions: m.p.map((cur) => ({
+			symbol: cur.s,
+			positionSide: cur.ps,
+			positionAmount: cur.pa,
+			marginType: cur.mt,
+			isolatedWallet: cur.iw,
+			markPrice: cur.mp,
+			unrealizedPnL: cur.up,
+			maintenanceMarginRequired: cur.mm,
+		})),
+	}),
   // https://binance-docs.github.io/apidocs/futures/en/#event-balance-and-position-update
   ACCOUNT_UPDATE: m => ({
     eventTime: m.E,
