@@ -9,7 +9,7 @@ export default (url, opts) => {
     maxReconnectionDelay: 10e3,
     maxRetries: Infinity,
     minReconnectionDelay: 4e3,
-    ...opts
+    ...opts,
   })
 
   // TODO Maybe we have to pass the proxy to this line
