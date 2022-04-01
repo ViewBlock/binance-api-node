@@ -185,17 +185,17 @@ declare module 'binance-api-node' {
     withdrawMin: number
     sameAddress: string
   }
-  
+
   export interface CoinInformation {
-    coin: string,
-    depositAllEnable: boolean,
-    free: number,
-    freeze: number,
-    ipoable: number,
-    ipoing: number,
-    isLegalMoney: boolean,
-    locked: number,
-    name: string,
+    coin: string
+    depositAllEnable: boolean
+    free: number
+    freeze: number
+    ipoable: number
+    ipoing: number
+    isLegalMoney: boolean
+    locked: number
+    name: string
     networkList: NetworkInformation[]
   }
 
@@ -305,11 +305,11 @@ declare module 'binance-api-node' {
   export type CancelOrderOptions =
     | { symbol: string; orderId: number; useServerTime?: boolean; newClientOrderId?: string }
     | {
-      symbol: string
-      origClientOrderId: string
-      useServerTime?: boolean
-      newClientOrderId?: string
-    }
+        symbol: string
+        origClientOrderId: string
+        useServerTime?: boolean
+        newClientOrderId?: string
+      }
 
   export type GetOrderOcoOptions =
     | { symbol: string; orderListId: number; useServerTime?: boolean }
@@ -318,11 +318,11 @@ declare module 'binance-api-node' {
   export type CancelOrderOcoOptions =
     | { symbol: string; orderListId: number; useServerTime?: boolean; newClientOrderId?: string }
     | {
-      symbol: string
-      listClientOrderId: string
-      useServerTime?: boolean
-      newClientOrderId?: string
-    }
+        symbol: string
+        listClientOrderId: string
+        useServerTime?: boolean
+        newClientOrderId?: string
+      }
 
   export type cancelOpenOrdersOptions = {
     symbol: string
@@ -520,8 +520,12 @@ declare module 'binance-api-node' {
       limit?: number
       fromId?: number
     }): Promise<TradeResult[]>
-    capitalConfigs(options?: { recvWindow?: number }): Promise<CoinInformation[]>;
-    depositAddress(options: { coin: string, network?: string, recvWindow?: number }): Promise<DepositAddress>
+    capitalConfigs(options?: { recvWindow?: number }): Promise<CoinInformation[]>
+    depositAddress(options: {
+      coin: string
+      network?: string
+      recvWindow?: number
+    }): Promise<DepositAddress>
     withdraw(options: {
       coin: string
       network?: string
@@ -1419,23 +1423,12 @@ declare module 'binance-api-node' {
     | 'outboundAccountPosition'
     | 'executionReport'
     | 'ACCOUNT_UPDATE'
+    | 'ORDER_TRADE_UPDATE'
     | 'MARGIN_CALL'
     | 'ACCOUNT_CONFIG_UPDATE'
 
-  export const enum EventType {
-    ACCOUNT = 'account',
-    BALANCE_UPDATE = 'balanceUpdate',
-    OUTBOUND_ACCOUNT_POSITION = 'outboundAccountPosition',
-    EXECUTION_REPORT = 'executionReport',
-    ACCOUNT_UPDATE = 'ACCOUNT_UPDATE',
-    ORDER_TRADE_UPDATE = 'ORDER_TRADE_UPDATE',
-
-    MARGIN_CALL = 'MARGIN_CALL',
-    ACCOUNT_CONFIG_UPDATE = 'ACCOUNT_CONFIG_UPDATE',
-  }
-
   export interface MarginCall {
-    eventType: EventType.MARGIN_CALL
+    eventType: 'MARGIN_CALL'
     eventTime: number
     crossWalletBalance: string
 
@@ -1461,7 +1454,7 @@ declare module 'binance-api-node' {
     canWithdraw: boolean
     canDeposit: boolean
     lastAccountUpdate: number
-    eventType: EventType.ACCOUNT
+    eventType: 'account'
     eventTime: number
   }
 
@@ -1470,13 +1463,13 @@ declare module 'binance-api-node' {
     balanceDelta: string
     clearTime: number
     eventTime: number
-    eventType: EventType.BALANCE_UPDATE
+    eventType: 'balanceUpdate'
   }
 
   export interface OutboundAccountPosition {
     balances: AssetBalance[]
     eventTime: number
-    eventType: EventType.OUTBOUND_ACCOUNT_POSITION
+    eventType: 'outboundAccountPosition'
     lastAccountUpdate: number
   }
 
@@ -1485,7 +1478,7 @@ declare module 'binance-api-node' {
     commissionAsset: string | null // Commission asset
     creationTime: number // Order creation time
     eventTime: number
-    eventType: EventType.EXECUTION_REPORT
+    eventType: 'executionReport'
     executionType: ExecutionType_LT // Current execution type
     icebergQuantity: string // Iceberg quantity
     isBuyerMaker: boolean // Is this trade the maker side?
@@ -1550,7 +1543,7 @@ declare module 'binance-api-node' {
 
   export interface AccountUpdate {
     eventTime: number
-    eventType: EventType.ACCOUNT_UPDATE
+    eventType: 'ACCOUNT_UPDATE'
     transactionTime: number
     eventReasonType: EventReasonType
     balances: Balance[]
@@ -1558,8 +1551,8 @@ declare module 'binance-api-node' {
   }
 
   export interface AccountConfigUpdateBase {
-    eventTime: string
-    eventType: EventType.ACCOUNT_CONFIG_UPDATE
+    eventTime: number
+    eventType: 'ACCOUNT_CONFIG_UPDATE'
     transactionTime: number
     type: 'ACCOUNT_CONFIG' | 'MULTI_ASSETS'
   }
@@ -1578,7 +1571,7 @@ declare module 'binance-api-node' {
   export type AccountConfigUpdate = AccountConfigUpdateConfig | AccountConfigUpdateMultiAssets
 
   export interface OrderUpdate {
-    eventType: EventType.ORDER_TRADE_UPDATE
+    eventType: 'ORDER_TRADE_UPDATE'
     eventTime: number
     transactionTime: number
     symbol: string
