@@ -13,7 +13,10 @@
     "test": "ava --timeout=10s -v",
     "cover": "nyc ava",
     "report": "yarn cover && nyc report --reporter=text-lcov | coveralls",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "prettier": "prettier --write '{src,test}/**/*.{ts,js}'",
+    "prettier:check": "prettier -l '{src,test}/**/*.{ts,js}'",
+    "ci": "yarn lint && yarn prettier:check && yarn test"
   },
   "dependencies": {
     "https-proxy-agent": "^5.0.0",
