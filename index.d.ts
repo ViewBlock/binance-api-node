@@ -229,7 +229,7 @@ declare module 'binance-api-node' {
       addressTag?: string
       transferType?: number
       confirmTimes?: string
-    }[]
+    }
   }
 
   export type WithdrawStatus_LT = 0 | 1 | 2 | 3 | 4 | 5 | 6
@@ -257,7 +257,7 @@ declare module 'binance-api-node' {
       network: string
       transferType?: number
       withdrawOrderId?: string
-    }[]
+    }
   }
 
   export interface AssetDetail {
