@@ -552,12 +552,13 @@ declare module 'binance-api-node' {
       limit?: number
     }): Promise<WithdrawHistoryResponse>
     depositHistory(options: {
-      coin: string
+      coin?: string
       status?: number
       startTime?: number
       endTime?: number
       offset?: number
       limit?: number
+      recvWindow?: number
     }): Promise<DepositHistoryResponse>
     universalTransfer(options: UniversalTransfer): Promise<{ tranId: number }>
     universalTransferHistory(
