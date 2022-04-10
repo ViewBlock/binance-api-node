@@ -636,7 +636,7 @@ test('[FUTURES-REST] markPrice', async t => {
   checkFields(t, res[0], ['symbol', 'markPrice', 'lastFundingRate', 'nextFundingTime', 'time'])
 })
 
-test('[FUTURES-REST] allForceOrders', async t => {
+test.skip('[FUTURES-REST] allForceOrders', async t => {
   const res = await client.futuresAllForceOrders()
   t.truthy(Array.isArray(res))
   t.truthy(res.length === 100)
