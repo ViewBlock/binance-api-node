@@ -523,7 +523,6 @@ const futuresUserTransforms = {
       eventType: 'USER_DATA_STREAM_EXPIRED'
     };
   },
-  
   // https://binance-docs.github.io/apidocs/futures/en/#event-margin-call
   MARGIN_CALL: m => ({
     eventTime: m.E,
