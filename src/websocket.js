@@ -516,6 +516,13 @@ const userTransforms = {
 }
 
 const futuresUserTransforms = {
+  // https://binance-docs.github.io/apidocs/futures/en/#close-user-data-stream-user_stream
+  listenKeyExpired: function USER_DATA_STREAM_EXPIRED(m) {
+    return {
+      eventTime: m.E,
+      eventType: 'USER_DATA_STREAM_EXPIRED'
+    };
+  },
   // https://binance-docs.github.io/apidocs/futures/en/#event-margin-call
   MARGIN_CALL: m => ({
     eventTime: m.E,
