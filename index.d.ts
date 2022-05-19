@@ -1744,7 +1744,7 @@ declare module 'binance-api-node' {
     updateTime: number
   }
 
-  export interface QueryFuturesOrderResult {
+  export interface QueryFuturesOrderResultBase {
     avgPrice: string
     clientOrderId: string
     cumQuote: string
@@ -1756,18 +1756,28 @@ declare module 'binance-api-node' {
     side: OrderSide_LT
     positionSide: PositionSide_LT
     status: OrderStatus_LT
-    stopPrice: string
 		reduceOnly: boolean
     closePosition: boolean
     symbol: string
     time: number
     timeInForce: TimeInForce_LT
     type: FuturesOrderType_LT
-    activatePrice: string
     priceRate: string
     updateTime: number
     workingType: WorkingType_LT
-  }
+	}
+
+	export interface QueryFuturesOrderResultOthers extends QueryFuturesOrderResultBase {
+		stopPrice: string
+	}
+
+	export interface QueryFuturesOrderResultTrailingStop extends QueryFuturesOrderResultBase {
+		type: "TRAILING_STOP_MARKET"
+		activatePrice: string
+		priceRate: string
+	}
+
+	export type QueryFuturesOrderResult = QueryFuturesOrderResultOthers | QueryFuturesOrderResultTrailingStop
 
   export interface QueryOrderOcoResult {
     orderListId: number
