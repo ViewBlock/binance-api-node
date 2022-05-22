@@ -625,7 +625,7 @@ declare module 'binance-api-node' {
     futuresOpenOrders(options: {
       symbol?: string
       useServerTime?: boolean
-    }): Promise<QueryOrderResult[]>
+    }): Promise<QueryFuturesOrderResult[]>
     futuresPositionRisk(options?: {
       symbol?: string
       recvWindow?: number
@@ -1020,25 +1020,89 @@ declare module 'binance-api-node' {
     bids: Bid[]
   }
 
-  export interface NewFuturesOrder {
+  interface NewFuturesOrderBase {
     symbol: string
     side: OrderSide_LT
+    // Default BOTH for One-way Mode ; LONG or SHORT for Hedge Mode. It must be sent in Hedge Mode.
     positionSide?: PositionSide_LT
-    type: OrderType_LT
-    quantity?: string
-    reduceOnly?: 'true' | 'false'
-    price?: number
+    type: FuturesOrderType_LT
     timeInForce?: TimeInForce_LT
+    // "true" or "false". default "false". Cannot be sent in Hedge Mode; cannot be sent with closePosition=true
+    reduceOnly?: 'true' | 'false'
+    // A unique id among open orders. Automatically generated if not sent. Can only be string following the rule: ^[\.A-Z\:/a-z0-9_-]{1,36}$
     newClientOrderId?: string
-    stopPrice?: number
-    closePosition?: 'true' | 'false'
-    activationPrice?: number
-    callbackRate?: number
+    // stopPrice triggered by: "MARK_PRICE", "CONTRACT_PRICE". Default "CONTRACT_PRICE"
     workingType?: WorkingType_LT
+    // "ACK", "RESULT", default "ACK"
     newOrderRespType?: NewOrderRespType_LT
     recvWindow?: number
     timestamp?: number
   }
+
+  export interface LimitNewFuturesOrder extends NewFuturesOrderBase {
+    type: 'LIMIT'
+    timeInForce: TimeInForce_LT
+    quantity: string
+    price: string
+  }
+
+  export interface MarketNewFuturesOrder extends NewFuturesOrderBase {
+    type: 'MARKET'
+    quantity: string
+  }
+
+  export interface StopNewFuturesOrder extends NewFuturesOrderBase {
+    type: 'STOP'
+    quantity: string
+    price: string
+    stopPrice: string
+    // "TRUE" or "FALSE", default "FALSE". Used with STOP/STOP_MARKET or TAKE_PROFIT/TAKE_PROFIT_MARKET orders.
+    priceProtect?: 'TRUE' | 'FALSE'
+  }
+
+  export interface TakeProfitNewFuturesOrder extends NewFuturesOrderBase {
+    type: 'TAKE_PROFIT'
+    quantity: string
+    price: string
+    stopPrice: string
+  }
+
+  export interface StopMarketNewFuturesOrder extends NewFuturesOrderBase {
+    type: 'STOP_MARKET'
+    stopPrice: string
+    // true, false；Close-All，used with STOP_MARKET or TAKE_PROFIT_MARKET.
+    closePosition?: 'true' | 'false'
+    // "TRUE" or "FALSE", default "FALSE". Used with STOP/STOP_MARKET or TAKE_PROFIT/TAKE_PROFIT_MARKET orders.
+    priceProtect?: 'TRUE' | 'FALSE'
+    quantity?: string
+  }
+
+  export interface TakeProfitMarketNewFuturesOrder extends NewFuturesOrderBase {
+    type: 'TAKE_PROFIT_MARKET'
+    stopPrice: string
+    // true, false；Close-All，used with STOP_MARKET or TAKE_PROFIT_MARKET.
+    closePosition?: 'true' | 'false'
+    // "TRUE" or "FALSE", default "FALSE". Used with STOP/STOP_MARKET or TAKE_PROFIT/TAKE_PROFIT_MARKET orders.
+    priceProtect?: 'TRUE' | 'FALSE'
+    quantity?: string
+  }
+
+  export interface TrailingStopMarketNewFuturesOrder extends NewFuturesOrderBase {
+    type: 'TRAILING_STOP_MARKET'
+    // default as the latest price(supporting different workingType)
+    activationPrice?: string
+    // min 0.1, max 5 where 1 for 1%
+    callbackRate?: string
+  }
+
+  export type NewFuturesOrder =
+    | LimitNewFuturesOrder
+    | MarketNewFuturesOrder
+    | StopNewFuturesOrder
+    | TakeProfitNewFuturesOrder
+    | TrailingStopMarketNewFuturesOrder
+    | StopMarketNewFuturesOrder
+    | TakeProfitMarketNewFuturesOrder
 
   export interface NewOcoOrder {
     symbol: string
@@ -1163,8 +1227,8 @@ declare module 'binance-api-node' {
     closePosition: boolean
     symbol: string
     timeInForce: TimeInForce_LT
-    type: OrderType_LT
-    origType: OrderType_LT
+    type: FuturesOrderType_LT
+    origType: FuturesOrderType_LT
     activatePrice: string
     priceRate: string
     updateTime: number
@@ -1239,6 +1303,15 @@ declare module 'binance-api-node' {
     | 'STOP_MARKET'
     | 'STOP_LOSS_LIMIT'
     | 'TAKE_PROFIT_LIMIT'
+    | 'TAKE_PROFIT_MARKET'
+    | 'TRAILING_STOP_MARKET'
+
+  export type FuturesOrderType_LT =
+    | 'LIMIT'
+    | 'MARKET'
+    | 'STOP'
+    | 'TAKE_PROFIT'
+    | 'STOP_MARKET'
     | 'TAKE_PROFIT_MARKET'
     | 'TRAILING_STOP_MARKET'
 
@@ -1492,7 +1565,7 @@ declare module 'binance-api-node' {
     orderRejectReason: OrderRejectReason // Order reject reason; will be an error code.
     orderStatus: OrderStatus_LT // Current order status
     orderTime: number // Transaction time
-    orderType: OrderType_LT // Order type
+    orderType: FuturesOrderType_LT // Order type
     originalClientOrderId: string | null // Original client order ID; This is the ID of the order being canceled
     price: string // Order price
     priceLastTrade: string // Last executed price
@@ -1578,7 +1651,7 @@ declare module 'binance-api-node' {
     symbol: string
     clientOrderId: string
     side: OrderSide
-    orderType: OrderType
+    orderType: FuturesOrderType_LT
     timeInForce: TimeInForce
     quantity: string
     price: string
@@ -1599,7 +1672,7 @@ declare module 'binance-api-node' {
     isMaker: boolean
     isReduceOnly: boolean
     workingType: WorkingType
-    originalOrderType: OrderType
+    originalOrderType: FuturesOrderType_LT
     positionSide: PositionSide
     closePosition: boolean
     activationPrice: string
@@ -1671,29 +1744,42 @@ declare module 'binance-api-node' {
     updateTime: number
   }
 
-  export interface QueryFuturesOrderResult {
+  export interface QueryFuturesOrderResultBase {
     avgPrice: string
     clientOrderId: string
     cumQuote: string
     executedQty: string
     orderId: string
     origQty: string
-    origType: OrderType_LT
+    origType: FuturesOrderType_LT
     price: string
     side: OrderSide_LT
     positionSide: PositionSide_LT
     status: OrderStatus_LT
-    stopPrice: string
+    reduceOnly: boolean
     closePosition: boolean
     symbol: string
     time: number
     timeInForce: TimeInForce_LT
-    type: OrderType_LT
-    activatePrice: string
+    type: FuturesOrderType_LT
     priceRate: string
     updateTime: number
     workingType: WorkingType_LT
   }
+
+  export interface QueryFuturesOrderResultOthers extends QueryFuturesOrderResultBase {
+    stopPrice: string
+  }
+
+  export interface QueryFuturesOrderResultTrailingStop extends QueryFuturesOrderResultBase {
+    type: 'TRAILING_STOP_MARKET'
+    activatePrice: string
+    priceRate: string
+  }
+
+  export type QueryFuturesOrderResult =
+    | QueryFuturesOrderResultOthers
+    | QueryFuturesOrderResultTrailingStop
 
   export interface QueryOrderOcoResult {
     orderListId: number
@@ -2123,7 +2209,7 @@ declare module 'binance-api-node' {
     executedQty: string
     orderId: number
     origQty: string
-    origType: OrderType_LT
+    origType: FuturesOrderType_LT
     price: string
     reduceOnly: boolean
     side: OrderSide_LT
