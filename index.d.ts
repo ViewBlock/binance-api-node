@@ -566,7 +566,7 @@ declare module 'binance-api-node' {
     ): Promise<UniversalTransferHistoryResponse>
     futuresPing(): Promise<boolean>
     futuresTime(): Promise<number>
-    futuresExchangeInfo(): Promise<ExchangeInfo>
+    futuresExchangeInfo(): Promise<ExchangeInfo<FuturesOrderType_LT>>
     futuresBook(options: { symbol: string; limit?: number }): Promise<OrderBook>
     futuresCandles(options: CandlesOptions): Promise<CandleChartResult[]>
     futuresMarkPriceCandles(options: CandlesOptions): Promise<CandleChartResult[]>
@@ -986,7 +986,7 @@ declare module 'binance-api-node' {
     | SymbolMaxNumOrdersFilter
     | SymbolMaxAlgoOrdersFilter
 
-  export interface Symbol {
+  export interface Symbol<T = OrderType_LT> {
     baseAsset: string
     baseAssetPrecision: number
     baseCommissionPrecision: number
@@ -995,7 +995,7 @@ declare module 'binance-api-node' {
     isMarginTradingAllowed: boolean
     isSpotTradingAllowed: boolean
     ocoAllowed: boolean
-    orderTypes: OrderType_LT[]
+    orderTypes: T[]
     permissions: TradingType_LT[]
     quoteAsset: string
     quoteAssetPrecision: number
@@ -1006,12 +1006,12 @@ declare module 'binance-api-node' {
     symbol: string
   }
 
-  export interface ExchangeInfo {
+  export interface ExchangeInfo<T = OrderType_LT> {
     timezone: string
     serverTime: number
     rateLimits: ExchangeInfoRateLimit[]
     exchangeFilters: ExchangeFilter[]
-    symbols: Symbol[]
+    symbols: Symbol<T>[]
   }
 
   export interface OrderBook {
