@@ -481,8 +481,12 @@ declare module 'binance-api-node' {
     ws: WebSocket
     myTrades(options: {
       symbol: string
-      limit?: number
+      orderId?: number
+      startTime?: number
+      endTime?: number
       fromId?: number
+      limit?: number
+      recvWindow?: number
       useServerTime?: boolean
     }): Promise<MyTrade[]>
     getOrder(options: GetOrderOptions): Promise<QueryOrderResult>
