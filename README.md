@@ -1550,7 +1550,7 @@ console.log(
 | Param      | Type   | Required | Default | Description                                             |
 | ---------- | ------ | -------- | ------- | ------------------------------------------------------- |
 | symbol     | String | true     |
-| limit      | Number | false    | `500`   | Max `500`                                               |
+| limit      | Number | false    | `500`   | Max `1000`                                              |
 | fromId     | Number | false    |         | TradeId to fetch from. Default gets most recent trades. |
 | orderId    | Number | false    |         | This can only be used in combination with symbol.       |
 | startTime  | Number | false    |         |                                                         |
