@@ -1552,7 +1552,10 @@ console.log(
 | symbol     | String | true     |
 | limit      | Number | false    | `500`   | Max `500`                                               |
 | fromId     | Number | false    |         | TradeId to fetch from. Default gets most recent trades. |
-| recvWindow | Number | false    |
+| orderId    | Number | false    |         | This can only be used in combination with symbol.       |
+| startTime  | Number | false    |         |                                                         |
+| endTime    | Number | false    |         |                                                         |
+| recvWindow | Number | false    | `5000`  | The value cannot be greater than 60000.                 |
 
 <details>
 <summary>Output</summary>
