@@ -1555,7 +1555,7 @@ console.log(
 | orderId    | Number | false    |         | This can only be used in combination with symbol.       |
 | startTime  | Number | false    |         |                                                         |
 | endTime    | Number | false    |         |                                                         |
-| recvWindow | Number | false    | `5000`  | The value cannot be greater than 60000.                 |
+| recvWindow | Number | false    | `5000`  | The value cannot be greater than `60000`.               |
 
 <details>
 <summary>Output</summary>
