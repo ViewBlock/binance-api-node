@@ -1,6 +1,6 @@
 // tslint:disable:interface-name
 declare module 'binance-api-node' {
-  export default function (options?: {
+  export default function(options?: {
     apiKey?: string
     apiSecret?: string
     getTime?: () => number | Promise<number>
@@ -1768,11 +1768,12 @@ declare module 'binance-api-node' {
     type: FuturesOrderType_LT
     priceRate: string
     updateTime: number
+    stopPrice: string
     workingType: WorkingType_LT
   }
 
   export interface QueryFuturesOrderResultOthers extends QueryFuturesOrderResultBase {
-    stopPrice: string
+    type: Exclude<FuturesOrderType_LT, 'TRAILING_STOP_MARKET'>
   }
 
   export interface QueryFuturesOrderResultTrailingStop extends QueryFuturesOrderResultBase {
