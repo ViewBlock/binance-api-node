@@ -966,9 +966,14 @@ declare module 'binance-api-node' {
     stepSize: string
   }
 
-  export interface SymbolMinNotionalFilter {
+  export interface SymbolMinNotionalSpotFilter {
     filterType: SymbolFilterType.MIN_NOTIONAL
     minNotional: string
+  }
+  
+  export interface SymbolMinNotionalFuturesFilter {
+    filterType: SymbolFilterType.MIN_NOTIONAL
+    notional: string
   }
 
   export interface SymbolMaxNumOrdersFilter {
@@ -986,7 +991,8 @@ declare module 'binance-api-node' {
     | SymbolPercentPriceFilter
     | SymbolLotSizeFilter
     | SymbolMarketLotSizeFilter
-    | SymbolMinNotionalFilter
+    | SymbolMinNotionalSpotFilter
+    | SymbolMinNotionalFuturesFilter
     | SymbolMaxNumOrdersFilter
     | SymbolMaxAlgoOrdersFilter
 
