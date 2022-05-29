@@ -116,6 +116,8 @@ Following examples will use the `await` form, which requires some configuration 
   - [marginGetOrder](#marginGetOrder)
   - [disableMarginAccount](#disableMarginAccount)
   - [enableMarginAccount](#enableMarginAccount)
+- [Portfolio Margin](#portfolio-margin)
+  - [getPortfolioMarginAccountInfo](#getPortfolioMarginAccountInfo)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
   - [futuresGetOrder](#futuresGetOrder)
   - [futuresAllOrders](#futuresAllOrders)
@@ -2937,6 +2939,31 @@ console.log(await client.marginGetOrder({
 }
 ```
 
+</details>
+
+### Portfolio Margin Endpoints
+
+Only Portfolio Margin Account is accessible to these endpoints.
+
+#### getPortfolioMarginAccountInfo
+
+Get a Portfolio Margin Account Info.
+
+```js
+console.log(await client.getPortfolioMarginAccountInfo())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "uniMMR": "1.87987800",        // Portfolio margin account maintenance margin rate
+    "accountEquity": "122607.35137903",   // Account equity, unit：USD
+    "accountMaintMargin": "23.72469206", // Portfolio margin account maintenance margin, unit：USD
+    "accountStatus": "NORMAL"   // Portfolio margin account status:"NORMAL", "MARGIN_CALL", "SUPPLY_MARGIN", "REDUCE_ONLY", "ACTIVE_LIQUIDATION", "FORCE_LIQUIDATION", "BANKRUPTED"
+}
+```
 </details>
 
 ### Futures Authenticated REST endpoints

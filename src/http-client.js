@@ -416,6 +416,7 @@ export default opts => {
     disableMarginAccount: payload =>
       privCall('/sapi/v1/margin/isolated/account', payload, 'DELETE'),
     enableMarginAccount: payload => privCall('/sapi/v1/margin/isolated/account', payload, 'POST'),
+    getPortfolioMarginAccountInfo: () => privCall('/sapi/v1/portfolio/account'),
 
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),

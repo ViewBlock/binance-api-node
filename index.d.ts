@@ -716,6 +716,12 @@ declare module 'binance-api-node' {
     }): Promise<MyTrade[]>
     disableMarginAccount(options: { symbol: string }): Promise<{ success: boolean; symbol: string }>
     enableMarginAccount(options: { symbol: string }): Promise<{ success: boolean; symbol: string }>
+    getPortfolioMarginAccountInfo(): Promise<{
+      uniMMR: string
+      accountEquity: string
+      accountMaintMargin: string
+      accountStatus: string
+    }>
   }
 
   export interface HttpError extends Error {
