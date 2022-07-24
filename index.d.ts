@@ -630,6 +630,14 @@ declare module 'binance-api-node' {
       symbol?: string
       useServerTime?: boolean
     }): Promise<QueryFuturesOrderResult[]>
+    futuresAllOrders(options: {
+      symbol: string
+      orderId?: number
+      startTime?: number
+      endTime?: number
+      limit?: number
+      recvWindow?: number
+    }): Promise<QueryFuturesOrderResult>
     futuresPositionRisk(options?: {
       symbol?: string
       recvWindow?: number
