@@ -607,7 +607,11 @@ declare module 'binance-api-node' {
       limit?: number
     }): Promise<FundingRateResult[]>
     futuresOrder(options: NewFuturesOrder): Promise<FuturesOrder>
-
+    futuresBatchOrders(options: {
+      batchOrders: NewFuturesOrder[]
+      recvWindow?: number
+      timestamp?: number
+    }): Promise<FuturesOrder[]>
     getMultiAssetsMargin(): Promise<MultiAssetsMargin>
     setMultiAssetsMargin(options: MultiAssetsMargin): Promise<MultiAssetsMargin>
 
@@ -619,6 +623,13 @@ declare module 'binance-api-node' {
     futuresCancelAllOpenOrders(options: {
       symbol: string
     }): Promise<FuturesCancelAllOpenOrdersResult>
+    futuresCancelBatchOrders(options: {
+      symbol: string
+      orderIdList?: number[]
+      origClientOrderIdList?: string[]
+      recvWindow?: number
+      timestamp?: number
+    })
     futuresGetOrder(options: {
       symbol: string
       orderId?: number
