@@ -625,8 +625,8 @@ declare module 'binance-api-node' {
     }): Promise<FuturesCancelAllOpenOrdersResult>
     futuresCancelBatchOrders(options: {
       symbol: string
-      orderIdList?: number[]
-      origClientOrderIdList?: string[]
+      orderIdList?: string
+      origClientOrderIdList?: string
       recvWindow?: number
       timestamp?: number
     })
