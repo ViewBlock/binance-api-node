@@ -307,7 +307,7 @@ const allMiniTickers = (cb, transform = true) => {
   return options => w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
 }
 
-const customSubStream = (payload, cb, variator) => {
+const customSubStream = (payload, cb, variator) => new Promise((rs, rj) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(sub => {
     const w = openWebSocket(`${variator === 'futures' ? endpoints.futures : endpoints.base}/${sub}`)
 
@@ -315,13 +315,17 @@ const customSubStream = (payload, cb, variator) => {
       const data = JSONbig.parse(msg.data)
       cb(data)
     }
+    
+    w.onconnection = () => {
+      rs()
+    }
 
     return w
   })
 
   return options =>
     cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
-}
+})
 
 const aggTradesTransform = m => ({
   eventType: m.e,
