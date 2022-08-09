@@ -312,8 +312,8 @@ declare module 'binance-api-node' {
       }
 
   export type GetOrderOcoOptions =
-    | { symbol: string; orderListId: number; useServerTime?: boolean }
-    | { symbol: string; listClientOrderId: string; useServerTime?: boolean }
+    | { orderListId: number; useServerTime?: boolean }
+    | { listClientOrderId: string; useServerTime?: boolean }
 
   export type CancelOrderOcoOptions =
     | { symbol: string; orderListId: number; useServerTime?: boolean; newClientOrderId?: string }
