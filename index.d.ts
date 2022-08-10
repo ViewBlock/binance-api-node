@@ -206,7 +206,7 @@ declare module 'binance-api-node' {
     url: string
   }
 
-  export interface WithrawResponse {
+  export interface WithdrawResponse {
     id: string
   }
 
@@ -537,7 +537,7 @@ declare module 'binance-api-node' {
       amount: number
       name?: string
       transactionFeeFlag?: boolean
-    }): Promise<WithrawResponse>
+    }): Promise<WithdrawResponse>
     assetDetail(): Promise<AssetDetail>
     getBnbBurn(): Promise<BNBBurn>
     setBnbBurn(opts: SetBNBBurnOptions): Promise<BNBBurn>
