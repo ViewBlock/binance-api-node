@@ -119,8 +119,9 @@ Following examples will use the `await` form, which requires some configuration 
 - [Portfolio Margin](#portfolio-margin)
   - [getPortfolioMarginAccountInfo](#getPortfolioMarginAccountInfo)
 - [Futures Authenticated REST Endpoints](#futures-authenticated-rest-endpoints)
+  - [futuresBatchOrders](#futuresBatchOrders)
   - [futuresGetOrder](#futuresGetOrder)
-  - [futuresAllOrders](#futuresAllOrders)
+  - [futuresCancelBatchOrders](#futuresCancelBatchOrders)
   - [futuresAccountBalance](#futuresAccountBalance)
   - [futuresUserTrades](#futuresUserTrades)
   - [futuresLeverageBracket](#futuresLeverageBracket)
@@ -3093,6 +3094,26 @@ console.log(
 ]
 ```
 </details>
+
+#### futuresBatchOrders
+
+Place multiple orders
+
+| Name                  | Type   | Mandatory | Description                                                                               |
+|-----------------------|--------|-----------|-------------------------------------------------------------------------------------------|
+| batchOrders           | LIST   | YES       | order list. Max 5 orders                                                                             |
+
+
+
+#### futuresCancelBatchOrders
+
+Cancel multiple orders
+
+| Name                  | Type   | Mandatory | Description                                                                               |
+|-----------------------|--------|-----------|-------------------------------------------------------------------------------------------|
+| symbol                | STRING | YES       | The pair name                                                                             |
+| orderIdList           | STRING | NO        | max length 10<br/>e.g. `'[1234567,2345678]'`                                                |
+| origClientOrderIdList | STRING | NO        | max length 10<br/> e.g. `'["my_id_1","my_id_2"]'`, encode the double quotes. No space after comma. |
 
 
 #### futuresLeverage
