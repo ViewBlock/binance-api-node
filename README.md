@@ -3095,6 +3095,16 @@ console.log(
 ```
 </details>
 
+#### futuresBatchOrders
+
+Place multiple orders
+
+| Name                  | Type   | Mandatory | Description                                                                               |
+|-----------------------|--------|-----------|-------------------------------------------------------------------------------------------|
+| batchOrders           | LIST   | YES       | order list. Max 5 orders                                                                             |
+
+
+
 #### futuresCancelBatchOrders
 
 Cancel multiple orders
