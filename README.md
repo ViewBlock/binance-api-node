@@ -137,6 +137,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [allTickers](#alltickers)
   - [miniTicker](#miniTicker)
   - [allMiniTickers](#allMiniTickers)
+  - [bookTicker](#bookTicker)
   - [candles](#candles-1)
   - [aggTrades](#aggtrades-1)
   - [trades](#trades-1)
@@ -3617,6 +3618,32 @@ client.ws.allMiniTickers(tickers => {
   console.log(tickers)
 })
 ```
+
+#### bookTicker
+
+Pushes any update to the best bid or ask's price or quantity in real-time for a specified symbol. Accepts a single symbol or an array of symbols.
+
+```js
+client.ws.bookTicker('BTCUSDT', ticker => {
+  console.log(ticker)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  updateId: 23099391508,
+  symbol: 'BTCUSDT',
+  bestBid: '21620.03000000',
+  bestBidQnt: '0.09918000',
+  bestAsk: '21621.65000000',
+  bestAskQnt: '0.06919000'
+}
+```
+
+</details>
 
 #### candles
 

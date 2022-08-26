@@ -176,6 +176,15 @@ const candles = (payload, interval, cb, transform = true, variator) => {
     cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
 }
 
+const bookTickerTransform = m => ({
+  updateId: m.u,
+  symbol: m.s,
+  bestBid: m.b,
+  bestBidQnt: m.B,
+  bestAsk: m.a,
+  bestAskQnt: m.A,
+})
+
 const miniTickerTransform = m => ({
   eventType: m.e,
   eventTime: m.E,
@@ -234,6 +243,24 @@ const futuresTickerTransform = m => ({
   lastTradeId: m.L,
   totalTrades: m.n,
 })
+
+const bookTicker = (payload, cb, transform = true, variator) => {
+  const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
+    const w = openWebSocket(
+      `${endpoints.base}/${symbol.toLowerCase()}@bookTicker`,
+    )
+
+    w.onmessage = msg => {
+      const obj = JSONbig.parse(msg.data)
+      cb( transform ? bookTickerTransform(obj) : obj )
+    }
+
+    return w
+  })
+
+  return options =>
+    cache.forEach(w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options }))
+}
 
 const ticker = (payload, cb, transform = true, variator) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
@@ -792,6 +819,7 @@ export default opts => {
     candles,
     trades,
     aggTrades,
+    bookTicker,
     ticker,
     allTickers,
     miniTicker,
