@@ -761,6 +761,7 @@ declare module 'binance-api-node' {
 
   export type UserDataStreamEvent =
     | OutboundAccountInfo
+    | ListStatus
     | ExecutionReport
     | BalanceUpdate
     | OutboundAccountPosition
@@ -1574,6 +1575,24 @@ declare module 'binance-api-node' {
     eventTime: number
     eventType: 'outboundAccountPosition'
     lastAccountUpdate: number
+  }
+
+  export interface ListStatus {
+    eventType: 'listStatus'
+    eventTime: number
+    symbol: string
+    orderListId: number
+    contingencyType: 'OCO' | string
+    listStatusType: ListStatusType_LT
+    listOrderStatus: ListOrderStatus_LT
+    listRejectReason: 'NONE' | string
+    listClientOrderId: string
+    transactionTime: number
+    orders: Array<{
+        symbol: string
+        orderId: number
+        clientOrderId: string
+    }>
   }
 
   export interface ExecutionReport {

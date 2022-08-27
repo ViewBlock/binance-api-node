@@ -584,6 +584,58 @@ test('[WS] userEvents', t => {
     })
   })({ data: JSON.stringify(tradePayload) })
 
+  const listStatusPayload = {
+    type: 'listStatus',
+    E: 1661588112531,
+    s: 'TWTUSDT',
+    g: 73129826,
+    c: 'OCO',
+    l: 'EXEC_STARTED',
+    L: 'EXECUTING',
+    r: 'NONE',
+    C: 'Y3ZgLMRPHZFNqEVSZwoJI7',
+    T: 1661588112530,
+    O: [
+      {
+        s: 'TWTUSDT',
+        i: 209259206,
+        c: 'electron_f675d1bdea454cd4afeac5664be',
+      },
+      {
+        s: 'TWTUSDT',
+        i: 209259207,
+        c: 'electron_38d852a65a89486c98e59879327',
+      },
+    ],
+  }
+
+  userEventHandler(res => {
+    t.deepEqual(res, {
+      eventType: 'listStatus',
+      eventTime: 1661588112531,
+      symbol: 'TWTUSDT',
+      orderListId: 73129826,
+      contingencyType: 'OCO',
+      listStatusType: 'EXEC_STARTED',
+      listOrderStatus: 'EXECUTING',
+      listRejectReason: 'NONE',
+      listClientOrderId: 'Y3ZgLMRPHZFNqEVSZwoJI7',
+      transactionTime: 1661588112530,
+      orders: [
+        {
+          symbol: 'TWTUSDT',
+          orderId: 209259206,
+          clientOrderId: 'electron_f675d1bdea454cd4afeac5664be',
+        },
+        {
+          symbol: 'TWTUSDT',
+          orderId: 209259207,
+          clientOrderId: 'electron_38d852a65a89486c98e59879327',
+        },
+      ],
+    })
+  })({ data: JSON.stringify(listStatusPayload) })
+
   const newEvent = { e: 'totallyNewEvent', yolo: 42 }
 
   userEventHandler(res => {
@@ -717,27 +769,27 @@ test('[FUTURES-REST] prices', async t => {
 })
 
 test('[FUTURES-REST] allBookTickers', async t => {
-  const tickers = await client.futuresAllBookTickers()
-  t.truthy(tickers)
-  t.truthy(tickers.BTCUSDT)
+    const tickers = await client.futuresAllBookTickers()
+    t.truthy(tickers)
+    t.truthy(tickers.BTCUSDT)
 })
 
 test('[FUTURES-REST] aggTrades', async t => {
-  try {
-    await client.futuresAggTrades({})
-  } catch (e) {
-    t.is(e.message, 'Method aggTrades requires symbol parameter.')
-  }
+    try {
+        await client.futuresAggTrades({})
+    } catch (e) {
+        t.is(e.message, 'Method aggTrades requires symbol parameter.')
+    }
 
-  const trades = await client.futuresAggTrades({ symbol: 'BTCUSDT' })
-  t.truthy(trades.length)
+    const trades = await client.futuresAggTrades({symbol: 'BTCUSDT'})
+    t.truthy(trades.length)
 
-  const [trade] = trades
-  t.truthy(trade.aggId)
+    const [trade] = trades
+    t.truthy(trade.aggId)
 })
 
 test('[FUTURES-REST] fundingRate', async t => {
-  const fundingRate = await client.futuresFundingRate({ symbol: 'BTCUSDT' })
-  checkFields(t, fundingRate[0], ['symbol', 'fundingTime', 'fundingRate'])
-  t.is(fundingRate.length, 100)
+    const fundingRate = await client.futuresFundingRate({symbol: 'BTCUSDT'})
+    checkFields(t, fundingRate[0], ['symbol', 'fundingTime', 'fundingRate'])
+    t.is(fundingRate.length, 100)
 })
