@@ -245,7 +245,7 @@ const futuresTickerTransform = m => ({
   totalTrades: m.n,
 })
 
-const bookTicker = (payload, cb, transform = true, variator) => {
+const bookTicker = (payload, cb, transform = true) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
     const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@bookTicker`)
 
