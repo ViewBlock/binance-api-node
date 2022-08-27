@@ -585,7 +585,7 @@ test('[WS] userEvents', t => {
   })({ data: JSON.stringify(tradePayload) })
 
   const listStatusPayload = {
-    type: 'listStatus',
+    e: 'listStatus',
     E: 1661588112531,
     s: 'TWTUSDT',
     g: 73129826,

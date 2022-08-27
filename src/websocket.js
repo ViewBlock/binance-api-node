@@ -547,10 +547,10 @@ const userTransforms = {
     contingencyType: m.c,
     listStatusType: m.l,
     listOrderStatus: m.L,
-    listRejectReason: m.R,
+    listRejectReason: m.r,
     listClientOrderId: m.C,
     transactionTime: m.T,
-    orders: m.o.map(o => ({
+    orders: m.O.map(o => ({
       symbol: o.s,
       orderId: o.i,
       clientOrderId: o.c,
