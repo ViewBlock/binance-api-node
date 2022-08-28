@@ -10,6 +10,7 @@ const endpoints = {
 }
 
 const wsOptions = {}
+
 function openWebSocket(url) {
   return _openWebSocket(url, wsOptions)
 }
@@ -244,15 +245,13 @@ const futuresTickerTransform = m => ({
   totalTrades: m.n,
 })
 
-const bookTicker = (payload, cb, transform = true, variator) => {
+const bookTicker = (payload, cb, transform = true) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
-    const w = openWebSocket(
-      `${endpoints.base}/${symbol.toLowerCase()}@bookTicker`,
-    )
+    const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@bookTicker`)
 
     w.onmessage = msg => {
       const obj = JSONbig.parse(msg.data)
-      cb( transform ? bookTickerTransform(obj) : obj )
+      cb(transform ? bookTickerTransform(obj) : obj)
     }
 
     return w
@@ -539,6 +538,23 @@ const userTransforms = {
     orderListId: m.g,
     quoteOrderQuantity: m.Q,
     lastQuoteTransacted: m.Y,
+  }),
+  listStatus: m => ({
+    eventType: 'listStatus',
+    eventTime: m.E,
+    symbol: m.s,
+    orderListId: m.g,
+    contingencyType: m.c,
+    listStatusType: m.l,
+    listOrderStatus: m.L,
+    listRejectReason: m.r,
+    listClientOrderId: m.C,
+    transactionTime: m.T,
+    orders: m.O.map(o => ({
+      symbol: o.s,
+      orderId: o.i,
+      clientOrderId: o.c,
+    })),
   }),
 }
 
