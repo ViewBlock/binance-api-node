@@ -42,7 +42,7 @@ const responseHandler = res => {
     return
   }
 
-  const marketName = res.url.includes(FUTURES) ? 'futures' : 'spot'
+  const marketName = res.url.includes('future') ? 'futures' : 'spot'
 
   Object.keys(headersMapping).forEach(key => {
     const outKey = headersMapping[key]
