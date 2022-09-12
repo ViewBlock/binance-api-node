@@ -661,16 +661,17 @@ console.log(await client.futuresCandles({ symbol: 'BTCUSDT' }))
 ```js
 ;[
   {
-    openTime: 1508328900000,
-    open: '0.05655000',
-    high: '0.05656500',
-    low: '0.05613200',
-    close: '0.05632400',
-    volume: '68.88800000',
-    closeTime: 1508329199999,
-    quoteAssetVolume: '2.29500857',
-    trades: 85,
-    baseAssetVolume: '40.61900000',
+    openTime: 1658447880000,
+    open: '1575.39',
+    high: '1575.41',
+    low: '1574.29',
+    close: '1574.29',
+    volume: '1279.395',
+    closeTime: 1658447939999,
+    quoteVolume: '2014855.55100',
+    trades: 1851,
+    baseAssetVolume: '538.395',
+    quoteAssetVolume: '847942.46622'
   },
 ]
 ```
@@ -3961,19 +3962,23 @@ client.ws.futuresCandles('ETHBTC', '1m', candle => {
 ```js
 {
   eventType: 'kline',
-  eventTime: 1508613366276,
-  symbol: 'ETHBTC',
-  open: '0.04898000',
-  high: '0.04902700',
-  low: '0.04898000',
-  close: '0.04901900',
-  volume: '37.89600000',
-  trades: 30,
-  interval: '5m',
+  eventTime: 1658478068530,
+  symbol: 'ETHUSDT',
+  openTime: 1658478060000,
+  closeTime: 1658478119999,
+  firstTradeId: 1942710447,
+  lastTradeId: 1942711049,
+  open: '1609.30',
+  high: '1610.40',
+  low: '1609.30',
+  close: '1609.98',
+  volume: '528.586',
+  trades: 603,
+  interval: '1m',
   isFinal: false,
-  quoteVolume: '1.85728874',
-  buyVolume: '21.79900000',
-  quoteBuyVolume: '1.06838790'
+  quoteVolume: '850935.35644',
+  buyVolume: '327.156',
+  quoteBuyVolume: '526688.87706'
 }
 ```
 </details>

@@ -127,7 +127,7 @@ const candles = (payload, interval, cb, transform = true, variator) => {
       const obj = JSONbig.parse(msg.data)
       const { e: eventType, E: eventTime, s: symbol, k: tick } = obj
       const {
-        t: startTime,
+        t: openTime,
         T: closeTime,
         f: firstTradeId,
         L: lastTradeId,
@@ -150,7 +150,7 @@ const candles = (payload, interval, cb, transform = true, variator) => {
               eventType,
               eventTime,
               symbol,
-              startTime,
+              openTime,
               closeTime,
               firstTradeId,
               lastTradeId,

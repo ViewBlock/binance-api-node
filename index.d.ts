@@ -1923,8 +1923,8 @@ declare module 'binance-api-node' {
     closeTime: number
     quoteVolume: string
     trades: number
-    baseAssetVolume: string
-    quoteAssetVolume: string
+    buyVolume: string
+    quoteBuyVolume: string
   }
 
   export interface MarkPriceResult {
