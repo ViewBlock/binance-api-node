@@ -515,7 +515,7 @@ export default opts => {
         (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
       ),
     deliveryFundingRate: payload =>
-      checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
+      checkParams('fundingRate', payload, ['symbol']) && pubCall('/dapi/v1/fundingRate', payload),
 
     deliveryOrder: payload => order(privCall, payload, '/dapi/v1/order'),
     deliveryBatchOrders: payload => privCall('/dapi/v1/batchOrders', payload, 'POST'),
