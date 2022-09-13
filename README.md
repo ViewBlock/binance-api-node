@@ -69,6 +69,20 @@ Following examples will use the `await` form, which requires some configuration 
   - [futures allBookTickers](#futures-allbooktickers)
   - [futures markPrice](#futures-markPrice)
   - [futures allForceOrders](#futures-allForceOrders)
+- [Delivery Public REST Endpoints](#delivery-public-rest-endpoints)
+  - [delivery ping](#delivery-ping)
+  - [delivery time](#delivery-time)
+  - [delivery exchangeInfo](#delivery-exchangeinfo)
+  - [delivery book](#delivery-book)
+  - [delivery candles](#delivery-candles)
+  - [delivery aggTrades](#delivery-aggtrades)
+  - [delivery trades](#delivery-trades)
+  - [delivery dailyStats](#delivery-dailystats)
+  - [delivery avgPrice](#delivery-avgPrice)
+  - [delivery prices](#delivery-prices)
+  - [delivery allBookTickers](#delivery-allbooktickers)
+  - [delivery markPrice](#delivery-markPrice)
+  - [delivery allForceOrders](#delivery-allForceOrders)
 - [Authenticated REST Endpoints](#authenticated-rest-endpoints)
   - [order](#order)
   - [orderTest](#ordertest)
@@ -900,6 +914,354 @@ console.log(await client.futuresAllForceOrders())
     side: 'SELL', // DIRECTION
     time: 1568014460893,
   },
+]
+```
+
+</details>
+
+### Delivery Public REST Endpoints
+
+#### delivery ping
+
+Test connectivity to the API.
+
+```js
+console.log(await client.deliveryPing())
+```
+
+#### delivery time
+
+Test connectivity to the Rest API and get the current server time.
+
+```js
+console.log(await client.deliveryTime())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+1508478457643
+```
+
+</details>
+
+#### delivery exchangeInfo
+
+Get the current exchange trading rules and symbol information.
+
+```js
+console.log(await client.deliveryExchangeInfo())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  timezone: 'UTC',
+  serverTime: 1663099219744,
+  rateLimits: [
+    {
+      rateLimitType: 'REQUEST_WEIGHT',
+      interval: 'MINUTE',
+      intervalNum: 1,
+      limit: 2400
+    },
+    {
+      rateLimitType: 'ORDERS',
+      interval: 'MINUTE',
+      intervalNum: 1,
+      limit: 1200
+    }
+  ],
+  exchangeFilters: [],
+  symbols: [...]
+}
+```
+
+</details>
+
+#### delivery book
+
+Get the order book for a symbol.
+
+```js
+console.log(await client.deliveryBook({ symbol: 'TRXUSD_PERP' }))
+```
+
+| Param  | Type   | Required | Default |
+| ------ | ------ | -------- | ------- |
+| symbol | String | true     |
+| limit  | Number | false    | `500`   |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  lastUpdateId: 17647759,
+  asks:
+   [
+     { price: '8000.05411500', quantity: '54.55000000' },
+     { price: '8000.05416700', quantity: '1111.80100000' }
+   ],
+  bids:
+   [
+     { price: '8000.05395500', quantity: '223.70000000' },
+     { price: '8000.05395100', quantity: '1134.84100000' }
+   ]
+}
+```
+
+</details>
+
+#### delivery candles
+
+Retrieves Candlestick for a symbol. Candlesticks are uniquely identified by their open time.
+
+```js
+console.log(await client.deliveryCandles({ symbol: 'TRXUSD_PERP' }))
+```
+
+| Param     | Type   | Required | Default | Description                                                                                    |
+| --------- | ------ | -------- | ------- | ---------------------------------------------------------------------------------------------- |
+| symbol    | String | true     |
+| interval  | String | false    | `5m`    | `1m`, `3m`, `5m`, `15m`, `30m`, `1h`, `2h`,<br>`4h`, `6h`, `8h`, `12h`, `1d`, `3d`, `1w`, `1M` |
+| limit     | Number | false    | `500`   | Max `1000`                                                                                     |
+| startTime | Number | false    |
+| endTime   | Number | false    |
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    openTime: 1663104600000,
+    open: '0.06091',
+    high: '0.06091',
+    low: '0.06086',
+    close: '0.06090',
+    volume: '7927',
+    closeTime: 1663104899999,
+    baseVolume: '1302212.12820796',
+    trades: 75,
+    quoteAssetVolume: '386',
+    baseAssetVolume: '63382.78318786'
+  }
+]
+```
+
+</details>
+
+#### delivery aggTrades
+
+Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.
+
+```js
+console.log(await client.deliveryAggTrades({ symbol: 'TRXUSD_PERP' }))
+```
+
+| Param     | Type   | Required | Default | Description                                              |
+| --------- | ------ | -------- | ------- | -------------------------------------------------------- |
+| symbol    | String | true     |         |                                                          |
+| fromId    | String | false    |         | ID to get aggregate trades from INCLUSIVE.               |
+| startTime | Number | false    |         | Timestamp in ms to get aggregate trades from INCLUSIVE.  |
+| endTime   | Number | false    |         | Timestamp in ms to get aggregate trades until INCLUSIVE. |
+| limit     | Number | false    | `500`   | Max `1000`                                               |
+
+Note: If both `startTime` and `endTime` are sent, `limit` should not be sent AND the distance between `startTime` and `endTime` must be less than 24 hours.
+
+Note: If `fromId`, `startTime`, and `endTime` are not sent, the most recent aggregate trades will be returned.
+
+Note : Only market trades will be aggregated and returned, which means the insurance fund trades and ADL trades won't be aggregated.
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    aggId: 14642023,
+    symbol: 'TRXUSD_PERP',
+    price: '0.06087',
+    quantity: '50',
+    firstId: 26319898,
+    lastId: 26319898,
+    timestamp: 1663105187120,
+    isBuyerMaker: false,
+  }
+]
+```
+
+</details>
+
+#### delivery trades
+
+Get recent trades of a symbol.
+
+```js
+console.log(await client.deliveryTrades({ symbol: 'TRXUSD_PERP' }))
+```
+
+| Param  | Type   | Required | Default | Description |
+| ------ | ------ | -------- | ------- | ----------- |
+| symbol | String | true     |
+| limit  | Number | false    | `500`   | Max `1000`  |
+
+<details>
+<summary>Output</summary>
+
+```js
+;[
+  {
+    id: 26319660,
+    price: '0.06097',
+    qty: '28',
+    baseQty: '4592.42250287',
+    time: 1663103746267,
+    isBuyerMaker: true
+  },
+]
+```
+
+</details>
+
+#### delivery dailyStats
+
+24 hour price change statistics, not providing a symbol will return all tickers and is resource-expensive.
+
+```js
+console.log(await client.deliveryDailyStats({ symbol: 'TRXUSD_PERP' }))
+```
+
+| Param  | Type   | Required |
+| ------ | ------ | -------- |
+| symbol | String | false    |
+| pair   | String | false    |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  symbol: 'TRXUSD_PERP',
+  pair: 'TRXUSD',
+  priceChange: '-0.00277',
+  priceChangePercent: '-4.353',
+  weightedAvgPrice: '0.06248010',
+  lastPrice: '0.06087',
+  lastQty: '4',
+  openPrice: '0.06364',
+  highPrice: '0.06395',
+  lowPrice: '0.06069',
+  volume: '545316',
+  baseVolume: '87278342.48218514',
+  openTime: 1663019640000,
+  closeTime: 1663106045576,
+  firstId: 26308774,
+  lastId: 26320065,
+  count: 11292
+}
+```
+
+</details>
+
+#### delivery prices
+
+Latest price for all symbols.
+
+```js
+console.log(await client.futuresPrices())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  BTCUSDT: '8590.05392500',
+  ETHUSDT: '154.1100',
+  ...
+}
+```
+
+</details>
+
+#### delivery allBookTickers
+
+Best price/qty on the order book for all symbols.
+
+```js
+console.log(await client.deliveryAllBookTickers())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  BTCUSD_PERP: {
+    symbol: 'BTCUSD_PERP',
+    pair: 'BTCUSD',
+    bidPrice: '20120.9',
+    bidQty: '13673',
+    askPrice: '20121.0',
+    askQty: '2628',
+    time: 1663106372658
+  },
+  ETHUSD_PERP: {
+    symbol: 'ETHUSD_PERP',
+    pair: 'ETHUSD',
+    bidPrice: '1593.63',
+    bidQty: '7210',
+    askPrice: '1593.64',
+    askQty: '27547',
+    time: 1663106372667
+  }
+  ...
+}
+```
+
+</details>
+
+#### delivery markPrice
+
+Mark Price and Funding Rate.
+
+```js
+console.log(await client.deliveryMarkPrice())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    symbol: 'BTCUSD_221230',
+    pair: 'BTCUSD',
+    markPrice: '20158.81560758',
+    indexPrice: '20152.05327273',
+    estimatedSettlePrice: '20147.96717735',
+    lastFundingRate: '',
+    interestRate: '',
+    nextFundingTime: 0,
+    time: 1663106459005
+  },
+  {
+    symbol: 'FILUSD_PERP',
+    pair: 'FILUSD',
+    markPrice: '5.88720470',
+    indexPrice: '5.89106242',
+    estimatedSettlePrice: '5.89377086',
+    lastFundingRate: '0.00010000',
+    interestRate: '0.00010000',
+    nextFundingTime: 1663113600000,
+    time: 1663106459005
+  }
+  ...
 ]
 ```
 

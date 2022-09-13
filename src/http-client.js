@@ -304,17 +304,22 @@ const book = (pubCall, payload, endpoint = '/api/v3/depth') =>
 const aggTrades = (pubCall, payload, endpoint = '/api/v3/aggTrades') =>
   checkParams('aggTrades', payload, ['symbol']) &&
   pubCall(endpoint, payload).then(trades =>
-    trades.map(trade => ({
-      aggId: trade.a,
-      symbol: payload.symbol,
-      price: trade.p,
-      quantity: trade.q,
-      firstId: trade.f,
-      lastId: trade.l,
-      timestamp: trade.T,
-      isBuyerMaker: trade.m,
-      wasBestPrice: trade.M,
-    })),
+    trades.map(trade => {
+      const transformed = {
+        aggId: trade.a,
+        symbol: payload.symbol,
+        price: trade.p,
+        quantity: trade.q,
+        firstId: trade.f,
+        lastId: trade.l,
+        timestamp: trade.T,
+        isBuyerMaker: trade.m,
+        }
+        if (trade.M)
+          transformed.wasBestPrice = trade.M
+  
+        return transformed
+    }),
   )
 
 export default opts => {
