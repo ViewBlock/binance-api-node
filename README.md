@@ -82,7 +82,6 @@ Following examples will use the `await` form, which requires some configuration 
   - [delivery prices](#delivery-prices)
   - [delivery allBookTickers](#delivery-allbooktickers)
   - [delivery markPrice](#delivery-markPrice)
-  - [delivery allForceOrders](#delivery-allForceOrders)
 - [Authenticated REST Endpoints](#authenticated-rest-endpoints)
   - [order](#order)
   - [orderTest](#ordertest)
@@ -144,6 +143,18 @@ Following examples will use the `await` form, which requires some configuration 
   - [futuresPositionMargin](#futuresPositionMargin)
   - [futuresMarginHistory](#futuresMarginHistory)
   - [futuresIncome](#futuresIncome)
+- [Delivery Authenticated REST Endpoints](#delivery-authenticated-rest-endpoints)
+  - [deliveryBatchOrders](#deliveryBatchOrders)
+  - [deliveryGetOrder](#deliveryGetOrder)
+  - [deliveryCancelBatchOrders](#deliveryCancelBatchOrders)
+  - [deliveryAccountBalance](#deliveryAccountBalance)
+  - [deliveryUserTrades](#deliveryUserTrades)
+  - [deliveryLeverageBracket](#deliveryLeverageBracket)
+  - [deliveryLeverage](#deliveryLeverage)
+  - [deliveryMarginType](#deliveryMarginType)
+  - [deliveryPositionMargin](#deliveryPositionMargin)
+  - [deliveryMarginHistory](#deliveryMarginHistory)
+  - [deliveryIncome](#deliveryIncome)
 - [Websockets](#websockets)
   - [depth](#depth)
   - [partialDepth](#partialdepth)
@@ -3789,6 +3800,484 @@ console.log(
                 "maintMarginRatio": 0.0065, // Maintenance ratio for this bracket
                 "cum":0 // Auxiliary number for quick calculation 
 
+            },
+        ]
+    }
+]
+```
+</details>
+
+### Delivery Authenticated REST endpoints
+
+#### deliveryGetOrder
+
+Check an order's status.
+
+- These orders will not be found
+  - order status is CANCELED or EXPIRED, <b>AND</b>
+  - order has NO filled trade, <b>AND</b>
+  - created time + 7 days < current time
+  
+
+| Name              | Type   | Mandatory | Description      |
+| ----------------- | ------ | --------  | ---------------- |
+| symbol            | STRING | YES       |                  |
+| orderId           | LONG   | NO        |                  |
+| origClientOrderId | STRING | NO        |                  |
+| recvWindow        | LONG   | NO        |                  |
+
+
+Either <b>orderId</b> or <b>origClientOrderId</b> must be sent.
+
+```js
+console.log(
+  await client.deliveryGetOrder({
+    symbol: 'BTCUSD_200925',
+    orderId: 1917641,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "avgPrice": "0.0",
+    "clientOrderId": "abc",
+    "cumBase": "0",
+    "executedQty": "0",
+    "orderId": 1917641,
+    "origQty": "0.40",
+    "origType": "TRAILING_STOP_MARKET",
+    "price": "0",
+    "reduceOnly": false,
+    "side": "BUY",
+    "status": "NEW",
+    "stopPrice": "9300",                // please ignore when order type is TRAILING_STOP_MARKET
+    "closePosition": false,             // if Close-All
+    "symbol": "BTCUSD_200925",
+    "pair": "BTCUSD",
+    "time": 1579276756075,              // order time
+    "timeInForce": "GTC",
+    "type": "TRAILING_STOP_MARKET",
+    "activatePrice": "9020",            // activation price, only return with TRAILING_STOP_MARKET order
+    "priceRate": "0.3",                 // callback rate, only return with TRAILING_STOP_MARKET order
+    "updateTime": 1579276756075,        // update time
+    "workingType": "CONTRACT_PRICE",
+    "priceProtect": false               // if conditional order trigger is protected
+}
+```
+</details>
+
+#### deliveryAllOrders
+
+Get all account orders; active, canceled, or filled.
+
+- These orders will not be found
+  - order status is CANCELED or EXPIRED, <b>AND</b>
+  - order has NO filled trade, <b>AND</b>
+  - created time + 7 days < current time
+  
+| Name              | Type   | Mandatory | Description            |
+| ----------------- | ------ | --------  | ---------------------- |
+| symbol            | STRING | YES       | The pair name          |
+| orderId           | LONG   | NO        |                        |
+| startTime         | LONG   | NO        |                        |
+| endTime           | LONG   | NO        |                        |
+| limit             | INT    | NO        | Default 500; max 1000. |
+| recvWindow        | LONG   | NO        |                        |
+
+If <b>orderId</b> is set, it will get orders >= that <b>orderId</b>. Otherwise most recent orders are returned.
+
+```js
+console.log(
+  await client.deliveryAllOrders({ symbol: 'BTCUSD_200925' })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "avgPrice": "0.0",
+    "clientOrderId": "abc",
+    "cumBase": "0",
+    "executedQty": "0",
+    "orderId": 1917641,
+    "origQty": "0.40",
+    "origType": "TRAILING_STOP_MARKET",
+    "price": "0",
+    "reduceOnly": false,
+    "side": "BUY",
+    "positionSide": "SHORT",
+    "status": "NEW",
+    "stopPrice": "9300",                // please ignore when order type is TRAILING_STOP_MARKET
+    "closePosition": false,             // if Close-All
+    "symbol": "BTCUSD_200925",
+    "pair": "BTCUSD",
+    "time": 1579276756075,              // order time
+    "timeInForce": "GTC",
+    "type": "TRAILING_STOP_MARKET",
+    "activatePrice": "9020",            // activation price, only return with TRAILING_STOP_MARKET order
+    "priceRate": "0.3",                 // callback rate, only return with TRAILING_STOP_MARKET order
+    "updateTime": 1579276756075,        // update time
+    "workingType": "CONTRACT_PRICE",
+    "priceProtect": false               // if conditional order trigger is protected
+  }
+  ...
+]
+```
+</details>
+
+#### deliveryBatchOrders
+
+Place multiple orders
+
+| Name                  | Type   | Mandatory | Description                                                                               |
+|-----------------------|--------|-----------|-------------------------------------------------------------------------------------------|
+| batchOrders           | LIST   | YES       | order list. Max 5 orders                                                                             |
+
+
+
+#### deliveryCancelBatchOrders
+
+Cancel multiple orders
+
+| Name                  | Type   | Mandatory | Description                                                                               |
+|-----------------------|--------|-----------|-------------------------------------------------------------------------------------------|
+| symbol                | STRING | YES       | The pair name                                                                             |
+| orderIdList           | STRING | NO        | max length 10<br/>e.g. `'[1234567,2345678]'`                                                |
+| origClientOrderIdList | STRING | NO        | max length 10<br/> e.g. `'["my_id_1","my_id_2"]'`, encode the double quotes. No space after comma. |
+
+
+#### deliveryLeverage
+
+Change user's initial leverage of specific symbol market.
+
+
+| Name              | Type   | Mandatory | Description                                |
+| ----------------- | ------ | --------  | ------------------------------------------ |
+| symbol            | STRING | YES       | The pair name                              |
+| leverage          | INT    | YES       | target initial leverage: int from 1 to 125 |
+| recvWindow        | LONG   | NO        |                                            |
+
+```js
+console.log(
+  await client.deliveryLeverage({
+    symbol: 'BTCUSD_200925',
+    leverage: 21,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "leverage": 21,
+    "maxQty": "1000",  // maximum quantity of base asset
+    "symbol": "BTCUSD_200925"
+}
+```
+</details>
+
+#### deliveryMarginType
+
+Change margin type.
+
+| Name              | Type   | Mandatory | Description       |
+| ----------------- | ------ | --------  | ----------------- |
+| symbol            | STRING | YES       | The pair name     |
+| marginType        | ENUM   | YES       | ISOLATED, CROSSED |
+| recvWindow        | LONG   | NO        |                   |
+
+```js
+console.log(
+  await client.futuresMarginType({
+    symbol: 'BTCUSD_200925',
+    marginType: 'ISOLATED',
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "code": 200,
+    "msg": "success"
+}
+```
+</details>
+
+#### deliveryPositionMargin
+
+Modify isolated position margin.
+
+| Name              | Type    | Mandatory | Description                                       |
+| ----------------- | ------- | --------  | ------------------------------------------------- |
+| symbol            | STRING  | YES       | The pair name                                     |
+| positionSide      | ENUM    | NO        | Default BOTH for One-way Mode; <br>LONG or SHORT for Hedge Mode. <br>It must be sent with Hedge Mode. |
+| amount            | DECIMAL | YES       |                                                   |
+| type              | INT     | YES       | 1: Add position margin，2: Reduce position margin |
+| recvWindow        | LONG    | NO        |                                                   |
+
+Only for isolated symbol.
+
+```js
+console.log(
+  await client.deliveryPositionMargin({
+    symbol: 'BTCUSD_200925',
+    amount: 100,
+    type: 1,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "amount": 100.0,
+    "code": 200,
+    "msg": "Successfully modify position margin.",
+    "type": 1
+}
+```
+</details>
+
+#### deliveryMarginHistory
+
+Get position margin change history.
+
+| Name              | Type   | Mandatory | Description                                       |
+| ----------------- | ------ | --------  | ------------------------------------------------- |
+| symbol            | STRING | YES       | The pair name                                     |
+| type              | INT    | NO        | 1: Add position margin，2: Reduce position margin |
+| startTime         | LONG   | NO        |                                                   |
+| endTime           | LONG   | NO        |                                                   |
+| limit             | INT    | NO        | Default 50;                                      |
+| recvWindow        | LONG   | NO        |                                                   |
+
+```js
+console.log(
+  await client.deliveryMarginHistory({
+    symbol: 'BTCUSD_200925',
+    type: 1,
+    startTime: 1578047897180,
+    limit: 10,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "amount": "23.36332311",
+        "asset": "BTC",
+        "symbol": "BTCUSD_200925",
+        "time": 1578047897183,
+        "type": 1,
+        "positionSide": "BOTH"
+    },
+    {
+        "amount": "100",
+        "asset": "BTC",
+        "symbol": "BTCUSD_200925",
+        "time": 1578047900425,
+        "type": 1,
+        "positionSide": "LONG"
+    }
+    ...
+]
+```
+</details>
+
+#### deliveryIncome
+
+Get income history.
+
+| Name              | Type   | Mandatory | Description                                       |
+| ----------------- | ------ | --------  | ------------------------------------------------- |
+| symbol            | STRING | NO        | The pair name                                     |
+| incomeType        | STRING | NO        | "TRANSFER"，"WELCOME_BONUS", "REALIZED_PNL"，<br>"FUNDING_FEE", "COMMISSION", and "INSURANCE_CLEAR" |
+| startTime         | LONG   | NO        | Timestamp in ms to get funding from INCLUSIVE.    |
+| endTime           | LONG   | NO        | Timestamp in ms to get funding until INCLUSIVE.   |
+| limit             | INT    | NO        | Default 100; max 1000                             |
+| recvWindow        | LONG   | NO        |                                                   |
+
+- If `incomeType` is not sent, all kinds of flow will be returned
+- `trandId` is unique in the same incomeType for a user
+- The interval between `startTime` and `endTime` can not exceed 200 days:
+    - If `startTime` and `endTime` are not sent, the last 200 days will be returned
+
+```js
+console.log(
+  await client.deliveryIncome({
+    symbol: 'BTCUSD_200925',
+    startTime: 1570608000000,
+    limit: 700,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "symbol": "",               // trade symbol, if existing
+        "incomeType": "TRANSFER",   // income type
+        "income": "-0.37500000",    // income amount
+        "asset": "BTC",             // income asset
+        "info":"WITHDRAW",          // extra information
+        "time": 1570608000000,
+        "tranId":"9689322392",      // transaction id
+        "tradeId":""                // trade id, if existing
+    },
+    {
+        "symbol": "BTCUSD_200925",
+        "incomeType": "COMMISSION", 
+        "income": "-0.01000000",
+        "asset": "BTC",
+        "info":"",
+        "time": 1570636800000,
+        "tranId":"9689322392",
+        "tradeId":"2059192"
+    }
+]
+```
+</details>
+
+#### deliveryAccountBalance
+
+Get delivery account balance
+
+```js
+console.log(await client.deliveryAccountBalance());
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "accountAlias": "SgsR",    // unique account code
+    "asset": "BTC",
+    "balance": "0.00250000",
+    "withdrawAvailable": "0.00250000",
+    "crossWalletBalance": "0.00241969",
+    "crossUnPnl": "0.00000000",
+    "availableBalance": "0.00241969",
+    "updateTime": 1592468353979
+  }
+  ...
+]
+```
+
+</details>
+
+#### deliveryUserTrades
+
+Get trades for a specific account and symbol.
+
+```js
+console.log(
+  await client.deliveryUserTrades({
+    symbol: 'BTCUSD_200626',
+  }),
+)
+```
+
+| Param      | Type   | Mandatory | Description                                              |
+| ---------- | ------ | --------- | -------------------------------------------------------- |
+| symbol     | STRING | NO        |                                                          |
+| pair       | STRING | NO        |                                                          |
+| startTime  | LONG   | NO        |                                                          |
+| endTime    | LONG   | NO        |                                                          |
+| limit      | INT    | NO        | Default 50; max 1000.                                    |
+| fromId     | LONG   | NO        | Trade id to fetch from. Default gets most recent trades. |
+| recvWindow | LONG   | NO        |                                                          |
+
+- Either symbol or pair must be sent
+- Symbol and pair cannot be sent together
+- Pair and fromId cannot be sent together
+- If a pair is sent,tickers for all symbols of the pair will be returned
+- The parameter `fromId` cannot be sent with `startTime` or `endTime`
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    'symbol': 'BTCUSD_200626',
+    'id': 6,
+    'orderId': 28,
+    'pair': 'BTCUSD',
+    'side': 'SELL',
+    'price': '8800',
+    'qty': '1',
+    'realizedPnl': '0',
+    'marginAsset': 'BTC',
+    'baseQty': '0.01136364',
+    'commission': '0.00000454',
+    'commissionAsset': 'BTC',
+    'time': 1590743483586,
+    'positionSide': 'BOTH',
+    'buyer': false,
+    'maker': false
+  }
+    ...
+]
+
+```
+
+</details>
+
+#### deliveryLeverageBracket
+
+Get the pair's default notional bracket list.
+
+```js
+console.log(
+  await client.deliveryLeverageBracket({
+    pair: 'BTCUSD', // Optional
+  }),
+)
+```
+
+| Param      | Type   | Mandatory | Description                                               |
+| ---------- | ------ | --------- | ----------------------------------------------------------|
+| symbol     | STRING | NO        | Use if you are only interested in brackets for one symbol |
+| recvWindow | LONG   | NO        |                                                           |
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "pair": "BTCUSD",
+        "brackets": [
+            {
+                "bracket": 1,   // bracket level
+                "initialLeverage": 125,  // the maximum leverage
+                "qtyCap": 50,  // upper edge of base asset quantity
+                "qtylFloor": 0,  // lower edge of base asset quantity
+                "maintMarginRatio": 0.004 // maintenance margin rate
+                "cum": 0.0  // Auxiliary number for quick calculation 
             },
         ]
     }
