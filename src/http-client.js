@@ -42,6 +42,7 @@ const responseHandler = res => {
   if (!res.headers || !res.url) {
     return
   }
+  
 
   const marketName = res.url.includes(FUTURES)
     ? 'futures'

@@ -179,6 +179,17 @@ Following examples will use the `await` form, which requires some configuration 
   - [futuresAllLiquidations](#futuresAllLiquidations)
   - [futuresUser](#futuresUser)
   - [futuresCustomSubStream](#futuresCustomSubStream)
+- [Delivery Websockets](#delivery-websockets)
+  - [deliveryDepth](#deliveryDepth)
+  - [deliveryPartialDepth](#deliveryPartialdepth)
+  - [deliveryTicker](#deliveryTicker)
+  - [deliveryAllTickers](#deliveryAlltickers)
+  - [deliveryCandles](#deliveryCandles)
+  - [deliveryAggTrades](#deliveryAggtrades)
+  - [deliveryLiquidations](#deliveryLiquidations)
+  - [deliveryAllLiquidations](#deliveryAllLiquidations)
+  - [deliveryUser](#deliveryUser)
+  - [deliveryCustomSubStream](#deliveryCustomSubStream)
 - [Common](#common)
   - [getInfo](#getInfo)
 - [ErrorCodes](#errorcodes)
@@ -4988,6 +4999,311 @@ const futuresUser = await client.ws.futuresUser(msg => {
 ```
 </details>
 
+### Delivery WebSockets
+
+Every websocket utility returns a function you can call to close the opened
+connection and avoid memory issues.
+
+```js
+const clean = client.ws.deliveryDepth('BTCUSD_200626', depth => {
+  console.log(depth)
+})
+
+// After you're done
+clean()
+```
+
+Each websocket utility supports the ability to get a clean callback without data transformation, for this, pass the third attribute FALSE.
+
+```js
+const clean = client.ws.deliveryDepth('BTCUSD_200626', depth => {
+  console.log(depth)
+}, false)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "e": "depthUpdate",           // Event type
+  "E": 1591270260907,           // Event time
+  "T": 1591270260891,           // Transction time
+  "s": "BTCUSD_200626",         // Symbol
+  "ps": "BTCUSD",               // Pair
+  "U": 17285681,                // First update ID in event
+  "u": 17285702,                // Final update ID in event
+  "pu": 17285675,               // Final update Id in last stream(ie `u` in last stream)
+  "b": [                        // Bids to be updated
+    [
+      "9517.6",                 // Price level to be updated
+      "10"                      // Quantity
+    ]
+  ],
+  "a": [                        // Asks to be updated
+    [
+      "9518.5",                 // Price level to be updated
+      "45"                      // Quantity
+    ]
+  ]
+}
+```
+</details>
+
+#### deliveryDepth
+
+Live futuresDepth market data feed. The first parameter can either
+be a single symbol string or an array of symbols.
+
+```js
+client.ws.deliveryDepth('TRXUSD_PERP', depth => {
+  console.log(depth)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'depthUpdate',
+  eventTime: 1663111254317,
+  transactionTime: 1663111254138,
+  symbol: 'TRXUSD_PERP',
+  pair: 'TRXUSD',
+  firstUpdateId: 558024151999,
+  finalUpdateId: 558024152633,
+  prevFinalUpdateId: 558024150524,
+  bidDepth: [
+    { price: '0.06052', quantity: '1805' },
+    { price: '0.06061', quantity: '313' }
+  ],
+  askDepth: [
+    { price: '0.06062', quantity: '314' },
+    { price: '0.06063', quantity: '790' },
+    { price: '0.06065', quantity: '1665' },
+    { price: '0.06066', quantity: '2420' }
+  ]
+}
+```
+</details>
+
+#### deliveryPartialDepth
+
+Top bids and asks. Valid levels are 5, 10, or 20.
+Update Speed : 250ms, 500ms or 100ms.
+Accepts an array of objects for multiple depths.
+
+```js
+client.ws.deliveryPartialDepth({ symbol: 'TRXUSD_PERP', level: 10 }, depth => {
+  console.log(depth)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  level: 10,
+  eventType: 'depthUpdate',
+  eventTime: 1663111554598,
+  transactionTime: 1663111554498,
+  symbol: 'TRXUSD_PERP',
+  pair: 'TRXUSD',
+  firstUpdateId: 558027933795,
+  finalUpdateId: 558027935097,
+  prevFinalUpdateId: 558027932895,
+  bidDepth: [
+    { price: '0.06063', quantity: '604' },
+    { price: '0.06062', quantity: '227' },
+    { price: '0.06061', quantity: '327' }
+  ],
+  askDepth: [
+    { price: '0.06064', quantity: '468' },
+    { price: '0.06065', quantity: '131' }
+  ]
+}
+```
+</details>
+
+#### deliveryTicker
+
+24hr rollwing window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window from requestTime to 24hrs before.
+Accepts an array of symbols.
+
+```js
+client.ws.deliveryTicker('BNBUSD_PERP', ticker => {
+  console.log(ticker)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: '24hrTicker',
+  eventTime: 1664834148221,
+  symbol: 'BNBUSD_PERP',
+  pair: 'BNBUSD',
+  priceChange: '0.130',
+  priceChangePercent: '0.046',
+  weightedAvg: '286.02648763',
+  curDayClose: '285.745',
+  closeTradeQuantity: '1',
+  open: '285.615',
+  high: '289.050',
+  low: '282.910',
+  volume: '9220364',
+  volumeBase: '322360.49452795',
+  openTime: 1664747700000,
+  closeTime: 1664834148215,
+  firstTradeId: 179381113,
+  lastTradeId: 179462069,
+  totalTrades: 80957
+}
+```
+</details>
+
+#### deliveryAllTickers
+
+Retrieves all the tickers.
+
+```js
+client.ws.deliveryAllTickers(tickers => {
+  console.log(tickers)
+})
+```
+
+#### deliveryCandles
+
+Live candle data feed for a given interval. You can pass either a symbol string
+or a symbol array.
+
+```js
+client.ws.deliveryCandles('ETHUSD_PERP', '1m', candle => {
+  console.log(candle)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'kline',
+  eventTime: 1664834318306,
+  symbol: 'ETHUSD_PERP',
+  startTime: 1664834280000,
+  closeTime: 1664834339999,
+  firstTradeId: 545784425,
+  lastTradeId: 545784494,
+  open: '1317.68',
+  high: '1317.91',
+  low: '1317.68',
+  close: '1317.91',
+  volume: '6180',
+  trades: 70,
+  interval: '1m',
+  isFinal: false,
+  baseVolume: '46.89730466',
+  buyVolume: '5822',
+  baseBuyVolume: '44.18040830'
+}
+```
+</details>
+
+#### deliveryAggTrades
+
+Live trade data feed. Pass either a single symbol string or an array of symbols. The Aggregate Trade Streams push trade information that is aggregated for a single taker order every 100 milliseconds.
+
+```js
+client.ws.deliveryAggTrades(['ETHUSD_PERP', 'BNBUSD_PERP'], trade => {
+  console.log(trade)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'aggTrade',
+  eventTime: 1664834403682,
+  symbol: 'ETHUSD_PERP',
+  aggId: 216344302,
+  price: '1317.57',
+  quantity: '1318',
+  firstId: 545784591,
+  lastId: 545784591,
+  timestamp: 1664834403523,
+  isBuyerMaker: false
+}
+```
+</details>
+
+
+#### deliveryCustomSubStream
+
+You can add custom sub streams by view [docs](https://binance-docs.github.io/apidocs/delivery/en/#websocket-market-streams)
+
+```js
+client.ws.deliveryCustomSubStream(['!miniTicker@arr','ETHUSD_PERP@markPrice@1s'], console.log)
+```
+
+#### deliveryUser
+
+Live user messages data feed.
+For different event types, see [official documentation](https://binance-docs.github.io/apidocs/delivery/en/#user-data-streams)
+
+**Requires authentication**
+
+```js
+const deliveryUser = await client.ws.deliveryUser(msg => {
+  console.log(msg)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventTime: 1664834883117,
+  transactionTime: 1664834883101,
+  eventType: 'ACCOUNT_UPDATE',
+  eventReasonType: 'ORDER',
+  balances: [
+    {
+      asset: 'BUSD',
+      walletBalance: '123.45678901',
+      crossWalletBalance: '123.45678901',
+      balanceChange: '0'
+    },
+    {
+      asset: 'BNB',
+      walletBalance: '0.12345678',
+      crossWalletBalance: '0.12345678',
+      balanceChange: '0'
+    }
+  ],
+  positions: [
+    {
+      symbol: 'ETHBUSD',
+      positionAmount: '420.024',
+      entryPrice: '1234.56789',
+      accumulatedRealized: '9000.12345678',
+      unrealizedPnL: '0.38498800',
+      marginType: 'cross',
+      isolatedWallet: '0',
+      positionSide: 'BOTH'
+    }
+  ]
+}
+```
+</details>
+
 #### Common
 
 #### getInfo
@@ -5012,6 +5328,11 @@ console.log(client.getInfo())
      orderCount1d: "347",
      orderCount10s: "1",
      usedWeigh1m: "15",
+  },
+  delivery: {
+    usedWeight1m: '13',
+    responseTime: '4ms',
+    orderCount1m: '1'
   }
 }
 ```
