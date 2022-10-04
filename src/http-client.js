@@ -21,9 +21,10 @@ const info = {
  * Build query string for uri encoded url based on json object
  */
 const makeQueryString = q =>
-  q ? `?${Object.keys(q)
-      .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(q[k])}`)
-      .join('&')}`
+  q
+    ? `?${Object.keys(q)
+        .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(q[k])}`)
+        .join('&')}`
     : ''
 
 /**
@@ -42,13 +43,12 @@ const responseHandler = res => {
   if (!res.headers || !res.url) {
     return
   }
-  
 
   const marketName = res.url.includes(FUTURES)
     ? 'futures'
     : res.url.includes(COIN_FUTURES)
-      ? 'delivery'
-      : 'spot'
+    ? 'delivery'
+    : 'spot'
 
   Object.keys(headersMapping).forEach(key => {
     const outKey = headersMapping[key]
@@ -122,9 +122,10 @@ const checkParams = (name, payload, requires = []) => {
 const publicCall = ({ proxy, endpoints }) => (path, data, method = 'GET', headers = {}) => {
   return sendResult(
     fetch(
-      `${path.includes('/fapi') || path.includes('/futures')
-        ? endpoints.futures
-        : path.includes('/dapi')
+      `${
+        path.includes('/fapi') || path.includes('/futures')
+          ? endpoints.futures
+          : path.includes('/dapi')
           ? endpoints.delivery
           : endpoints.base
       }${path}${makeQueryString(data)}`,
@@ -194,9 +195,10 @@ const privateCall = ({
 
     return sendResult(
       fetch(
-        `${path.includes('/fapi') || path.includes('/futures')
-          ? endpoints.futures
-          : path.includes('/dapi')
+        `${
+          path.includes('/fapi') || path.includes('/futures')
+            ? endpoints.futures
+            : path.includes('/dapi')
             ? endpoints.delivery
             : endpoints.base
         }${path}${noData ? '' : makeQueryString(newData)}`,
@@ -246,7 +248,9 @@ export const deliveryCandleFields = [
 const candles = (pubCall, payload, endpoint = '/api/v3/klines') =>
   checkParams('candles', payload, endpoint.includes('indexPrice') ? ['pair'] : ['symbol']) &&
   pubCall(endpoint, { interval: '5m', ...payload }).then(candles =>
-    candles.map(candle => zip(!endpoint.includes('dapi') ? candleFields : deliveryCandleFields, candle)),
+    candles.map(candle =>
+      zip(!endpoint.includes('dapi') ? candleFields : deliveryCandleFields, candle),
+    ),
   )
 
 /**
@@ -315,11 +319,10 @@ const aggTrades = (pubCall, payload, endpoint = '/api/v3/aggTrades') =>
         lastId: trade.l,
         timestamp: trade.T,
         isBuyerMaker: trade.m,
-        }
-        if (trade.M)
-          transformed.wasBestPrice = trade.M
-  
-        return transformed
+      }
+      if (trade.M) transformed.wasBestPrice = trade.M
+
+      return transformed
     }),
   )
 
@@ -331,7 +334,7 @@ export default opts => {
   }
 
   const pubCall = publicCall({ ...opts, endpoints })
-  const deliveryPubCall = publicCall({ ...opts, endpoints: { futures: endpoints.delivery} })
+  const deliveryPubCall = publicCall({ ...opts, endpoints: { futures: endpoints.delivery } })
   const privCall = privateCall({ ...opts, endpoints, pubCall })
   const kCall = keyCall({ ...opts, pubCall })
 
@@ -424,7 +427,7 @@ export default opts => {
     futuresKeepDataStream: payload => privCall('/fapi/v1/listenKey', payload, 'PUT', false, true),
     futuresCloseDataStream: payload =>
       privCall('/fapi/v1/listenKey', payload, 'DELETE', false, true),
-    
+
     deliveryGetDataStream: () => privCall('/dapi/v1/listenKey', null, 'POST', true),
     deliveryKeepDataStream: payload => privCall('/dapi/v1/listenKey', payload, 'PUT', false, true),
     deliveryCloseDataStream: payload =>
@@ -505,7 +508,8 @@ export default opts => {
     deliveryAggTrades: payload => aggTrades(pubCall, payload, '/dapi/v1/aggTrades'),
     deliveryMarkPrice: payload => pubCall('/dapi/v1/premiumIndex', payload),
     deliveryAllForceOrders: payload => pubCall('/dapi/v1/allForceOrders', payload),
-    deliveryLongShortRatio: payload => deliveryPubCall('/futures/data/globalLongShortAccountRatio', payload),
+    deliveryLongShortRatio: payload =>
+      deliveryPubCall('/futures/data/globalLongShortAccountRatio', payload),
     deliveryCandles: payload => candles(pubCall, payload, '/dapi/v1/klines'),
     deliveryMarkPriceCandles: payload => candles(pubCall, payload, '/dapi/v1/markPriceKlines'),
     deliveryIndexPriceCandles: payload => candles(pubCall, payload, '/dapi/v1/indexPriceKlines'),

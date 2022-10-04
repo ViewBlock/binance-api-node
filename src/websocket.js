@@ -66,9 +66,9 @@ const depth = (payload, cb, transform = true, variator) => {
         transform
           ? variator === 'futures'
             ? futuresDepthTransform(obj)
-            :  variator === 'delivery'
-              ? deliveryDepthTransform(obj)
-              : depthTransform(obj)
+            : variator === 'delivery'
+            ? deliveryDepthTransform(obj)
+            : depthTransform(obj)
           : obj,
       )
     }
@@ -131,8 +131,8 @@ const partialDepth = (payload, cb, transform = true, variator) => {
           ? variator === 'futures'
             ? futuresPartDepthTransform(level, obj)
             : variator === 'delivery'
-              ? deliveryPartDepthTransform(level, obj)
-              : partialDepthTransform(symbol, level, obj)
+            ? deliveryPartDepthTransform(level, obj)
+            : partialDepthTransform(symbol, level, obj)
           : obj,
       )
     }
@@ -201,9 +201,7 @@ const candles = (payload, interval, cb, transform = true, variator) => {
               eventType,
               eventTime,
               symbol,
-              ...(variator === 'delivery'
-                ? deliveryCandleTransform(tick)
-                : candleTransform(tick))
+              ...(variator === 'delivery' ? deliveryCandleTransform(tick) : candleTransform(tick)),
             }
           : obj,
       )
@@ -339,9 +337,11 @@ const ticker = (payload, cb, transform = true, variator) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
     const w = openWebSocket(
       `${
-        variator === 'futures' ? endpoints.futures
-        : variator === 'delivery' ? endpoints.delivery
-        : endpoints.base
+        variator === 'futures'
+          ? endpoints.futures
+          : variator === 'delivery'
+          ? endpoints.delivery
+          : endpoints.base
       }/${symbol.toLowerCase()}@ticker`,
     )
 
@@ -352,8 +352,8 @@ const ticker = (payload, cb, transform = true, variator) => {
           ? variator === 'futures'
             ? futuresTickerTransform(obj)
             : variator === 'delivery'
-              ? deliveryTickerTransform(obj)
-              : tickerTransform(obj)
+            ? deliveryTickerTransform(obj)
+            : tickerTransform(obj)
           : obj,
       )
     }
@@ -368,9 +368,11 @@ const ticker = (payload, cb, transform = true, variator) => {
 const allTickers = (cb, transform = true, variator) => {
   const w = new openWebSocket(
     `${
-      variator === 'futures' ? endpoints.futures
-      : variator === 'delivery' ? endpoints.delivery
-      : endpoints.base
+      variator === 'futures'
+        ? endpoints.futures
+        : variator === 'delivery'
+        ? endpoints.delivery
+        : endpoints.base
     }/!ticker@arr`,
   )
 
@@ -381,8 +383,8 @@ const allTickers = (cb, transform = true, variator) => {
         ? variator === 'futures'
           ? arr.map(m => futuresTickerTransform(m))
           : variator === 'delivery'
-            ? arr.map(m => deliveryTickerTransform(m))
-            : arr.map(m => tickerTransform(m))
+          ? arr.map(m => deliveryTickerTransform(m))
+          : arr.map(m => tickerTransform(m))
         : arr,
     )
   }
@@ -396,11 +398,13 @@ const miniTicker = (payload, cb, transform = true, variator) => {
 
     w.onmessage = msg => {
       const obj = JSONbig.parse(msg.data)
-      cb(transform
-        ? variator === 'delivery'
-          ? deliveryMiniTickerTransform(obj)
-          : miniTickerTransform(obj)
-        : obj)
+      cb(
+        transform
+          ? variator === 'delivery'
+            ? deliveryMiniTickerTransform(obj)
+            : miniTickerTransform(obj)
+          : obj,
+      )
     }
 
     return w
@@ -415,9 +419,11 @@ const allMiniTickers = (cb, transform = true, variator) => {
 
   w.onmessage = msg => {
     const arr = JSONbig.parse(msg.data)
-    cb(transform
-      ? arr.map(variator === 'delivery' ? deliveryMiniTickerTransform : miniTickerTransform)
-      : arr)
+    cb(
+      transform
+        ? arr.map(variator === 'delivery' ? deliveryMiniTickerTransform : miniTickerTransform)
+        : arr,
+    )
   }
 
   return options => w => w.close(1000, 'Close handle was called', { keepClosed: true, ...options })
@@ -425,10 +431,15 @@ const allMiniTickers = (cb, transform = true, variator) => {
 
 const customSubStream = (payload, cb, variator) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(sub => {
-    const w = openWebSocket(`${variator === 'futures' ? endpoints.futures
-      : variator === 'delivery' ? endpoints.delivery
-      : endpoints.base
-    }/${sub}`)
+    const w = openWebSocket(
+      `${
+        variator === 'futures'
+          ? endpoints.futures
+          : variator === 'delivery'
+          ? endpoints.delivery
+          : endpoints.base
+      }/${sub}`,
+    )
 
     w.onmessage = msg => {
       const data = JSONbig.parse(msg.data)
@@ -473,8 +484,10 @@ const aggTrades = (payload, cb, transform = true, variator) => {
   const cache = (Array.isArray(payload) ? payload : [payload]).map(symbol => {
     const w = openWebSocket(
       `${
-        variator === 'futures' ? endpoints.futures
-          : variator === 'delivery' ? endpoints.delivery
+        variator === 'futures'
+          ? endpoints.futures
+          : variator === 'delivery'
+          ? endpoints.delivery
           : endpoints.base
       }/${symbol.toLowerCase()}@aggTrade`,
     )
@@ -848,9 +861,12 @@ const user = (opts, variator) => (cb, transform) => {
           }
 
           w = openWebSocket(
-            `${variator === 'futures' ? endpoints.futures
-              : variator === 'delivery' ? endpoints.delivery
-              : endpoints.base
+            `${
+              variator === 'futures'
+                ? endpoints.futures
+                : variator === 'delivery'
+                ? endpoints.delivery
+                : endpoints.base
             }/${listenKey}`,
           )
 

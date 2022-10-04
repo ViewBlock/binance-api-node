@@ -769,29 +769,29 @@ test('[FUTURES-REST] prices', async t => {
 })
 
 test('[FUTURES-REST] allBookTickers', async t => {
-    const tickers = await client.futuresAllBookTickers()
-    t.truthy(tickers)
-    t.truthy(tickers.BTCUSDT)
+  const tickers = await client.futuresAllBookTickers()
+  t.truthy(tickers)
+  t.truthy(tickers.BTCUSDT)
 })
 
 test('[FUTURES-REST] aggTrades', async t => {
-    try {
-        await client.futuresAggTrades({})
-    } catch (e) {
-        t.is(e.message, 'Method aggTrades requires symbol parameter.')
-    }
+  try {
+    await client.futuresAggTrades({})
+  } catch (e) {
+    t.is(e.message, 'Method aggTrades requires symbol parameter.')
+  }
 
-    const trades = await client.futuresAggTrades({symbol: 'BTCUSDT'})
-    t.truthy(trades.length)
+  const trades = await client.futuresAggTrades({ symbol: 'BTCUSDT' })
+  t.truthy(trades.length)
 
-    const [trade] = trades
-    t.truthy(trade.aggId)
+  const [trade] = trades
+  t.truthy(trade.aggId)
 })
 
 test('[FUTURES-REST] fundingRate', async t => {
-    const fundingRate = await client.futuresFundingRate({symbol: 'BTCUSDT'})
-    checkFields(t, fundingRate[0], ['symbol', 'fundingTime', 'fundingRate'])
-    t.is(fundingRate.length, 100)
+  const fundingRate = await client.futuresFundingRate({ symbol: 'BTCUSDT' })
+  checkFields(t, fundingRate[0], ['symbol', 'fundingTime', 'fundingRate'])
+  t.is(fundingRate.length, 100)
 })
 
 // DELIVERY TESTS
@@ -842,7 +842,7 @@ test('[DELIVERY-REST] markPrice', async t => {
     'markPrice',
     'indexPrice',
     'estimatedSettlePrice',
-    'time'
+    'time',
   ])
 })
 
@@ -911,27 +911,27 @@ test('[DELIVERY-REST] prices', async t => {
 })
 
 test('[DELIVERY-REST] allBookTickers', async t => {
-    const tickers = await client.deliveryAllBookTickers()
-    t.truthy(tickers)
-    t.truthy(tickers.TRXUSD_PERP)
+  const tickers = await client.deliveryAllBookTickers()
+  t.truthy(tickers)
+  t.truthy(tickers.TRXUSD_PERP)
 })
 
 test('[DELIVERY-REST] aggTrades', async t => {
-    try {
-        await client.deliveryAggTrades({})
-    } catch (e) {
-        t.is(e.message, 'Method aggTrades requires symbol parameter.')
-    }
+  try {
+    await client.deliveryAggTrades({})
+  } catch (e) {
+    t.is(e.message, 'Method aggTrades requires symbol parameter.')
+  }
 
-    const trades = await client.deliveryAggTrades({symbol: 'TRXUSD_perp'})
-    t.truthy(trades.length)
+  const trades = await client.deliveryAggTrades({ symbol: 'TRXUSD_perp' })
+  t.truthy(trades.length)
 
-    const [trade] = trades
-    t.truthy(trade.aggId)
+  const [trade] = trades
+  t.truthy(trade.aggId)
 })
 
 test('[DELIVERY-REST] fundingRate', async t => {
-    const fundingRate = await client.deliveryFundingRate({symbol: 'TRXUSD_perp'})
-    checkFields(t, fundingRate[0], ['symbol', 'fundingTime', 'fundingRate'])
-    t.is(fundingRate.length, 100)
+  const fundingRate = await client.deliveryFundingRate({ symbol: 'TRXUSD_perp' })
+  checkFields(t, fundingRate[0], ['symbol', 'fundingTime', 'fundingRate'])
+  t.is(fundingRate.length, 100)
 })
