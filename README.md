@@ -69,6 +69,19 @@ Following examples will use the `await` form, which requires some configuration 
   - [futures allBookTickers](#futures-allbooktickers)
   - [futures markPrice](#futures-markPrice)
   - [futures allForceOrders](#futures-allForceOrders)
+- [Delivery Public REST Endpoints](#delivery-public-rest-endpoints)
+  - [delivery ping](#delivery-ping)
+  - [delivery time](#delivery-time)
+  - [delivery exchangeInfo](#delivery-exchangeinfo)
+  - [delivery book](#delivery-book)
+  - [delivery candles](#delivery-candles)
+  - [delivery aggTrades](#delivery-aggtrades)
+  - [delivery trades](#delivery-trades)
+  - [delivery dailyStats](#delivery-dailystats)
+  - [delivery avgPrice](#delivery-avgPrice)
+  - [delivery prices](#delivery-prices)
+  - [delivery allBookTickers](#delivery-allbooktickers)
+  - [delivery markPrice](#delivery-markPrice)
 - [Authenticated REST Endpoints](#authenticated-rest-endpoints)
   - [order](#order)
   - [orderTest](#ordertest)
@@ -130,6 +143,18 @@ Following examples will use the `await` form, which requires some configuration 
   - [futuresPositionMargin](#futuresPositionMargin)
   - [futuresMarginHistory](#futuresMarginHistory)
   - [futuresIncome](#futuresIncome)
+- [Delivery Authenticated REST Endpoints](#delivery-authenticated-rest-endpoints)
+  - [deliveryBatchOrders](#deliveryBatchOrders)
+  - [deliveryGetOrder](#deliveryGetOrder)
+  - [deliveryCancelBatchOrders](#deliveryCancelBatchOrders)
+  - [deliveryAccountBalance](#deliveryAccountBalance)
+  - [deliveryUserTrades](#deliveryUserTrades)
+  - [deliveryLeverageBracket](#deliveryLeverageBracket)
+  - [deliveryLeverage](#deliveryLeverage)
+  - [deliveryMarginType](#deliveryMarginType)
+  - [deliveryPositionMargin](#deliveryPositionMargin)
+  - [deliveryMarginHistory](#deliveryMarginHistory)
+  - [deliveryIncome](#deliveryIncome)
 - [Websockets](#websockets)
   - [depth](#depth)
   - [partialDepth](#partialdepth)
@@ -154,6 +179,17 @@ Following examples will use the `await` form, which requires some configuration 
   - [futuresAllLiquidations](#futuresAllLiquidations)
   - [futuresUser](#futuresUser)
   - [futuresCustomSubStream](#futuresCustomSubStream)
+- [Delivery Websockets](#delivery-websockets)
+  - [deliveryDepth](#deliveryDepth)
+  - [deliveryPartialDepth](#deliveryPartialdepth)
+  - [deliveryTicker](#deliveryTicker)
+  - [deliveryAllTickers](#deliveryAlltickers)
+  - [deliveryCandles](#deliveryCandles)
+  - [deliveryAggTrades](#deliveryAggtrades)
+  - [deliveryLiquidations](#deliveryLiquidations)
+  - [deliveryAllLiquidations](#deliveryAllLiquidations)
+  - [deliveryUser](#deliveryUser)
+  - [deliveryCustomSubStream](#deliveryCustomSubStream)
 - [Common](#common)
   - [getInfo](#getInfo)
 - [ErrorCodes](#errorcodes)
@@ -900,6 +936,354 @@ console.log(await client.futuresAllForceOrders())
     side: 'SELL', // DIRECTION
     time: 1568014460893,
   },
+]
+```
+
+</details>
+
+### Delivery Public REST Endpoints
+
+#### delivery ping
+
+Test connectivity to the API.
+
+```js
+console.log(await client.deliveryPing())
+```
+
+#### delivery time
+
+Test connectivity to the Rest API and get the current server time.
+
+```js
+console.log(await client.deliveryTime())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+1508478457643
+```
+
+</details>
+
+#### delivery exchangeInfo
+
+Get the current exchange trading rules and symbol information.
+
+```js
+console.log(await client.deliveryExchangeInfo())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  timezone: 'UTC',
+  serverTime: 1663099219744,
+  rateLimits: [
+    {
+      rateLimitType: 'REQUEST_WEIGHT',
+      interval: 'MINUTE',
+      intervalNum: 1,
+      limit: 2400
+    },
+    {
+      rateLimitType: 'ORDERS',
+      interval: 'MINUTE',
+      intervalNum: 1,
+      limit: 1200
+    }
+  ],
+  exchangeFilters: [],
+  symbols: [...]
+}
+```
+
+</details>
+
+#### delivery book
+
+Get the order book for a symbol.
+
+```js
+console.log(await client.deliveryBook({ symbol: 'TRXUSD_PERP' }))
+```
+
+| Param  | Type   | Required | Default |
+| ------ | ------ | -------- | ------- |
+| symbol | String | true     |
+| limit  | Number | false    | `500`   |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  lastUpdateId: 17647759,
+  asks:
+   [
+     { price: '8000.05411500', quantity: '54.55000000' },
+     { price: '8000.05416700', quantity: '1111.80100000' }
+   ],
+  bids:
+   [
+     { price: '8000.05395500', quantity: '223.70000000' },
+     { price: '8000.05395100', quantity: '1134.84100000' }
+   ]
+}
+```
+
+</details>
+
+#### delivery candles
+
+Retrieves Candlestick for a symbol. Candlesticks are uniquely identified by their open time.
+
+```js
+console.log(await client.deliveryCandles({ symbol: 'TRXUSD_PERP' }))
+```
+
+| Param     | Type   | Required | Default | Description                                                                                    |
+| --------- | ------ | -------- | ------- | ---------------------------------------------------------------------------------------------- |
+| symbol    | String | true     |
+| interval  | String | false    | `5m`    | `1m`, `3m`, `5m`, `15m`, `30m`, `1h`, `2h`,<br>`4h`, `6h`, `8h`, `12h`, `1d`, `3d`, `1w`, `1M` |
+| limit     | Number | false    | `500`   | Max `1000`                                                                                     |
+| startTime | Number | false    |
+| endTime   | Number | false    |
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    openTime: 1663104600000,
+    open: '0.06091',
+    high: '0.06091',
+    low: '0.06086',
+    close: '0.06090',
+    volume: '7927',
+    closeTime: 1663104899999,
+    baseVolume: '1302212.12820796',
+    trades: 75,
+    quoteAssetVolume: '386',
+    baseAssetVolume: '63382.78318786'
+  }
+]
+```
+
+</details>
+
+#### delivery aggTrades
+
+Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.
+
+```js
+console.log(await client.deliveryAggTrades({ symbol: 'TRXUSD_PERP' }))
+```
+
+| Param     | Type   | Required | Default | Description                                              |
+| --------- | ------ | -------- | ------- | -------------------------------------------------------- |
+| symbol    | String | true     |         |                                                          |
+| fromId    | String | false    |         | ID to get aggregate trades from INCLUSIVE.               |
+| startTime | Number | false    |         | Timestamp in ms to get aggregate trades from INCLUSIVE.  |
+| endTime   | Number | false    |         | Timestamp in ms to get aggregate trades until INCLUSIVE. |
+| limit     | Number | false    | `500`   | Max `1000`                                               |
+
+Note: If both `startTime` and `endTime` are sent, `limit` should not be sent AND the distance between `startTime` and `endTime` must be less than 24 hours.
+
+Note: If `fromId`, `startTime`, and `endTime` are not sent, the most recent aggregate trades will be returned.
+
+Note : Only market trades will be aggregated and returned, which means the insurance fund trades and ADL trades won't be aggregated.
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    aggId: 14642023,
+    symbol: 'TRXUSD_PERP',
+    price: '0.06087',
+    quantity: '50',
+    firstId: 26319898,
+    lastId: 26319898,
+    timestamp: 1663105187120,
+    isBuyerMaker: false,
+  }
+]
+```
+
+</details>
+
+#### delivery trades
+
+Get recent trades of a symbol.
+
+```js
+console.log(await client.deliveryTrades({ symbol: 'TRXUSD_PERP' }))
+```
+
+| Param  | Type   | Required | Default | Description |
+| ------ | ------ | -------- | ------- | ----------- |
+| symbol | String | true     |
+| limit  | Number | false    | `500`   | Max `1000`  |
+
+<details>
+<summary>Output</summary>
+
+```js
+;[
+  {
+    id: 26319660,
+    price: '0.06097',
+    qty: '28',
+    baseQty: '4592.42250287',
+    time: 1663103746267,
+    isBuyerMaker: true
+  },
+]
+```
+
+</details>
+
+#### delivery dailyStats
+
+24 hour price change statistics, not providing a symbol will return all tickers and is resource-expensive.
+
+```js
+console.log(await client.deliveryDailyStats({ symbol: 'TRXUSD_PERP' }))
+```
+
+| Param  | Type   | Required |
+| ------ | ------ | -------- |
+| symbol | String | false    |
+| pair   | String | false    |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  symbol: 'TRXUSD_PERP',
+  pair: 'TRXUSD',
+  priceChange: '-0.00277',
+  priceChangePercent: '-4.353',
+  weightedAvgPrice: '0.06248010',
+  lastPrice: '0.06087',
+  lastQty: '4',
+  openPrice: '0.06364',
+  highPrice: '0.06395',
+  lowPrice: '0.06069',
+  volume: '545316',
+  baseVolume: '87278342.48218514',
+  openTime: 1663019640000,
+  closeTime: 1663106045576,
+  firstId: 26308774,
+  lastId: 26320065,
+  count: 11292
+}
+```
+
+</details>
+
+#### delivery prices
+
+Latest price for all symbols.
+
+```js
+console.log(await client.futuresPrices())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  BTCUSDT: '8590.05392500',
+  ETHUSDT: '154.1100',
+  ...
+}
+```
+
+</details>
+
+#### delivery allBookTickers
+
+Best price/qty on the order book for all symbols.
+
+```js
+console.log(await client.deliveryAllBookTickers())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  BTCUSD_PERP: {
+    symbol: 'BTCUSD_PERP',
+    pair: 'BTCUSD',
+    bidPrice: '20120.9',
+    bidQty: '13673',
+    askPrice: '20121.0',
+    askQty: '2628',
+    time: 1663106372658
+  },
+  ETHUSD_PERP: {
+    symbol: 'ETHUSD_PERP',
+    pair: 'ETHUSD',
+    bidPrice: '1593.63',
+    bidQty: '7210',
+    askPrice: '1593.64',
+    askQty: '27547',
+    time: 1663106372667
+  }
+  ...
+}
+```
+
+</details>
+
+#### delivery markPrice
+
+Mark Price and Funding Rate.
+
+```js
+console.log(await client.deliveryMarkPrice())
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    symbol: 'BTCUSD_221230',
+    pair: 'BTCUSD',
+    markPrice: '20158.81560758',
+    indexPrice: '20152.05327273',
+    estimatedSettlePrice: '20147.96717735',
+    lastFundingRate: '',
+    interestRate: '',
+    nextFundingTime: 0,
+    time: 1663106459005
+  },
+  {
+    symbol: 'FILUSD_PERP',
+    pair: 'FILUSD',
+    markPrice: '5.88720470',
+    indexPrice: '5.89106242',
+    estimatedSettlePrice: '5.89377086',
+    lastFundingRate: '0.00010000',
+    interestRate: '0.00010000',
+    nextFundingTime: 1663113600000,
+    time: 1663106459005
+  }
+  ...
 ]
 ```
 
@@ -3434,6 +3818,484 @@ console.log(
 ```
 </details>
 
+### Delivery Authenticated REST endpoints
+
+#### deliveryGetOrder
+
+Check an order's status.
+
+- These orders will not be found
+  - order status is CANCELED or EXPIRED, <b>AND</b>
+  - order has NO filled trade, <b>AND</b>
+  - created time + 7 days < current time
+  
+
+| Name              | Type   | Mandatory | Description      |
+| ----------------- | ------ | --------  | ---------------- |
+| symbol            | STRING | YES       |                  |
+| orderId           | LONG   | NO        |                  |
+| origClientOrderId | STRING | NO        |                  |
+| recvWindow        | LONG   | NO        |                  |
+
+
+Either <b>orderId</b> or <b>origClientOrderId</b> must be sent.
+
+```js
+console.log(
+  await client.deliveryGetOrder({
+    symbol: 'BTCUSD_200925',
+    orderId: 1917641,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "avgPrice": "0.0",
+    "clientOrderId": "abc",
+    "cumBase": "0",
+    "executedQty": "0",
+    "orderId": 1917641,
+    "origQty": "0.40",
+    "origType": "TRAILING_STOP_MARKET",
+    "price": "0",
+    "reduceOnly": false,
+    "side": "BUY",
+    "status": "NEW",
+    "stopPrice": "9300",                // please ignore when order type is TRAILING_STOP_MARKET
+    "closePosition": false,             // if Close-All
+    "symbol": "BTCUSD_200925",
+    "pair": "BTCUSD",
+    "time": 1579276756075,              // order time
+    "timeInForce": "GTC",
+    "type": "TRAILING_STOP_MARKET",
+    "activatePrice": "9020",            // activation price, only return with TRAILING_STOP_MARKET order
+    "priceRate": "0.3",                 // callback rate, only return with TRAILING_STOP_MARKET order
+    "updateTime": 1579276756075,        // update time
+    "workingType": "CONTRACT_PRICE",
+    "priceProtect": false               // if conditional order trigger is protected
+}
+```
+</details>
+
+#### deliveryAllOrders
+
+Get all account orders; active, canceled, or filled.
+
+- These orders will not be found
+  - order status is CANCELED or EXPIRED, <b>AND</b>
+  - order has NO filled trade, <b>AND</b>
+  - created time + 7 days < current time
+  
+| Name              | Type   | Mandatory | Description            |
+| ----------------- | ------ | --------  | ---------------------- |
+| symbol            | STRING | YES       | The pair name          |
+| orderId           | LONG   | NO        |                        |
+| startTime         | LONG   | NO        |                        |
+| endTime           | LONG   | NO        |                        |
+| limit             | INT    | NO        | Default 500; max 1000. |
+| recvWindow        | LONG   | NO        |                        |
+
+If <b>orderId</b> is set, it will get orders >= that <b>orderId</b>. Otherwise most recent orders are returned.
+
+```js
+console.log(
+  await client.deliveryAllOrders({ symbol: 'BTCUSD_200925' })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "avgPrice": "0.0",
+    "clientOrderId": "abc",
+    "cumBase": "0",
+    "executedQty": "0",
+    "orderId": 1917641,
+    "origQty": "0.40",
+    "origType": "TRAILING_STOP_MARKET",
+    "price": "0",
+    "reduceOnly": false,
+    "side": "BUY",
+    "positionSide": "SHORT",
+    "status": "NEW",
+    "stopPrice": "9300",                // please ignore when order type is TRAILING_STOP_MARKET
+    "closePosition": false,             // if Close-All
+    "symbol": "BTCUSD_200925",
+    "pair": "BTCUSD",
+    "time": 1579276756075,              // order time
+    "timeInForce": "GTC",
+    "type": "TRAILING_STOP_MARKET",
+    "activatePrice": "9020",            // activation price, only return with TRAILING_STOP_MARKET order
+    "priceRate": "0.3",                 // callback rate, only return with TRAILING_STOP_MARKET order
+    "updateTime": 1579276756075,        // update time
+    "workingType": "CONTRACT_PRICE",
+    "priceProtect": false               // if conditional order trigger is protected
+  }
+  ...
+]
+```
+</details>
+
+#### deliveryBatchOrders
+
+Place multiple orders
+
+| Name                  | Type   | Mandatory | Description                                                                               |
+|-----------------------|--------|-----------|-------------------------------------------------------------------------------------------|
+| batchOrders           | LIST   | YES       | order list. Max 5 orders                                                                             |
+
+
+
+#### deliveryCancelBatchOrders
+
+Cancel multiple orders
+
+| Name                  | Type   | Mandatory | Description                                                                               |
+|-----------------------|--------|-----------|-------------------------------------------------------------------------------------------|
+| symbol                | STRING | YES       | The pair name                                                                             |
+| orderIdList           | STRING | NO        | max length 10<br/>e.g. `'[1234567,2345678]'`                                                |
+| origClientOrderIdList | STRING | NO        | max length 10<br/> e.g. `'["my_id_1","my_id_2"]'`, encode the double quotes. No space after comma. |
+
+
+#### deliveryLeverage
+
+Change user's initial leverage of specific symbol market.
+
+
+| Name              | Type   | Mandatory | Description                                |
+| ----------------- | ------ | --------  | ------------------------------------------ |
+| symbol            | STRING | YES       | The pair name                              |
+| leverage          | INT    | YES       | target initial leverage: int from 1 to 125 |
+| recvWindow        | LONG   | NO        |                                            |
+
+```js
+console.log(
+  await client.deliveryLeverage({
+    symbol: 'BTCUSD_200925',
+    leverage: 21,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "leverage": 21,
+    "maxQty": "1000",  // maximum quantity of base asset
+    "symbol": "BTCUSD_200925"
+}
+```
+</details>
+
+#### deliveryMarginType
+
+Change margin type.
+
+| Name              | Type   | Mandatory | Description       |
+| ----------------- | ------ | --------  | ----------------- |
+| symbol            | STRING | YES       | The pair name     |
+| marginType        | ENUM   | YES       | ISOLATED, CROSSED |
+| recvWindow        | LONG   | NO        |                   |
+
+```js
+console.log(
+  await client.futuresMarginType({
+    symbol: 'BTCUSD_200925',
+    marginType: 'ISOLATED',
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "code": 200,
+    "msg": "success"
+}
+```
+</details>
+
+#### deliveryPositionMargin
+
+Modify isolated position margin.
+
+| Name              | Type    | Mandatory | Description                                       |
+| ----------------- | ------- | --------  | ------------------------------------------------- |
+| symbol            | STRING  | YES       | The pair name                                     |
+| positionSide      | ENUM    | NO        | Default BOTH for One-way Mode; <br>LONG or SHORT for Hedge Mode. <br>It must be sent with Hedge Mode. |
+| amount            | DECIMAL | YES       |                                                   |
+| type              | INT     | YES       | 1: Add position margin，2: Reduce position margin |
+| recvWindow        | LONG    | NO        |                                                   |
+
+Only for isolated symbol.
+
+```js
+console.log(
+  await client.deliveryPositionMargin({
+    symbol: 'BTCUSD_200925',
+    amount: 100,
+    type: 1,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+    "amount": 100.0,
+    "code": 200,
+    "msg": "Successfully modify position margin.",
+    "type": 1
+}
+```
+</details>
+
+#### deliveryMarginHistory
+
+Get position margin change history.
+
+| Name              | Type   | Mandatory | Description                                       |
+| ----------------- | ------ | --------  | ------------------------------------------------- |
+| symbol            | STRING | YES       | The pair name                                     |
+| type              | INT    | NO        | 1: Add position margin，2: Reduce position margin |
+| startTime         | LONG   | NO        |                                                   |
+| endTime           | LONG   | NO        |                                                   |
+| limit             | INT    | NO        | Default 50;                                      |
+| recvWindow        | LONG   | NO        |                                                   |
+
+```js
+console.log(
+  await client.deliveryMarginHistory({
+    symbol: 'BTCUSD_200925',
+    type: 1,
+    startTime: 1578047897180,
+    limit: 10,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "amount": "23.36332311",
+        "asset": "BTC",
+        "symbol": "BTCUSD_200925",
+        "time": 1578047897183,
+        "type": 1,
+        "positionSide": "BOTH"
+    },
+    {
+        "amount": "100",
+        "asset": "BTC",
+        "symbol": "BTCUSD_200925",
+        "time": 1578047900425,
+        "type": 1,
+        "positionSide": "LONG"
+    }
+    ...
+]
+```
+</details>
+
+#### deliveryIncome
+
+Get income history.
+
+| Name              | Type   | Mandatory | Description                                       |
+| ----------------- | ------ | --------  | ------------------------------------------------- |
+| symbol            | STRING | NO        | The pair name                                     |
+| incomeType        | STRING | NO        | "TRANSFER"，"WELCOME_BONUS", "REALIZED_PNL"，<br>"FUNDING_FEE", "COMMISSION", and "INSURANCE_CLEAR" |
+| startTime         | LONG   | NO        | Timestamp in ms to get funding from INCLUSIVE.    |
+| endTime           | LONG   | NO        | Timestamp in ms to get funding until INCLUSIVE.   |
+| limit             | INT    | NO        | Default 100; max 1000                             |
+| recvWindow        | LONG   | NO        |                                                   |
+
+- If `incomeType` is not sent, all kinds of flow will be returned
+- `trandId` is unique in the same incomeType for a user
+- The interval between `startTime` and `endTime` can not exceed 200 days:
+    - If `startTime` and `endTime` are not sent, the last 200 days will be returned
+
+```js
+console.log(
+  await client.deliveryIncome({
+    symbol: 'BTCUSD_200925',
+    startTime: 1570608000000,
+    limit: 700,
+  })
+)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "symbol": "",               // trade symbol, if existing
+        "incomeType": "TRANSFER",   // income type
+        "income": "-0.37500000",    // income amount
+        "asset": "BTC",             // income asset
+        "info":"WITHDRAW",          // extra information
+        "time": 1570608000000,
+        "tranId":"9689322392",      // transaction id
+        "tradeId":""                // trade id, if existing
+    },
+    {
+        "symbol": "BTCUSD_200925",
+        "incomeType": "COMMISSION", 
+        "income": "-0.01000000",
+        "asset": "BTC",
+        "info":"",
+        "time": 1570636800000,
+        "tranId":"9689322392",
+        "tradeId":"2059192"
+    }
+]
+```
+</details>
+
+#### deliveryAccountBalance
+
+Get delivery account balance
+
+```js
+console.log(await client.deliveryAccountBalance());
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    "accountAlias": "SgsR",    // unique account code
+    "asset": "BTC",
+    "balance": "0.00250000",
+    "withdrawAvailable": "0.00250000",
+    "crossWalletBalance": "0.00241969",
+    "crossUnPnl": "0.00000000",
+    "availableBalance": "0.00241969",
+    "updateTime": 1592468353979
+  }
+  ...
+]
+```
+
+</details>
+
+#### deliveryUserTrades
+
+Get trades for a specific account and symbol.
+
+```js
+console.log(
+  await client.deliveryUserTrades({
+    symbol: 'BTCUSD_200626',
+  }),
+)
+```
+
+| Param      | Type   | Mandatory | Description                                              |
+| ---------- | ------ | --------- | -------------------------------------------------------- |
+| symbol     | STRING | NO        |                                                          |
+| pair       | STRING | NO        |                                                          |
+| startTime  | LONG   | NO        |                                                          |
+| endTime    | LONG   | NO        |                                                          |
+| limit      | INT    | NO        | Default 50; max 1000.                                    |
+| fromId     | LONG   | NO        | Trade id to fetch from. Default gets most recent trades. |
+| recvWindow | LONG   | NO        |                                                          |
+
+- Either symbol or pair must be sent
+- Symbol and pair cannot be sent together
+- Pair and fromId cannot be sent together
+- If a pair is sent,tickers for all symbols of the pair will be returned
+- The parameter `fromId` cannot be sent with `startTime` or `endTime`
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+  {
+    'symbol': 'BTCUSD_200626',
+    'id': 6,
+    'orderId': 28,
+    'pair': 'BTCUSD',
+    'side': 'SELL',
+    'price': '8800',
+    'qty': '1',
+    'realizedPnl': '0',
+    'marginAsset': 'BTC',
+    'baseQty': '0.01136364',
+    'commission': '0.00000454',
+    'commissionAsset': 'BTC',
+    'time': 1590743483586,
+    'positionSide': 'BOTH',
+    'buyer': false,
+    'maker': false
+  }
+    ...
+]
+
+```
+
+</details>
+
+#### deliveryLeverageBracket
+
+Get the pair's default notional bracket list.
+
+```js
+console.log(
+  await client.deliveryLeverageBracket({
+    pair: 'BTCUSD', // Optional
+  }),
+)
+```
+
+| Param      | Type   | Mandatory | Description                                               |
+| ---------- | ------ | --------- | ----------------------------------------------------------|
+| symbol     | STRING | NO        | Use if you are only interested in brackets for one symbol |
+| recvWindow | LONG   | NO        |                                                           |
+
+<details>
+<summary>Output</summary>
+
+```js
+[
+    {
+        "pair": "BTCUSD",
+        "brackets": [
+            {
+                "bracket": 1,   // bracket level
+                "initialLeverage": 125,  // the maximum leverage
+                "qtyCap": 50,  // upper edge of base asset quantity
+                "qtylFloor": 0,  // lower edge of base asset quantity
+                "maintMarginRatio": 0.004 // maintenance margin rate
+                "cum": 0.0  // Auxiliary number for quick calculation 
+            },
+        ]
+    }
+]
+```
+</details>
+
 ### WebSockets
 
 Every websocket utility returns a function you can call to close the opened
@@ -4137,6 +4999,311 @@ const futuresUser = await client.ws.futuresUser(msg => {
 ```
 </details>
 
+### Delivery WebSockets
+
+Every websocket utility returns a function you can call to close the opened
+connection and avoid memory issues.
+
+```js
+const clean = client.ws.deliveryDepth('BTCUSD_200626', depth => {
+  console.log(depth)
+})
+
+// After you're done
+clean()
+```
+
+Each websocket utility supports the ability to get a clean callback without data transformation, for this, pass the third attribute FALSE.
+
+```js
+const clean = client.ws.deliveryDepth('BTCUSD_200626', depth => {
+  console.log(depth)
+}, false)
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  "e": "depthUpdate",           // Event type
+  "E": 1591270260907,           // Event time
+  "T": 1591270260891,           // Transction time
+  "s": "BTCUSD_200626",         // Symbol
+  "ps": "BTCUSD",               // Pair
+  "U": 17285681,                // First update ID in event
+  "u": 17285702,                // Final update ID in event
+  "pu": 17285675,               // Final update Id in last stream(ie `u` in last stream)
+  "b": [                        // Bids to be updated
+    [
+      "9517.6",                 // Price level to be updated
+      "10"                      // Quantity
+    ]
+  ],
+  "a": [                        // Asks to be updated
+    [
+      "9518.5",                 // Price level to be updated
+      "45"                      // Quantity
+    ]
+  ]
+}
+```
+</details>
+
+#### deliveryDepth
+
+Live futuresDepth market data feed. The first parameter can either
+be a single symbol string or an array of symbols.
+
+```js
+client.ws.deliveryDepth('TRXUSD_PERP', depth => {
+  console.log(depth)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'depthUpdate',
+  eventTime: 1663111254317,
+  transactionTime: 1663111254138,
+  symbol: 'TRXUSD_PERP',
+  pair: 'TRXUSD',
+  firstUpdateId: 558024151999,
+  finalUpdateId: 558024152633,
+  prevFinalUpdateId: 558024150524,
+  bidDepth: [
+    { price: '0.06052', quantity: '1805' },
+    { price: '0.06061', quantity: '313' }
+  ],
+  askDepth: [
+    { price: '0.06062', quantity: '314' },
+    { price: '0.06063', quantity: '790' },
+    { price: '0.06065', quantity: '1665' },
+    { price: '0.06066', quantity: '2420' }
+  ]
+}
+```
+</details>
+
+#### deliveryPartialDepth
+
+Top bids and asks. Valid levels are 5, 10, or 20.
+Update Speed : 250ms, 500ms or 100ms.
+Accepts an array of objects for multiple depths.
+
+```js
+client.ws.deliveryPartialDepth({ symbol: 'TRXUSD_PERP', level: 10 }, depth => {
+  console.log(depth)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  level: 10,
+  eventType: 'depthUpdate',
+  eventTime: 1663111554598,
+  transactionTime: 1663111554498,
+  symbol: 'TRXUSD_PERP',
+  pair: 'TRXUSD',
+  firstUpdateId: 558027933795,
+  finalUpdateId: 558027935097,
+  prevFinalUpdateId: 558027932895,
+  bidDepth: [
+    { price: '0.06063', quantity: '604' },
+    { price: '0.06062', quantity: '227' },
+    { price: '0.06061', quantity: '327' }
+  ],
+  askDepth: [
+    { price: '0.06064', quantity: '468' },
+    { price: '0.06065', quantity: '131' }
+  ]
+}
+```
+</details>
+
+#### deliveryTicker
+
+24hr rollwing window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window from requestTime to 24hrs before.
+Accepts an array of symbols.
+
+```js
+client.ws.deliveryTicker('BNBUSD_PERP', ticker => {
+  console.log(ticker)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: '24hrTicker',
+  eventTime: 1664834148221,
+  symbol: 'BNBUSD_PERP',
+  pair: 'BNBUSD',
+  priceChange: '0.130',
+  priceChangePercent: '0.046',
+  weightedAvg: '286.02648763',
+  curDayClose: '285.745',
+  closeTradeQuantity: '1',
+  open: '285.615',
+  high: '289.050',
+  low: '282.910',
+  volume: '9220364',
+  volumeBase: '322360.49452795',
+  openTime: 1664747700000,
+  closeTime: 1664834148215,
+  firstTradeId: 179381113,
+  lastTradeId: 179462069,
+  totalTrades: 80957
+}
+```
+</details>
+
+#### deliveryAllTickers
+
+Retrieves all the tickers.
+
+```js
+client.ws.deliveryAllTickers(tickers => {
+  console.log(tickers)
+})
+```
+
+#### deliveryCandles
+
+Live candle data feed for a given interval. You can pass either a symbol string
+or a symbol array.
+
+```js
+client.ws.deliveryCandles('ETHUSD_PERP', '1m', candle => {
+  console.log(candle)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'kline',
+  eventTime: 1664834318306,
+  symbol: 'ETHUSD_PERP',
+  startTime: 1664834280000,
+  closeTime: 1664834339999,
+  firstTradeId: 545784425,
+  lastTradeId: 545784494,
+  open: '1317.68',
+  high: '1317.91',
+  low: '1317.68',
+  close: '1317.91',
+  volume: '6180',
+  trades: 70,
+  interval: '1m',
+  isFinal: false,
+  baseVolume: '46.89730466',
+  buyVolume: '5822',
+  baseBuyVolume: '44.18040830'
+}
+```
+</details>
+
+#### deliveryAggTrades
+
+Live trade data feed. Pass either a single symbol string or an array of symbols. The Aggregate Trade Streams push trade information that is aggregated for a single taker order every 100 milliseconds.
+
+```js
+client.ws.deliveryAggTrades(['ETHUSD_PERP', 'BNBUSD_PERP'], trade => {
+  console.log(trade)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventType: 'aggTrade',
+  eventTime: 1664834403682,
+  symbol: 'ETHUSD_PERP',
+  aggId: 216344302,
+  price: '1317.57',
+  quantity: '1318',
+  firstId: 545784591,
+  lastId: 545784591,
+  timestamp: 1664834403523,
+  isBuyerMaker: false
+}
+```
+</details>
+
+
+#### deliveryCustomSubStream
+
+You can add custom sub streams by view [docs](https://binance-docs.github.io/apidocs/delivery/en/#websocket-market-streams)
+
+```js
+client.ws.deliveryCustomSubStream(['!miniTicker@arr','ETHUSD_PERP@markPrice@1s'], console.log)
+```
+
+#### deliveryUser
+
+Live user messages data feed.
+For different event types, see [official documentation](https://binance-docs.github.io/apidocs/delivery/en/#user-data-streams)
+
+**Requires authentication**
+
+```js
+const deliveryUser = await client.ws.deliveryUser(msg => {
+  console.log(msg)
+})
+```
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  eventTime: 1664834883117,
+  transactionTime: 1664834883101,
+  eventType: 'ACCOUNT_UPDATE',
+  eventReasonType: 'ORDER',
+  balances: [
+    {
+      asset: 'BUSD',
+      walletBalance: '123.45678901',
+      crossWalletBalance: '123.45678901',
+      balanceChange: '0'
+    },
+    {
+      asset: 'BNB',
+      walletBalance: '0.12345678',
+      crossWalletBalance: '0.12345678',
+      balanceChange: '0'
+    }
+  ],
+  positions: [
+    {
+      symbol: 'ETHBUSD',
+      positionAmount: '420.024',
+      entryPrice: '1234.56789',
+      accumulatedRealized: '9000.12345678',
+      unrealizedPnL: '0.38498800',
+      marginType: 'cross',
+      isolatedWallet: '0',
+      positionSide: 'BOTH'
+    }
+  ]
+}
+```
+</details>
+
 #### Common
 
 #### getInfo
@@ -4161,6 +5328,11 @@ console.log(client.getInfo())
      orderCount1d: "347",
      orderCount10s: "1",
      usedWeigh1m: "15",
+  },
+  delivery: {
+    usedWeight1m: '13',
+    responseTime: '4ms',
+    orderCount1m: '1'
   }
 }
 ```

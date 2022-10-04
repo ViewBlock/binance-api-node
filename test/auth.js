@@ -231,6 +231,20 @@ const main = () => {
       'maxWithdrawAmount',
     ])
   })
+
+  test('[DELIVERY-REST] walletBalance', async t => {
+    const walletBalance = await client.deliveryAccountBalance()
+    t.truthy(walletBalance)
+    checkFields(t, walletBalance[0], [
+      'asset',
+      'balance',
+      'withdrawAvailable',
+      'crossWalletBalance',
+      'crossUnPnl',
+      'availableBalance',
+      'maxWithdrawAmount',
+    ])
+  })
 }
 
 main()
