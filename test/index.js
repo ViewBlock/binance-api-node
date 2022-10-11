@@ -104,7 +104,7 @@ test('[REST] individual price', async t => {
 })
 
 test('[REST] multiple prices', async t => {
-  const prices = await client.prices({ symbols: ["ETHUSDT","ETHBUSD"] })
+  const prices = await client.prices({ symbols: ['ETHUSDT', 'ETHBUSD'] })
   t.truthy(prices)
   t.truthy(prices.ETHUSDT)
   t.truthy(prices.ETHBUSD)

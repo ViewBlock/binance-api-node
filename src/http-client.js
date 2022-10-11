@@ -326,12 +326,12 @@ const aggTrades = (pubCall, payload, endpoint = '/api/v3/aggTrades') =>
     }),
   )
 
-  // Convert the array to string to prevent unacceptable encoding
-  const processSymbols = payload => {
-    if (payload?.symbols) {
-      payload.symbols = `["${payload.symbols.join('"')}"]`
-    }
+// Convert the array to string to prevent unacceptable encoding
+const processSymbols = payload => {
+  if (payload && payload.hasOwnProperty('symbols')) {
+    payload.symbols = `["${payload.symbols.join('","')}"]`
   }
+}
 
 export default opts => {
   const endpoints = {
@@ -362,7 +362,7 @@ export default opts => {
       kCall('/api/v3/historicalTrades', payload),
 
     dailyStats: payload => pubCall('/api/v3/ticker/24hr', payload),
-    prices: payload => 
+    prices: payload =>
       pubCall('/api/v3/ticker/price', processSymbols(payload)).then(r =>
         (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
