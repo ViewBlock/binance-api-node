@@ -829,11 +829,15 @@ console.log(await client.futuresDailyStats({ symbol: 'ETHBTC' }))
 
 #### futures prices
 
-Latest price for all symbols.
+Latest price for symbol, not providing a symbol will return latest price for all symbols and is resource-expensive.
 
 ```js
 console.log(await client.futuresPrices())
 ```
+
+| Param  | Type   | Required |
+| ------ | ------ | -------- |
+| symbol | String | false    |
 
 <details>
 <summary>Output</summary>

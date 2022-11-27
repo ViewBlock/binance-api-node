@@ -469,8 +469,8 @@ export default opts => {
     futuresTrades: payload =>
       checkParams('trades', payload, ['symbol']) && pubCall('/fapi/v1/trades', payload),
     futuresDailyStats: payload => pubCall('/fapi/v1/ticker/24hr', payload),
-    futuresPrices: () =>
-      pubCall('/fapi/v1/ticker/price').then(r =>
+    futuresPrices: payload =>
+      pubCall('/fapi/v1/ticker/price', payload).then(r =>
         (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
     futuresAllBookTickers: () =>
