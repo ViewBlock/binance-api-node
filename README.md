@@ -391,7 +391,7 @@ console.log(await client.aggTrades({ symbol: 'ETHBTC' }))
 | endTime   | Number | false    |         | Timestamp in ms to get aggregate trades until INCLUSIVE. |
 | limit     | Number | false    | `500`   | Max `500`                                                |
 
-Note: If both `startTime` and `endTime` are sent, `limit` should not be sent AND the distance between `startTime` and `endTime` must be less than 24 hours.
+Note: If both `startTime` and `endTime` are sent, `limit` should not be sent AND the distance between `startTime` and `endTime` must be less than 1 hour.
 
 Note: If `frondId`, `startTime`, and `endTime` are not sent, the most recent aggregate trades will be returned.
 
