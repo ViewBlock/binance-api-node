@@ -462,7 +462,7 @@ declare module 'binance-api-node' {
     }): Promise<AggregatedTrade[]>
     allBookTickers(): Promise<{ [key: string]: Ticker }>
     book(options: { symbol: string; limit?: number }): Promise<OrderBook>
-    exchangeInfo(): Promise<ExchangeInfo>
+    exchangeInfo(options?: { symbol: string }): Promise<ExchangeInfo>
     lendingAccount(options?: { useServerTime: boolean }): Promise<LendingAccount>
     fundingWallet(options?: {
       asset?: string
