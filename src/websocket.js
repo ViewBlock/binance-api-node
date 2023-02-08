@@ -628,6 +628,7 @@ const userTransforms = {
     price: m.p,
     executionType: m.x,
     stopPrice: m.P,
+    trailingDelta: m.d,
     icebergQuantity: m.F,
     orderStatus: m.X,
     orderRejectReason: m.r,
@@ -646,6 +647,7 @@ const userTransforms = {
     orderListId: m.g,
     quoteOrderQuantity: m.Q,
     lastQuoteTransacted: m.Y,
+    trailingTime: m.D,
   }),
   listStatus: m => ({
     eventType: 'listStatus',
