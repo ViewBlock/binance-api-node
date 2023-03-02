@@ -9,7 +9,7 @@ declare module 'binance-api-node' {
     wsBase?: string
     wsFutures?: string
     proxy?: string
-    fetch?: unknown
+    fetchClient?: unknown
   }): Binance
 
   export type ErrorCodes_LT =

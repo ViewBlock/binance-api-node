@@ -334,7 +334,8 @@ export default opts => {
     delivery: (opts && opts.httpDelivery) || COIN_FUTURES,
   }
 
-  fetchClient = fetch || opts.fetch;
+  // overriding the fetch client if available in options
+  fetchClient = opts.fetchClient || fetch;
 
   const pubCall = publicCall({ ...opts, endpoints })
   const deliveryPubCall = publicCall({ ...opts, endpoints: { futures: endpoints.delivery } })
