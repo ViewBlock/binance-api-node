@@ -96,6 +96,18 @@ declare module 'binance-api-node' {
     REJECTED_MBX_KEY = -2015,
   }
 
+  export enum HttpMethod {
+    GET = 'GET',
+    HEAD = 'HEAD',
+    POST = 'POST',
+    PUT = 'PUT',
+    DELETE = 'DELETE',
+    CONNECT = 'CONNECT',
+    OPTIONS = 'OPTIONS',
+    TRACE = 'TRACE',
+    PATCH = 'PATCH',
+  }
+
   export interface Account {
     accountType: TradingType.MARGIN | TradingType.SPOT
     balances: AssetBalance[]
@@ -761,6 +773,8 @@ declare module 'binance-api-node' {
       limit?: number
       fromId?: number
     }): Promise<MyTrade[]>
+    publicRequest(method: HttpMethod, url: string, payload: object): Promise<unknown>
+    privateRequest(method: HttpMethod, url: string, payload: object): Promise<unknown>
     disableMarginAccount(options: { symbol: string }): Promise<{ success: boolean; symbol: string }>
     enableMarginAccount(options: { symbol: string }): Promise<{ success: boolean; symbol: string }>
     getPortfolioMarginAccountInfo(): Promise<{
