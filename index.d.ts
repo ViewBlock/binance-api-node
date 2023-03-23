@@ -217,6 +217,28 @@ declare module 'binance-api-node' {
     SUCCESS = 1,
   }
 
+  export interface UserAssetDribbletDetails {
+    transId: number
+    serviceChargeAmount: string
+    amount: string
+    operateTime: number
+    transferedAmount: string
+    fromAsset: string
+  }
+
+  export interface UserAssetDribblets {
+    operateTime: number
+    totalTransferedAmount: string
+    totalServiceChargeAmount: string
+    transId: number
+    userAssetDribbletDetails: UserAssetDribbletDetails[]
+  }
+
+  export interface DustLog {
+    total: number
+    userAssetDribblets: UserAssetDribblets[]
+  }
+
   export interface DepositHistoryResponse {
     [index: number]: {
       insertTime: number
@@ -564,6 +586,12 @@ declare module 'binance-api-node' {
       limit?: number
       recvWindow?: number
     }): Promise<DepositHistoryResponse>
+    dustLog(options: {
+        startTime?: number
+        endTime?: number
+        recvWindow?: number
+        timestamp: number
+    }): DustLog
     universalTransfer(options: UniversalTransfer): Promise<{ tranId: number }>
     universalTransferHistory(
       options: UniversalTransferHistory,
