@@ -20,12 +20,21 @@ const info = {
 /**
  * Build query string for uri encoded url based on json object
  */
-const makeQueryString = q =>
-  q
-    ? `?${Object.keys(q)
-        .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(q[k])}`)
-        .join('&')}`
-    : ''
+const makeQueryString = params => {
+  if (!params) return ''
+  return Object.entries(params)
+    .map(stringifyKeyValuePair)
+    .join('&')
+}
+
+/**
+ * NOTE: The array conversion logic is different from usual query string.
+ * E.g. symbols=["BTCUSDT","BNBBTC"] instead of symbols[]=BTCUSDT&symbols[]=BNBBTC
+ */
+const stringifyKeyValuePair = ([key, value]) => {
+  const valueString = Array.isArray(value) ? `["${value.join('","')}"]` : value
+  return `${key}=${encodeURIComponent(valueString)}`
+}
 
 /**
  * Get API limits info from headers
@@ -47,8 +56,8 @@ const responseHandler = res => {
   const marketName = res.url.includes(FUTURES)
     ? 'futures'
     : res.url.includes(COIN_FUTURES)
-    ? 'delivery'
-    : 'spot'
+      ? 'delivery'
+      : 'spot'
 
   Object.keys(headersMapping).forEach(key => {
     const outKey = headersMapping[key]
@@ -122,13 +131,12 @@ const checkParams = (name, payload, requires = []) => {
 const publicCall = ({ proxy, endpoints }) => (path, data, method = 'GET', headers = {}) => {
   return sendResult(
     fetch(
-      `${
-        path.includes('/fapi') || path.includes('/futures')
-          ? endpoints.futures
-          : path.includes('/dapi')
+      `${path.includes('/fapi') || path.includes('/futures')
+        ? endpoints.futures
+        : path.includes('/dapi')
           ? endpoints.delivery
           : endpoints.base
-      }${path}${makeQueryString(data)}`,
+      }${path}?${makeQueryString(data)}`,
       {
         method,
         json: true,
@@ -173,8 +181,10 @@ const privateCall = ({
   endpoints,
   getTime = defaultGetTime,
   pubCall,
-}) => (path, data = {}, method = 'GET', noData, noExtra) => {
-  if (!apiKey || !apiSecret) {
+  privateKey,
+  privateKeyPassphrase
+}) => (path, data = {}, method = 'GET') => {
+  if ((!apiKey || !apiSecret) && (!apiKey || !privateKey || !privateKeyPassphrase)) {
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
   }
 
@@ -186,22 +196,32 @@ const privateCall = ({
       delete data.useServerTime
     }
 
-    const signature = crypto
-      .createHmac('sha256', apiSecret)
-      .update(makeQueryString({ ...data, timestamp }).substr(1))
-      .digest('hex')
-
-    const newData = noExtra ? data : { ...data, timestamp, signature }
+    let signature;
+    const queryString = makeQueryString({ ...data, timestamp });
+    if (!privateKey) {
+      signature = crypto
+        .createHmac('sha256', apiSecret)
+        .update(queryString)
+        .digest('hex')
+    } else {
+      signature = crypto
+        .createSign('RSA-SHA256')
+        .update(queryString)
+        .sign({
+          key: privateKey,
+          passphrase: privateKeyPassphrase
+        }, 'base64')
+      signature = encodeURIComponent(signature)
+    }
 
     return sendResult(
       fetch(
-        `${
-          path.includes('/fapi') || path.includes('/futures')
-            ? endpoints.futures
-            : path.includes('/dapi')
+        `${path.includes('/fapi') || path.includes('/futures')
+          ? endpoints.futures
+          : path.includes('/dapi')
             ? endpoints.delivery
             : endpoints.base
-        }${path}${noData ? '' : makeQueryString(newData)}`,
+        }${path}?${queryString}&signature=${signature}`,
         {
           method,
           headers: { 'X-MBX-APIKEY': apiKey },
