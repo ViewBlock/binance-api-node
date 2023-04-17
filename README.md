@@ -32,6 +32,25 @@ const client2 = Binance({
 client.time().then(time => console.log(time))
 ```
 
+Can also use an RSA api key. You can create [here](https://www.binance.com/en/support/faq/how-to-generate-an-rsa-key-pair-to-send-api-requests-on-binance-2b79728f331e43079b27440d9d15c5db)
+
+```js
+import Binance from 'binance-api-node'
+
+const client = Binance()
+
+// Authenticated client, can make signed calls
+const client2 = Binance({
+  apiKey: 'xxx',
+  apiSecret: 'xxx',
+  getTime: xxx,
+  privateKey: 'path of .pem file',
+  privateKeyPassphrase: 'password .pem'
+})
+
+client.time().then(time => console.log(time))
+```
+
 If you do not have an appropriate babel config, you will need to use the basic commonjs requires.
 
 ```js
