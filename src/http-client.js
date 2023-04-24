@@ -197,7 +197,8 @@ const privateCall = ({
     }
 
     let signature;
-    let queryString = makeQueryString({ ...data, timestamp });
+    const newData = noExtra ? data : { ...data, timestamp };
+    const queryString = noData ? '' : makeQueryString(newData);
     if (!privateKey) {
       signature = crypto
         .createHmac('sha256', apiSecret)
@@ -213,8 +214,6 @@ const privateCall = ({
         }, 'base64')
       signature = encodeURIComponent(signature)
     }
-    const newData = noExtra ? data : queryString;
-    queryString = noData ? '' : makeQueryString(newData)
     return sendResult(
       fetch(
         `${path.includes('/fapi') || path.includes('/futures')
@@ -222,7 +221,7 @@ const privateCall = ({
           : path.includes('/dapi')
             ? endpoints.delivery
             : endpoints.base
-        }${path}?${queryString}${noData ? '' : `&signature=+${signature}`}`,
+        }${path}?${queryString}${noData ? '' : `&signature=${signature}`}`,
         {
           method,
           headers: { 'X-MBX-APIKEY': apiKey },
