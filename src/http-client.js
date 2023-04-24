@@ -183,7 +183,7 @@ const privateCall = ({
   pubCall,
   privateKey,
   privateKeyPassphrase
-}) => (path, data = {}, method = 'GET') => {
+}) => (path, data = {}, method = 'GET', noData, noExtra) => {
   if ((!apiKey || !apiSecret) && (!apiKey || !privateKey || !privateKeyPassphrase)) {
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
   }
@@ -197,7 +197,7 @@ const privateCall = ({
     }
 
     let signature;
-    const queryString = makeQueryString({ ...data, timestamp });
+    let queryString = makeQueryString({ ...data, timestamp });
     if (!privateKey) {
       signature = crypto
         .createHmac('sha256', apiSecret)
@@ -213,7 +213,8 @@ const privateCall = ({
         }, 'base64')
       signature = encodeURIComponent(signature)
     }
-
+    const newData = noExtra ? data : queryString;
+    queryString = noData ? '' : makeQueryString(newData)
     return sendResult(
       fetch(
         `${path.includes('/fapi') || path.includes('/futures')
@@ -221,7 +222,7 @@ const privateCall = ({
           : path.includes('/dapi')
             ? endpoints.delivery
             : endpoints.base
-        }${path}?${queryString}&signature=${signature}`,
+        }${path}?${queryString}${noData ? '' : `&signature=+${signature}`}`,
         {
           method,
           headers: { 'X-MBX-APIKEY': apiKey },
