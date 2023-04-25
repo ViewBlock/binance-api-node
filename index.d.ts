@@ -1,6 +1,6 @@
 // tslint:disable:interface-name
-declare module 'binance-api-node' {
-  export default function(options?: {
+declare module 'binance-api-aziz' {
+  export default function (options?: {
     apiKey?: string
     apiSecret?: string
     getTime?: () => number | Promise<number>
@@ -339,11 +339,11 @@ declare module 'binance-api-node' {
   export type CancelOrderOptions =
     | { symbol: string; orderId: number; useServerTime?: boolean; newClientOrderId?: string }
     | {
-        symbol: string
-        origClientOrderId: string
-        useServerTime?: boolean
-        newClientOrderId?: string
-      }
+      symbol: string
+      origClientOrderId: string
+      useServerTime?: boolean
+      newClientOrderId?: string
+    }
 
   export type GetOrderOcoOptions =
     | { orderListId: number; useServerTime?: boolean }
@@ -352,11 +352,11 @@ declare module 'binance-api-node' {
   export type CancelOrderOcoOptions =
     | { symbol: string; orderListId: number; useServerTime?: boolean; newClientOrderId?: string }
     | {
-        symbol: string
-        listClientOrderId: string
-        useServerTime?: boolean
-        newClientOrderId?: string
-      }
+      symbol: string
+      listClientOrderId: string
+      useServerTime?: boolean
+      newClientOrderId?: string
+    }
 
   export type cancelOpenOrdersOptions = {
     symbol: string
@@ -599,10 +599,10 @@ declare module 'binance-api-node' {
       recvWindow?: number
     }): Promise<DepositHistoryResponse>
     dustLog(options: {
-        startTime?: number
-        endTime?: number
-        recvWindow?: number
-        timestamp: number
+      startTime?: number
+      endTime?: number
+      recvWindow?: number
+      timestamp: number
     }): DustLog
     universalTransfer(options: UniversalTransfer): Promise<{ tranId: number }>
     universalTransferHistory(
@@ -1631,9 +1631,9 @@ declare module 'binance-api-node' {
     listClientOrderId: string
     transactionTime: number
     orders: Array<{
-        symbol: string
-        orderId: number
-        clientOrderId: string
+      symbol: string
+      orderId: number
+      clientOrderId: string
     }>
   }
 
