@@ -19,6 +19,7 @@
     "ci": "yarn lint && yarn prettier:check && yarn test"
   },
   "dependencies": {
+    "crypto-js": "^4.1.1",
     "https-proxy-agent": "^5.0.0",
     "isomorphic-fetch": "^3.0.0",
     "isomorphic-ws": "^4.0.1",

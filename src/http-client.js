@@ -1,7 +1,7 @@
-import crypto from 'crypto'
 import zip from 'lodash.zipobject'
 import HttpsProxyAgent from 'https-proxy-agent'
 import JSONbig from 'json-bigint'
+import CryptoJS from 'crypto-js'
 
 import 'isomorphic-fetch'
 
@@ -186,10 +186,11 @@ const privateCall = ({
       delete data.useServerTime
     }
 
-    const signature = crypto
-      .createHmac('sha256', apiSecret)
-      .update(makeQueryString({ ...data, timestamp }).substr(1))
-      .digest('hex')
+    const signature = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, apiSecret)
+      .update(makeQueryString({ ...data, timestamp }))
+      .finalize()
+      .toString()
+      .replace(/(.{48})/g, '$1\n')
 
     const newData = noExtra ? data : { ...data, timestamp, signature }
 
