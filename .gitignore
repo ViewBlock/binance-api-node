@@ -4,3 +4,4 @@ dist/
 
 .env
 .idea
+.DS_Store
