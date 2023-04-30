@@ -1074,6 +1074,8 @@ declare module 'binance-api-aziz' {
     quoteCommissionPrecision: number
     quoteOrderQtyMarketAllowed: boolean
     quotePrecision: number
+    quantityPrecision: number
+    pricePrecision: number
     status: string
     symbol: string
   }
