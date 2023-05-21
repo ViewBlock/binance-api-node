@@ -1069,6 +1069,8 @@ declare module 'binance-api-node' {
     ocoAllowed: boolean
     orderTypes: T[]
     permissions: TradingType_LT[]
+    pricePrecision:number,
+    quantityPrecision:number
     quoteAsset: string
     quoteAssetPrecision: number
     quoteCommissionPrecision: number
