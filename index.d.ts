@@ -624,7 +624,7 @@ declare module 'binance-api-node' {
     }): Promise<AggregatedTrade[]>
     futuresTrades(options: { symbol: string; limit?: number }): Promise<TradeResult[]>
     futuresUserTrades(options: {
-      symbol: string
+      symbol?: string
       startTime?: number
       endTime?: number
       fromId?: number
