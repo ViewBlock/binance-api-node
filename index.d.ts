@@ -1036,7 +1036,7 @@ declare module 'binance-api-node' {
 
   export interface SymbolMinNotionalFilter {
     filterType: SymbolFilterType.MIN_NOTIONAL
-    minNotional: string
+    notional: string
   }
 
   export interface SymbolMaxNumOrdersFilter {
