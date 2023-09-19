@@ -1409,12 +1409,13 @@ declare module 'binance-api-node' {
     FULL = 'FULL',
   }
 
-  export type TimeInForce_LT = 'GTC' | 'IOC' | 'FOK'
+  export type TimeInForce_LT = 'GTC' | 'IOC' | 'FOK' | 'GTE_GTC'
 
   export const enum TimeInForce {
     GTC = 'GTC',
     IOC = 'IOC',
     FOK = 'FOK',
+    GTE_GTC = 'GTE_GTC'
   }
 
   export type OrderRejectReason_LT =
