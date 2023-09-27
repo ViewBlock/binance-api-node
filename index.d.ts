@@ -1163,6 +1163,8 @@ declare module 'binance-api-node' {
 
   export interface TrailingStopMarketNewFuturesOrder extends NewFuturesOrderBase {
     type: 'TRAILING_STOP_MARKET'
+      
+    quantity?:string
     // default as the latest price(supporting different workingType)
     activationPrice?: string
     // min 0.1, max 5 where 1 for 1%
