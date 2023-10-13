@@ -1,6 +1,8 @@
 node_modules/
 .nyc_output/
 dist/
-
+.vscode/
+.yarn/
+.yarnrc
 .env
 .idea
