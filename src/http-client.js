@@ -5,6 +5,7 @@ import JSONbig from 'json-bigint'
 
 import 'isomorphic-fetch'
 
+let fetchClient = fetch;
 const BASE = 'https://api.binance.com'
 const FUTURES = 'https://fapi.binance.com'
 const COIN_FUTURES = 'https://dapi.binance.com'
@@ -121,7 +122,7 @@ const checkParams = (name, payload, requires = []) => {
  */
 const publicCall = ({ proxy, endpoints }) => (path, data, method = 'GET', headers = {}) => {
   return sendResult(
-    fetch(
+    fetchClient(
       `${
         path.includes('/fapi') || path.includes('/futures')
           ? endpoints.futures
@@ -194,7 +195,7 @@ const privateCall = ({
     const newData = noExtra ? data : { ...data, timestamp, signature }
 
     return sendResult(
-      fetch(
+      fetchClient(
         `${
           path.includes('/fapi') || path.includes('/futures')
             ? endpoints.futures
@@ -332,6 +333,9 @@ export default opts => {
     futures: (opts && opts.httpFutures) || FUTURES,
     delivery: (opts && opts.httpDelivery) || COIN_FUTURES,
   }
+
+  // overriding the fetch client if available in options
+  fetchClient = opts.fetchClient || fetch;
 
   const pubCall = publicCall({ ...opts, endpoints })
   const deliveryPubCall = publicCall({ ...opts, endpoints: { futures: endpoints.delivery } })
