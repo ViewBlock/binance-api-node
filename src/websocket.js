@@ -786,6 +786,10 @@ const userOpenHandler = (cb, transform = true) => () => {
   cb({ [transform ? 'eventType' : 'type']: 'open' })
 }
 
+const userCloseHandler = (cb, transform = true) => () => {
+  cb({ [transform ? 'eventType' : 'type']: 'close' })
+}
+
 const userErrorHandler = (cb, transform = true) => error => {
   cb({ [transform ? 'eventType' : 'type']: 'error', error })
 }
@@ -875,6 +879,9 @@ const user = (opts, variator) => (cb, transform) => {
           w.onmessage = msg => userEventHandler(cb, transform, variator)(msg)
           if (opts.emitSocketOpens) {
             w.onopen = () => userOpenHandler(cb, transform)()
+          }
+          if (opts.emitSocketCloses) {
+            w.onclose = () => userCloseHandler(cb, transform)()
           }
           if (opts.emitSocketErrors) {
             w.onerror = ({ error }) => errorHandler(error)
