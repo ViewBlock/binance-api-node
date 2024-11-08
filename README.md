@@ -127,6 +127,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [marginOrder](#marginOrder)
   - [marginOrderOco](#marginOrderOco)
   - [marginGetOrder](#marginGetOrder)
+  - [marginGetOrderOco](#marginGetOrderOco)
   - [disableMarginAccount](#disableMarginAccount)
   - [enableMarginAccount](#enableMarginAccount)
 - [Portfolio Margin](#portfolio-margin)
@@ -3329,6 +3330,55 @@ console.log(await client.marginGetOrder({
 }
 ```
 
+</details>
+
+#### marginGetOrderOco
+
+Retrieves a specific Margin OCO based on provided optional parameters
+
+```js
+console.log(
+  await client.getMarginOrderOco({
+    orderListId: 27,
+  }),
+)
+```
+
+| Param             | Type   | Required | Description                                 |
+| ----------------- | ------ | -------- | ------------------------------------------- |
+| orderListId       | Number | true     | Not required if `listClientOrderId` is used |
+| symbol            | Boolean| false    | mandatory for isolated margin, not supported for cross margin
+| isIsolated        | Boolean| false    |
+| listClientOrderId | String | false    |
+| recvWindow        | Number | false    |
+
+<details>
+<summary>Output</summary>
+
+```js
+{
+  orderListId: 27,
+  contingencyType: 'OCO',
+  listStatusType: 'EXEC_STARTED',
+  listOrderStatus: 'EXECUTING',
+  listClientOrderId: 'h2USkA5YQpaXHPIrkd96xE',
+  transactionTime: 1565245656253,
+  symbol: 'LTCBTC',
+  isIsolated: false,
+  orders: [
+    {
+      symbol: 'LTCBTC',
+      orderId: 4,
+      clientOrderId: 'qD1gy3kc3Gx0rihm9Y3xwS'
+    },
+    {
+      symbol: 'LTCBTC',
+      orderId: 5,
+      clientOrderId: 'ARzZ9I00CPM8i3NhmU9Ega'
+    }
+  ]
+}
+```
 </details>
 
 ### Portfolio Margin Endpoints

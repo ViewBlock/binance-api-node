@@ -750,6 +750,13 @@ declare module 'binance-api-node' {
       origClientOrderId?: string
       recvWindow?: number
     }): Promise<Order>
+    marginGetOrderOco(options: {
+      symbol: string
+      isIsolated?: string | boolean
+      orderId?: string
+      origClientOrderId?: string
+      recvWindow?: number
+    }): Promise<QueryOrderOcoResult>
     marginAllOrders(options: {
       symbol: string
       useServerTime?: boolean
@@ -1902,6 +1909,18 @@ declare module 'binance-api-node' {
     listClientOrderId: string
     transactionTime: number
     symbol: string
+    orders: Order[]
+  }
+
+  export interface QueryMarginOrderOcoResult {
+    orderListId: number
+    contingencyType: OcoOrderType.CONTINGENCY_TYPE
+    listStatusType: ListStatusType_LT
+    listOrderStatus: ListOrderStatus_LT
+    listClientOrderId: string
+    transactionTime: number
+    symbol: string
+    isIsolated: Boolean
     orders: Order[]
   }
 
