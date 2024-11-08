@@ -437,6 +437,7 @@ export default opts => {
     marginOrder: payload => order(privCall, payload, '/sapi/v1/margin/order'),
     marginOrderOco: payload => orderOco(privCall, payload, '/sapi/v1/margin/order/oco'),
     marginGetOrder: payload => privCall('/sapi/v1/margin/order', payload),
+    marginGetOrderOco: payload => privCall('/sapi/v1/margin/orderList', payload),
     marginCancelOrder: payload => privCall('/sapi/v1/margin/order', payload, 'DELETE'),
     marginOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload),
     marginAccountInfo: payload => privCall('/sapi/v1/margin/account', payload),
