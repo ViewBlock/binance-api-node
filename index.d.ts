@@ -378,6 +378,12 @@ declare module 'binance-api-node' {
     useServerTime?: boolean
   }
 
+  export type marginCancelOpenOrdersOptions = {
+    symbol: string
+    useServerTime?: boolean,
+    isIsolated?: 'TRUE' | 'FALSE' | boolean
+  }
+
   export interface GetInfo {
     spot: GetInfoDetails
     futures: GetInfoDetails
@@ -770,6 +776,7 @@ declare module 'binance-api-node' {
       symbol?: string
       useServerTime?: boolean
     }): Promise<QueryOrderResult[]>
+    marginCancelOpenOrders(options: marginCancelOpenOrdersOptions): Promise<CancelOrderResult[]>
     marginRepay(options: MarginBorrowOptions): Promise<{ tranId: number }>
     marginLoan(options: MarginBorrowOptions): Promise<{ tranId: number }>
     marginAccountInfo(options?: { recvWindow?: number }): Promise<IsolatedCrossAccount>
