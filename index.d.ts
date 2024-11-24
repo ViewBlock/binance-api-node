@@ -53,6 +53,36 @@ declare module 'binance-api-node' {
     | -2014
     | -2015
 
+  export type CapitalFlowType =
+    | 'TRANSFER'
+    | 'BORROW'
+    | 'REPAY'
+    | 'BUY_INCOME'
+    | 'BUY_EXPENSE'
+    | 'SELL_INCOME'
+    | 'SELL_EXPENSE'
+    | 'TRADING_COMMISSION'
+    | 'BUY_LIQUIDATION'
+    | 'SELL_LIQUIDATION'
+    | 'REPAY_LIQUIDATION'
+    | 'OTHER_LIQUIDATION'
+    | 'LIQUIDATION_FEE'
+    | 'SMALL_BALANCE_CONVERT'
+    | 'COMMISSION_RETURN'
+    | 'SMALL_CONVERT'
+
+  export type MarginInterestHistory = {
+    txId: string
+    interestAccuredTime: number
+    asset: string
+    rawAsset?: string
+    principal: string
+    interest: string
+    interestRate: string
+    type: string
+    isolatedSymbol: string
+  }
+
   export const enum ErrorCodes {
     UNKNOWN = -1000,
     DISCONNECTED = -1001,
@@ -780,10 +810,48 @@ declare module 'binance-api-node' {
     marginRepay(options: MarginBorrowOptions): Promise<{ tranId: number }>
     marginLoan(options: MarginBorrowOptions): Promise<{ tranId: number }>
     marginAccountInfo(options?: { recvWindow?: number }): Promise<IsolatedCrossAccount>
+    marginCapitalFlow(options?: {
+      asset?: string
+      /**
+       * Required when querying isolated data
+       */
+      symbol?: string
+      type?: CapitalFlowType
+      /**
+       * Only supports querying the data of the last 90 days
+       */
+      startTime?: number
+      endTime?: number
+      fromId?: number
+      /**
+       * The number of data items returned each time is limited. Default 500; Max 1000.
+       */
+      limit?: number
+      recvWindow?: number
+    }): Promise<
+      {
+        id: number
+        tranId: number
+        timestamp: number
+        asset: string
+        symbol: string
+        type: CapitalFlowType
+        amount: number
+      }[]
+    >
     marginIsolatedAccount(options?: {
       symbols?: string
       recvWindow?: number
     }): Promise<IsolatedMarginAccount>
+    marginInterestHistory(options: {
+      asset?: string
+      isolatedSymbol?: string
+      startTime?: number
+      endTime?: number
+      current?: number
+      size?: number
+      timestamp?: number
+    }): Promise<{ total: number; rows: MarginInterestHistory[] }>
     marginMaxBorrow(options: {
       asset: string
       isolatedSymbol?: string
@@ -810,6 +878,67 @@ declare module 'binance-api-node' {
     privateRequest(method: HttpMethod, url: string, payload: object): Promise<unknown>
     disableMarginAccount(options: { symbol: string }): Promise<{ success: boolean; symbol: string }>
     enableMarginAccount(options: { symbol: string }): Promise<{ success: boolean; symbol: string }>
+    isolatedMarginAllPairs(options: {
+      symbol?: string
+    }): Promise<
+      {
+        base: string
+        isBuyAllowed: boolean
+        isMarginTrade: boolean
+        isSellAllowed: boolean
+        quote: string
+        symbol: string
+      }[]
+    >
+    isolatedMarginAccount(options: {
+      /**
+       * Max 5 symbols can be sent; separated by ",". e.g. "BTCUSDT,BNBUSDT,ADAUSDT"
+       */
+      symbols?: string
+      recvWindow?: number
+    }): Promise<{
+      assets: {
+        baseAsset: {
+          asset: string
+          borrowEnabled: boolean
+          borrowed: number
+          free: number
+          interest: number
+          locked: number
+          netAsset: number
+          netAssetOfBtc: number
+          repayEnabled: boolean
+          totalAsset: number
+        }
+        quoteAsset: {
+          asset: string
+          borrowEnabled: boolean
+          borrowed: number
+          free: number
+          interest: number
+          locked: number
+          netAsset: number
+          netAssetOfBtc: number
+          repayEnabled: boolean
+          totalAsset: number
+        }
+        symbol: string
+        isolatedCreated: boolean
+        enabled: boolean
+        marginLevel: number
+        marginLevelStatus:
+          | 'EXCESSIVE'
+          | 'NORMAL'
+          | 'MARGIN_CALL'
+          | 'PRE_LIQUIDATION'
+          | 'FORCE_LIQUIDATION'
+        marginRatio: number
+        indexPrice: number
+        liquidatePrice: number
+        liquidateRate: number
+        tradeEnabled: boolean
+      }[]
+    }>
     getPortfolioMarginAccountInfo(): Promise<{
       uniMMR: string
       accountEquity: string
