@@ -526,9 +526,10 @@ Latest price for a symbol, not providing the symbol will return prices for all s
 console.log(await client.prices())
 ```
 
-| Param  | Type   | Required |
-| ------ | ------ | -------- |
-| symbol | String | false    |
+| Param   | Type     | Required |
+| ------- | -------- | -------- |
+| symbol  | String   | false    |
+| symbols | String[] | false    |
 
 <details>
 <summary>Output</summary>

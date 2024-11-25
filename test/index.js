@@ -103,6 +103,13 @@ test('[REST] individual price', async t => {
   t.truthy(prices.ETHUSDT)
 })
 
+test('[REST] multiple prices', async t => {
+  const prices = await client.prices({ symbols: ['ETHUSDT', 'ETHBUSD'] })
+  t.truthy(prices)
+  t.truthy(prices.ETHUSDT)
+  t.truthy(prices.ETHBUSD)
+})
+
 test('[REST] avgPrice', async t => {
   const res = await client.avgPrice({ symbol: 'ETHBTC' })
   t.truthy(res)
