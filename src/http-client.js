@@ -5,17 +5,26 @@ import JSONbig from 'json-bigint'
 
 import 'isomorphic-fetch'
 
-const BASE = 'https://api.binance.com'
-const FUTURES = 'https://fapi.binance.com'
-const COIN_FUTURES = 'https://dapi.binance.com'
+const getEndpoint = (endpoints, path, testnet) => {
+  if (testnet) return 'https://testnet.binancefuture.com'
+
+  if (path.includes('/fapi') || path.includes('/futures'))
+    return endpoints.futures || 'https://fapi.binance.com'
+  if (path.includes('/dapi')) return endpoints.delivery || 'https://dapi.binance.com'
+  if (path.includes('/papi')) return endpoints.portfolioMargin || 'https://papi.binance.com'
+
+  return endpoints.base || 'https://api.binance.com'
+}
+
+const getDomainName = url => {
+  const match = url.match(/^(?:https?:\/\/)?(?:www\.)?([\w-]+(\.[\w-]+)+)/)
+  return match ? match[1] : null
+}
 
 const defaultGetTime = () => Date.now()
 
-const info = {
-  spot: {},
-  futures: {},
-  delivery: {},
-}
+// Singleton holding header data like rate limits.
+const info = {}
 
 /**
  * Build query string for uri encoded url based on json object
@@ -40,23 +49,18 @@ const headersMapping = {
 }
 
 const responseHandler = res => {
-  if (!res.headers || !res.url) {
-    return
-  }
+  if (!res.headers || !res.url) return
 
-  const marketName = res.url.includes(FUTURES)
-    ? 'futures'
-    : res.url.includes(COIN_FUTURES)
-    ? 'delivery'
-    : 'spot'
+  const domain = getDomainName(res.url)
+  if (!info[domain]) info[domain] = {}
 
-  Object.keys(headersMapping).forEach(key => {
+  for (const key of Object.keys(headersMapping)) {
     const outKey = headersMapping[key]
 
     if (res.headers.has(key)) {
-      info[marketName][outKey] = res.headers.get(key)
+      info[domain][outKey] = res.headers.get(key)
     }
-  })
+  }
 }
 
 /**
@@ -68,9 +72,7 @@ const sendResult = call =>
     responseHandler(res)
 
     // If response is ok, we can safely assume it is valid JSON
-    if (res.ok) {
-      return res.text().then(text => JSONbig.parse(text))
-    }
+    if (res.ok) return res.text().then(text => JSONbig.parse(text))
 
     // Errors might come from the API itself or the proxy Binance is using.
     // For API errors the response will be valid JSON,but for proxy errors
@@ -119,23 +121,19 @@ const checkParams = (name, payload, requires = []) => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const publicCall = ({ proxy, endpoints }) => (path, data, method = 'GET', headers = {}) => {
+const publicCall = ({ proxy, endpoints, testnet }) => (
+  path,
+  data,
+  method = 'GET',
+  headers = {},
+) => {
   return sendResult(
-    fetch(
-      `${
-        path.includes('/fapi') || path.includes('/futures')
-          ? endpoints.futures
-          : path.includes('/dapi')
-          ? endpoints.delivery
-          : endpoints.base
-      }${path}${makeQueryString(data)}`,
-      {
-        method,
-        json: true,
-        headers,
-        ...(proxy ? { agent: new HttpsProxyAgent(proxy) } : {}),
-      },
-    ),
+    fetch(`${getEndpoint(endpoints, path, testnet)}${path}${makeQueryString(data)}`, {
+      method,
+      json: true,
+      headers,
+      ...(proxy ? { agent: new HttpsProxyAgent(proxy) } : {}),
+    }),
   )
 }
 
@@ -173,6 +171,7 @@ const privateCall = ({
   endpoints,
   getTime = defaultGetTime,
   pubCall,
+  testnet,
 }) => (path, data = {}, method = 'GET', noData, noExtra) => {
   if (!apiKey || !apiSecret) {
     throw new Error('You need to pass an API key and secret to make authenticated calls.')
@@ -195,13 +194,7 @@ const privateCall = ({
 
     return sendResult(
       fetch(
-        `${
-          path.includes('/fapi') || path.includes('/futures')
-            ? endpoints.futures
-            : path.includes('/dapi')
-            ? endpoints.delivery
-            : endpoints.base
-        }${path}${noData ? '' : makeQueryString(newData)}`,
+        `${getEndpoint(endpoints, path, testnet)}${path}${noData ? '' : makeQueryString(newData)}`,
         {
           method,
           headers: { 'X-MBX-APIKEY': apiKey },
@@ -328,13 +321,17 @@ const aggTrades = (pubCall, payload, endpoint = '/api/v3/aggTrades') =>
 
 export default opts => {
   const endpoints = {
-    base: (opts && opts.httpBase) || BASE,
-    futures: (opts && opts.httpFutures) || FUTURES,
-    delivery: (opts && opts.httpDelivery) || COIN_FUTURES,
+    base: opts && opts.httpBase,
+    futures: opts && opts.httpFutures,
+    delivery: opts && opts.httpDelivery,
+    portfolioMargin: opts && opts.httpPortfolioMargin,
   }
 
   const pubCall = publicCall({ ...opts, endpoints })
-  const deliveryPubCall = publicCall({ ...opts, endpoints: { futures: endpoints.delivery } })
+  const deliveryPubCall = publicCall({
+    ...opts,
+    endpoints: { futures: endpoints.delivery },
+  })
   const privCall = privateCall({ ...opts, endpoints, pubCall })
   const kCall = keyCall({ ...opts, pubCall })
 
@@ -455,7 +452,12 @@ export default opts => {
     disableMarginAccount: payload =>
       privCall('/sapi/v1/margin/isolated/account', payload, 'DELETE'),
     enableMarginAccount: payload => privCall('/sapi/v1/margin/isolated/account', payload, 'POST'),
-    getPortfolioMarginAccountInfo: () => privCall('/sapi/v1/portfolio/account'),
+    portfolioMarginAccountInfo: () => privCall('/sapi/v1/portfolio/account'),
+    portfolioMarginCollateralRate: () => privCall('/sapi/v1/portfolio/collateralRate'),
+    portfolioMarginLoan: payload => privCall('/sapi/v1/portfolio/pmLoan', payload),
+    portfolioMarginLoanRepay: payload => privCall('/sapi/v1/portfolio/repay', payload, 'POST'),
+    portfolioMarginInterestHistory: payload =>
+      privCall('/sapi/v1/portfolio/interest-history', payload),
 
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
@@ -555,5 +557,77 @@ export default opts => {
     lendingAccount: payload => privCall('/sapi/v1/lending/union/account', payload),
     fundingWallet: payload => privCall('/sapi/v1/asset/get-funding-asset', payload, 'POST'),
     apiPermission: payload => privCall('/sapi/v1/account/apiRestrictions', payload),
+
+    // PAPI endpoints
+    papiPing: () => pubCall('/papi/v1/ping').then(() => true),
+    papiUmOrder: payload => privCall('/papi/v1/um/order', payload, 'POST'),
+    papiUmConditionalOrder: payload => privCall('/papi/v1/um/conditional/order', payload, 'POST'),
+    papiCmOrder: payload => privCall('/papi/v1/cm/order', payload, 'POST'),
+    papiCmConditionalOrder: payload => privCall('/papi/v1/cm/conditional/order', payload, 'POST'),
+    papiMarginOrder: payload => privCall('/papi/v1/margin/order', payload, 'POST'),
+    papiMarginLoan: payload => privCall('/papi/v1/marginLoan', payload, 'POST'),
+    papiRepayLoan: payload => privCall('/papi/v1/repayLoan', payload, 'POST'),
+    papiMarginOrderOco: payload => privCall('/papi/v1/margin/order/oco', payload, 'POST'),
+    papiUmCancelOrder: payload => privCall('/papi/v1/um/order', payload, 'DELETE'),
+    papiUmCancelAllOpenOrders: payload => privCall('/papi/v1/um/allOpenOrders', payload, 'DELETE'),
+    papiUmCancelConditionalOrder: payload =>
+      privCall('/papi/v1/um/conditional/order', payload, 'DELETE'),
+    papiUmCancelConditionalAllOpenOrders: payload =>
+      privCall('/papi/v1/um/conditional/allOpenOrders', payload, 'DELETE'),
+    papiCmCancelOrder: payload => privCall('/papi/v1/cm/order', payload, 'DELETE'),
+    papiCmCancelAllOpenOrders: payload => privCall('/papi/v1/cm/allOpenOrders', payload, 'DELETE'),
+    papiCmCancelConditionalOrder: payload =>
+      privCall('/papi/v1/cm/conditional/order', payload, 'DELETE'),
+    papiCmCancelConditionalAllOpenOrders: payload =>
+      privCall('/papi/v1/cm/conditional/allOpenOrders', payload, 'DELETE'),
+    papiMarginCancelOrder: payload => privCall('/papi/v1/margin/order', payload, 'DELETE'),
+    papiMarginCancelOrderList: payload => privCall('/papi/v1/margin/orderList', payload, 'DELETE'),
+    papiMarginCancelAllOpenOrders: payload =>
+      privCall('/papi/v1/margin/allOpenOrders', payload, 'DELETE'),
+    papiUmUpdateOrder: payload => privCall('/papi/v1/um/order', payload, 'PUT'),
+    papiCmUpdateOrder: payload => privCall('/papi/v1/cm/order', payload, 'PUT'),
+    papiUmGetOrder: payload => privCall('/papi/v1/um/order', payload),
+    papiUmGetAllOrders: payload => privCall('/papi/v1/um/allOrders', payload),
+    papiUmGetOpenOrder: payload => privCall('/papi/v1/um/openOrder', payload),
+    papiUmGetOpenOrders: payload => privCall('/papi/v1/um/openOrders', payload),
+    papiUmGetConditionalAllOrders: payload =>
+      privCall('/papi/v1/um/conditional/allOrders', payload),
+    papiUmGetConditionalOpenOrders: payload =>
+      privCall('/papi/v1/um/conditional/openOrders', payload),
+    papiUmGetConditionalOpenOrder: payload =>
+      privCall('/papi/v1/um/conditional/openOrder', payload),
+    papiUmGetConditionalOrderHistory: payload =>
+      privCall('/papi/v1/um/conditional/orderHistory', payload),
+    papiCmGetOrder: payload => privCall('/papi/v1/cm/order', payload),
+    papiCmGetAllOrders: payload => privCall('/papi/v1/cm/allOrders', payload),
+    papiCmGetOpenOrder: payload => privCall('/papi/v1/cm/openOrder', payload),
+    papiCmGetOpenOrders: payload => privCall('/papi/v1/cm/openOrders', payload),
+    papiCmGetConditionalOpenOrders: payload =>
+      privCall('/papi/v1/cm/conditional/openOrders', payload),
+    papiCmGetConditionalOpenOrder: payload =>
+      privCall('/papi/v1/cm/conditional/openOrder', payload),
+    papiCmGetConditionalAllOrders: payload =>
+      privCall('/papi/v1/cm/conditional/allOrders', payload),
+    papiCmGetConditionalOrderHistory: payload =>
+      privCall('/papi/v1/cm/conditional/orderHistory', payload),
+    papiUmGetForceOrders: payload => privCall('/papi/v1/um/forceOrders', payload),
+    papiCmGetForceOrders: payload => privCall('/papi/v1/cm/forceOrders', payload),
+    papiUmGetOrderAmendment: payload => privCall('/papi/v1/um/orderAmendment', payload),
+    papiCmGetOrderAmendment: payload => privCall('/papi/v1/cm/orderAmendment', payload),
+    papiMarginGetForceOrders: payload => privCall('/papi/v1/margin/forceOrders', payload),
+    papiUmGetUserTrades: payload => privCall('/papi/v1/um/userTrades', payload),
+    papiCmGetUserTrades: payload => privCall('/papi/v1/cm/userTrades', payload),
+    papiUmGetAdlQuantile: payload => privCall('/papi/v1/um/adlQuantile', payload),
+    papiCmGetAdlQuantile: payload => privCall('/papi/v1/cm/adlQuantile', payload),
+    papiUmFeeBurn: payload => privCall('/papi/v1/um/feeBurn', payload, 'POST'),
+    papiUmGetFeeBurn: payload => privCall('/papi/v1/um/feeBurn', payload),
+    papiMarginGetOrder: payload => privCall('/papi/v1/margin/order', payload),
+    papiMarginGetOpenOrders: payload => privCall('/papi/v1/margin/openOrders', payload),
+    papiMarginGetAllOrders: payload => privCall('/papi/v1/margin/allOrders', payload),
+    papiMarginGetOrderList: payload => privCall('/papi/v1/margin/orderList', payload),
+    papiMarginGetAllOrderList: payload => privCall('/papi/v1/margin/allOrderList', payload),
+    papiMarginGetOpenOrderList: payload => privCall('/papi/v1/margin/openOrderList', payload),
+    papiMarginGetMyTrades: payload => privCall('/papi/v1/margin/myTrades', payload),
+    papiMarginRepayDebt: payload => privCall('/papi/v1/margin/repay-debt', payload, 'POST'),
   }
 }

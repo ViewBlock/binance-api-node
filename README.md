@@ -32,6 +32,17 @@ const client2 = Binance({
 client.time().then(time => console.log(time))
 ```
 
+To use testnet, initialize it with the testnet boolean set to true.
+
+```js
+const client = Binance({
+  apiKey: 'xxx',
+  apiSecret: 'xxx',
+  getTime: xxx,
+  testnet: true,
+})
+```
+
 If you do not have an appropriate babel config, you will need to use the basic commonjs requires.
 
 ```js
@@ -93,7 +104,7 @@ Following examples will use the `await` form, which requires some configuration 
   - [cancelOpenOrders](#cancelOpenOrders)
   - [openOrders](#openorders)
   - [allOrders](#allorders)
-  - [allOrdersOCO](#allordersoco)  
+  - [allOrdersOCO](#allordersoco)
   - [accountInfo](#accountinfo)
   - [myTrades](#mytrades)
   - [dailyAccountSnapshot](#dailyAccountSnapshot)
@@ -520,7 +531,7 @@ console.log(await client.avgPrice({ symbol: 'ETHBTC' }))
 
 #### prices
 
-Latest price for a symbol, not providing the symbol will return prices for all symbols. 
+Latest price for a symbol, not providing the symbol will return prices for all symbols.
 
 ```js
 console.log(await client.prices())
@@ -1711,7 +1722,7 @@ console.log(
 ```
 | Param      | Type     | Required  |
 |------------|----------|-----------|
-| symbol     | String   | true      |  
+| symbol     | String   | true      |
 
 <details>
 <summary>Output</summary>
@@ -2090,8 +2101,8 @@ console.log(await client.withdrawHistory())
         "coin": "USDT",
         "id": "b6ae22b3aa844210a7041aee7589627c",
         "withdrawOrderId": "WITHDRAWtest123", // will not be returned if there's no withdrawOrderId for this withdraw.
-        "network": "ETH", 
-        "transferType": 0,   // 1 for internal transfer, 0 for external transfer   
+        "network": "ETH",
+        "transferType": 0,   // 1 for internal transfer, 0 for external transfer
         "status": 6,
         "txId": "0xb5ef8c13b968a406cc62a93a8bd80f9e9a906ef1b3fcf20a2e48573c17659268"
     },
@@ -2404,7 +2415,7 @@ console.log(await client.assetDetail())
             "depositStatus": true,
             "withdrawFee": 0.01,
             "withdrawStatus": true
-        }   
+        }
 }
 ```
 
@@ -2574,7 +2585,7 @@ console.log(await client.dustTransfer({ asset: ['ETH', 'LTC', 'TRX'] }))
             "transferedAmount":"0.02727099"
         }
     ]
-}   
+}
 ```
 
 </details>
@@ -2619,7 +2630,7 @@ console.log(await client.accountCoins())
                 "network": "BNB",
                 "resetAddressStatus": false,
                 "specialTips": "Both a MEMO and an Address are required to successfully deposit your BEP2-BTCB tokens to Binance.",
-                "unLockConfirm": 0,  // confirmation number for balance unlock 
+                "unLockConfirm": 0,  // confirmation number for balance unlock
                 "withdrawDesc": "Wallet Maintenance, Withdrawal Suspended", // shown only when "withdrawEnable" is false.
                 "withdrawEnable": false,
                 "withdrawFee": "0.00000220",
@@ -2638,7 +2649,7 @@ console.log(await client.accountCoins())
                 "resetAddressStatus": false,
                 "specialTips": "",
                 "unLockConfirm": 2,
-                "updateTime": 1571014804000, 
+                "updateTime": 1571014804000,
                 "withdrawEnable": true,
                 "withdrawFee": "0.00050000",
                 "withdrawIntegerMultiple": "0.00000001",
@@ -2716,8 +2727,8 @@ console.log(await client.fundingWallet())
         "free": "1",
         "locked": "0",
         "freeze": "0",
-        "withdrawing": "0",  
-        "btcValuation": "0.00000091"  
+        "withdrawing": "0",
+        "btcValuation": "0.00000091"
     }
 ]
 ```
@@ -2742,7 +2753,7 @@ console.log(await client.apiPermission())
 ```js
 {
    "ipRestrict": false,
-   "createTime": 1623840271000,   
+   "createTime": 1623840271000,
    "enableWithdrawals": false,   // This option allows you to withdraw via API. You must apply the IP Access Restriction filter in order to withdrawals
    "enableInternalTransfer": true,  // This option authorizes this key to transfer funds between your master account and your sub account instantly
    "permitsUniversalTransfer": true,  // Authorizes this key to be used for a dedicated universal transfer API to transfer multiple supported currencies. Each business's own transfer API rights are not affected by this authorization
@@ -2893,7 +2904,7 @@ console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
 {
    "assets":[
       {
-        "baseAsset": 
+        "baseAsset":
         {
           "asset": "BTC",
           "borrowEnabled": true,
@@ -2906,7 +2917,7 @@ console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
           "repayEnabled": true,
           "totalAsset": "0.00000000"
         },
-        "quoteAsset": 
+        "quoteAsset":
         {
           "asset": "USDT",
           "borrowEnabled": true,
@@ -2920,8 +2931,8 @@ console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
           "totalAsset": "0.00000000"
         },
         "symbol": "BTCUSDT"
-        "isolatedCreated": true, 
-        "marginLevel": "0.00000000", 
+        "isolatedCreated": true,
+        "marginLevel": "0.00000000",
         "marginLevelStatus": "EXCESSIVE", // "EXCESSIVE", "NORMAL", "MARGIN_CALL", "PRE_LIQUIDATION", "FORCE_LIQUIDATION"
         "marginRatio": "0.00000000",
         "indexPrice": "10000.00000000"
@@ -2932,7 +2943,7 @@ console.log(await client.marginIsolatedAccount({ symbols: 'BTCUSDT'}));
     ],
     "totalAssetOfBtc": "0.00000000",
     "totalLiabilityOfBtc": "0.00000000",
-    "totalNetAssetOfBtc": "0.00000000" 
+    "totalNetAssetOfBtc": "0.00000000"
 }
 ```
 
@@ -2998,7 +3009,7 @@ console.log(await client.marginMaxBorrow({ asset: 'BTC', isolatedSymbol: 'BTCUSD
 | Param | Type   | Required | Description    |
 | ----- | ------ | -------- | -------------- |
 | asset | String | true     |
-| isolatedSymbol| String | false | 
+| isolatedSymbol| String | false |
 | recvWindow | Number | false     | No more than 60000 |
 
 <details>
@@ -3053,7 +3064,7 @@ console.log(await client.marginIsolatedTransfer({ asset: 'USDT', symbol: 'BNBUSD
 
 <details>
 <summary>Output</summary>
-    
+
 ```js
 {
     //transaction id
@@ -3083,7 +3094,7 @@ console.log(await client.marginIsolatedTransferHistory({ symbol: 'BNBUSDT'}));
 
 <details>
 <summary>Output</summary>
-    
+
 ```js
 {
   "rows": [
@@ -3115,8 +3126,8 @@ console.log(await client.marginIsolatedTransferHistory({ symbol: 'BNBUSDT'}));
 #### marginOrder
 
 ```js
-console.log(await client.marginOrder({ 
-  symbol: 'BTCUSDT', 
+console.log(await client.marginOrder({
+  symbol: 'BTCUSDT',
   type: 'MARKET',
   side: 'SELL',
   quantity: '10',
@@ -3128,10 +3139,10 @@ console.log(await client.marginOrder({
 | symbol            | String  | true     | asset, such as `BTC`      |
 | isIsolated        | String  | false    | for isolated margin or not, `TRUE`, `FALSE`, default `FALSE`
 | side              | String  | true     | `BUY` `SELL` |
-| type              | String  | true     |  
+| type              | String  | true     |
 | quantity          | String  | false    |
 | quoteOrderQty     | String  | false    |
-| price             | String  | false    | 
+| price             | String  | false    |
 | stopPrice         | String  | false    | Used with `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders.
 | newClientOrderId  | String  | false    | A unique id among open orders. Automatically generated if not sent.
 | icebergQty        | Boolean | false    | Used with `LIMIT`, `STOP_LOSS_LIMIT`, and `TAKE_PROFIT_LIMIT` to create an iceberg order.
@@ -3142,7 +3153,7 @@ console.log(await client.marginOrder({
 
 <details>
 <summary>Output</summary>
-    
+
 ```js
 {
   "symbol": "BTCUSDT",
@@ -3243,8 +3254,8 @@ console.log(
 #### marginOrderOco
 
 ```js
-console.log(await client.marginOrderOco({ 
-  symbol: 'AUDIOUSDT', 
+console.log(await client.marginOrderOco({
+  symbol: 'AUDIOUSDT',
   type: 'MARKET',
   side: 'SELL',
   quantity: '10',
@@ -3256,10 +3267,10 @@ console.log(await client.marginOrderOco({
 | symbol            | String  | true     | asset, such as `BTC`      |
 | isIsolated        | String  | false    | for isolated margin or not, `TRUE`, `FALSE`, default `FALSE`
 | side              | String  | true     | `BUY` `SELL` |
-| type              | String  | true     |  
+| type              | String  | true     |
 | quantity          | String  | false    |
 | quoteOrderQty     | String  | false    |
-| price             | String  | false    | 
+| price             | String  | false    |
 | stopPrice         | String  | false    | Used with `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders.
 | stopLimitPrice    | String  | false    | Used with `STOP_LOSS_LIMIT` orders.
 | newClientOrderId  | String  | false    | A unique id among open orders. Automatically generated if not sent.
@@ -3271,7 +3282,7 @@ console.log(await client.marginOrderOco({
 
 <details>
 <summary>Output</summary>
-    
+
 ```js
 {
   "orderListId": 45514668,
@@ -3395,7 +3406,7 @@ console.log(
 | Param      | Type     | Required  |
 |------------|----------|-----------|
 | symbol     | String   | true      |
-| isIsolated | String   | false     |  
+| isIsolated | String   | false     |
 
 <details>
 <summary>Output</summary>
@@ -3426,8 +3437,8 @@ console.log(
 Query Margin Account's Order
 
 ```js
-console.log(await client.marginGetOrder({ 
-  symbol: 'BNBBTC', 
+console.log(await client.marginGetOrder({
+  symbol: 'BNBBTC',
   orderId: '213205622',
   }));
 ```
@@ -3436,13 +3447,13 @@ console.log(await client.marginGetOrder({
 | -------------------- | ------ | -------- | ------------------------- |
 | symbol               | String | true     | asset,such as BTC         |
 | isIsolated           | String | false    | for isolated margin or not, `TRUE`, `FALSE`, default `FALSE`
-| orderId              | String | false    | 
-| origClientOrderId    | String | false    | 
+| orderId              | String | false    |
+| origClientOrderId    | String | false    |
 | recvWindow           | Number | false    | The value cannot be greater than `60000`
 
 <details>
 <summary>Output</summary>
-    
+
 ```js
 {
    "clientOrderId": "ZwfQzuDIGpceVhKW5DvCmO",
@@ -3551,7 +3562,7 @@ Check an order's status.
   - order status is CANCELED or EXPIRED, <b>AND</b>
   - order has NO filled trade, <b>AND</b>
   - created time + 7 days < current time
-  
+
 
 | Name              | Type   | Mandatory | Description      |
 | ----------------- | ------ | --------  | ---------------- |
@@ -3599,7 +3610,7 @@ console.log(
     "priceRate": "0.3",                 // callback rate, only return with TRAILING_STOP_MARKET order
     "updateTime": 1579276756075,        // update time
     "workingType": "CONTRACT_PRICE",
-    "priceProtect": false               // if conditional order trigger is protected   
+    "priceProtect": false               // if conditional order trigger is protected
 }
 ```
 </details>
@@ -3612,7 +3623,7 @@ Get all account orders; active, canceled, or filled.
   - order status is CANCELED or EXPIRED, <b>AND</b>
   - order has NO filled trade, <b>AND</b>
   - created time + 7 days < current time
-  
+
 | Name              | Type   | Mandatory | Description            |
 | ----------------- | ------ | --------  | ---------------------- |
 | symbol            | STRING | YES       | The pair name          |
@@ -3663,7 +3674,7 @@ console.log(
     "priceRate": "0.3",                 // callback rate, only return with TRAILING_STOP_MARKET order
     "updateTime": 1579276756075,        // update time
     "workingType": "CONTRACT_PRICE",
-    "priceProtect": false               // if conditional order trigger is protected   
+    "priceProtect": false               // if conditional order trigger is protected
   }
 ]
 ```
@@ -3875,13 +3886,13 @@ console.log(
         "income": "-0.37500000",        // income amount
         "asset": "USDT",                // income asset
         "info":"TRANSFER",              // extra information
-        "time": 1570608000000,      
+        "time": 1570608000000,
         "tranId":"9689322392",          // transaction id
         "tradeId":""                    // trade id, if existing
     },
     {
         "symbol": "BTCUSDT",
-        "incomeType": "COMMISSION", 
+        "incomeType": "COMMISSION",
         "income": "-0.01000000",
         "asset": "USDT",
         "info":"COMMISSION",
@@ -3996,9 +4007,9 @@ console.log(
                 "bracket": 1,   // Notional bracket
                 "initialLeverage": 75,  // Max initial leverage for this bracket
                 "notionalCap": 10000,  // Cap notional of this bracket
-                "notionalFloor": 0,  // Notional threshold of this bracket 
+                "notionalFloor": 0,  // Notional threshold of this bracket
                 "maintMarginRatio": 0.0065, // Maintenance ratio for this bracket
-                "cum":0 // Auxiliary number for quick calculation 
+                "cum":0 // Auxiliary number for quick calculation
 
             },
         ]
@@ -4017,7 +4028,7 @@ Check an order's status.
   - order status is CANCELED or EXPIRED, <b>AND</b>
   - order has NO filled trade, <b>AND</b>
   - created time + 7 days < current time
-  
+
 
 | Name              | Type   | Mandatory | Description      |
 | ----------------- | ------ | --------  | ---------------- |
@@ -4078,7 +4089,7 @@ Get all account orders; active, canceled, or filled.
   - order status is CANCELED or EXPIRED, <b>AND</b>
   - order has NO filled trade, <b>AND</b>
   - created time + 7 days < current time
-  
+
 | Name              | Type   | Mandatory | Description            |
 | ----------------- | ------ | --------  | ---------------------- |
 | symbol            | STRING | YES       | The pair name          |
@@ -4347,7 +4358,7 @@ console.log(
     },
     {
         "symbol": "BTCUSD_200925",
-        "incomeType": "COMMISSION", 
+        "incomeType": "COMMISSION",
         "income": "-0.01000000",
         "asset": "BTC",
         "info":"",
@@ -4477,7 +4488,7 @@ console.log(
                 "qtyCap": 50,  // upper edge of base asset quantity
                 "qtylFloor": 0,  // lower edge of base asset quantity
                 "maintMarginRatio": 0.004 // maintenance margin rate
-                "cum": 0.0  // Auxiliary number for quick calculation 
+                "cum": 0.0  // Auxiliary number for quick calculation
             },
         ]
     }
@@ -4505,7 +4516,7 @@ Live depth market data feed. The first parameter can either
 be a single symbol string or an array of symbols. If you wish
 to specify the update speed (can either be `1000ms` or `100ms`)
 of the stream then append the speed at the end of the symbol
-string as follows: `ETHBTC@100ms` 
+string as follows: `ETHBTC@100ms`
 
 ```js
 client.ws.depth('ETHBTC', depth => {
@@ -4550,7 +4561,7 @@ Top levels bids and asks, pushed every second. Valid levels are 5, 10, or 20.
 Accepts an array of objects for multiple depths. If you wish
 to specify the update speed (can either be `1000ms` or `100ms`)
 of the stream then append the speed at the end of the symbol
-string as follows: `ETHBTC@100ms` 
+string as follows: `ETHBTC@100ms`
 
 ```js
 client.ws.partialDepth({ symbol: 'ETHBTC', level: 10 }, depth => {
@@ -4859,7 +4870,7 @@ const clean = client.ws.futuresDepth('ETHBTC', depth => {
 {
   "e": "depthUpdate", // Event type
   "E": 123456789,     // Event time
-  "T": 123456788,     // transaction time 
+  "T": 123456788,     // transaction time
   "s": "BTCUSDT",      // Symbol
   "U": 157,           // First update ID in event
   "u": 160,           // Final update ID in event
@@ -5157,9 +5168,9 @@ const futuresUser = await client.ws.futuresUser(msg => {
       crossWalletBalance:'100.12345678'
     },
     {
-      asset:'BNB',           
+      asset:'BNB',
       walletBalance:'1.00000000',
-      crossWalletBalance:'0.00000000'         
+      crossWalletBalance:'0.00000000'
     }
   ],
   positions: [

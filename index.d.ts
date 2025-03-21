@@ -9,6 +9,7 @@ declare module 'binance-api-node' {
     wsBase?: string
     wsFutures?: string
     proxy?: string
+    testnet?: boolean
   }): Binance
 
   export type ErrorCodes_LT =
@@ -252,12 +253,12 @@ declare module 'binance-api-node' {
   }
 
   export interface DustTransferResult {
-    amount: string;
-    fromAsset: string;
-    operateTime: number;
-    serviceChargeAmount: string;
-    tranId: number;
-    transferedAmount: string;
+    amount: string
+    fromAsset: string
+    operateTime: number
+    serviceChargeAmount: string
+    tranId: number
+    transferedAmount: string
   }
 
   export interface DustTransfer {
@@ -380,7 +381,7 @@ declare module 'binance-api-node' {
 
   export type marginCancelOpenOrdersOptions = {
     symbol: string
-    useServerTime?: boolean,
+    useServerTime?: boolean
     isIsolated?: 'TRUE' | 'FALSE' | boolean
   }
 
@@ -620,15 +621,12 @@ declare module 'binance-api-node' {
       recvWindow?: number
     }): Promise<DepositHistoryResponse>
     dustLog(options: {
-        startTime?: number
-        endTime?: number
-        recvWindow?: number
-        timestamp: number
+      startTime?: number
+      endTime?: number
+      recvWindow?: number
+      timestamp: number
     }): DustLog
-    dustTransfer(options: {
-      asset: string[],
-      recvWindow?: number,
-    })
+    dustTransfer(options: { asset: string[]; recvWindow?: number })
     universalTransfer(options: UniversalTransfer): Promise<{ tranId: number }>
     universalTransferHistory(
       options: UniversalTransferHistory,
@@ -816,6 +814,52 @@ declare module 'binance-api-node' {
       accountMaintMargin: string
       accountStatus: string
     }>
+    portfolioMarginCollateralRate(): Promise<
+      {
+        asset: string
+        collateralRate: string
+      }[]
+    >
+    pPortfolioMarginLoan(options?: {
+      startTime?: number
+      endTime?: number
+      limit?: number
+    }): Promise<
+      {
+        loanId: number
+        loanCoin: string
+        loanAmount: string
+        collateralAccounts: {
+          coin: string
+          amount: string
+          collateralLevel: string
+        }[]
+        loanTime: number
+        status: number
+      }[]
+    >
+    portfolioMarginLoanRepay(options: {
+      loanId: number
+      recvWindow?: number
+    }): Promise<{
+      tranId: number
+    }>
+    portfolioMarginInterestHistory(options?: {
+      asset?: string
+      startTime?: number
+      endTime?: number
+      size?: number
+      recvWindow?: number
+    }): Promise<
+      {
+        asset: string
+        interest: string
+        interestAccruedTime: number
+        interestRate: string
+        principal: string
+        type: string
+      }[]
+    >
   }
 
   export interface HttpError extends Error {
@@ -1102,8 +1146,8 @@ declare module 'binance-api-node' {
     ocoAllowed: boolean
     orderTypes: T[]
     permissions: TradingType_LT[]
-    pricePrecision:number,
-    quantityPrecision:number
+    pricePrecision: number
+    quantityPrecision: number
     quoteAsset: string
     quoteAssetPrecision: number
     quoteCommissionPrecision: number
@@ -1448,7 +1492,7 @@ declare module 'binance-api-node' {
     GTC = 'GTC',
     IOC = 'IOC',
     FOK = 'FOK',
-    GTE_GTC = 'GTE_GTC'
+    GTE_GTC = 'GTE_GTC',
   }
 
   export type OrderRejectReason_LT =
@@ -1667,9 +1711,9 @@ declare module 'binance-api-node' {
     listClientOrderId: string
     transactionTime: number
     orders: Array<{
-        symbol: string
-        orderId: number
-        clientOrderId: string
+      symbol: string
+      orderId: number
+      clientOrderId: string
     }>
   }
 
@@ -2380,5 +2424,109 @@ declare module 'binance-api-node' {
   export const enum WorkingType {
     MARK_PRICE = 'MARK_PRICE',
     CONTRACT_PRICE = 'CONTRACT_PRICE',
+  }
+
+  // PAPI related types
+
+  export interface PapiRequest {
+    recvWindow?: number
+    timestamp?: number
+  }
+
+  export interface PapiUmOrderParams extends PapiRequest {
+    symbol: string
+    side: OrderSide_LT
+    type: OrderType_LT
+    timeInForce?: TimeInForce_LT
+    quantity?: string
+    price?: string
+    newClientOrderId?: string
+    stopPrice?: string
+    icebergQty?: string
+    newOrderRespType?: OrderResponseType_LT
+    reduceOnly?: boolean
+    closePosition?: boolean
+    activationPrice?: string
+    callbackRate?: string
+    workingType?: WorkingType_LT
+    priceProtect?: boolean
+    newOrderRespType?: OrderResponseType_LT
+    positionSide?: PositionSide_LT
+  }
+
+  export interface PapiCmOrderParams extends PapiRequest {
+    symbol: string
+    side: OrderSide_LT
+    type: OrderType_LT
+    timeInForce?: TimeInForce_LT
+    quantity?: string
+    price?: string
+    newClientOrderId?: string
+    stopPrice?: string
+    closePosition?: boolean
+    activationPrice?: string
+    callbackRate?: string
+    workingType?: WorkingType_LT
+    priceProtect?: boolean
+    newOrderRespType?: OrderResponseType_LT
+    positionSide?: PositionSide_LT
+    reduceOnly?: boolean
+  }
+
+  export interface PapiMarginOrderParams extends PapiRequest {
+    symbol: string
+    side: OrderSide_LT
+    type: OrderType_LT
+    timeInForce?: TimeInForce_LT
+    quantity?: string
+    price?: string
+    newClientOrderId?: string
+    stopPrice?: string
+    icebergQty?: string
+    newOrderRespType?: OrderResponseType_LT
+    sideEffectType?: SideEffectType_LT
+    isIsolated?: boolean
+  }
+
+  export interface PapiMarginLoanParams extends PapiRequest {
+    asset: string
+    amount: string
+    isIsolated?: boolean
+    symbol?: string
+  }
+
+  export interface PapiMarginRepayParams extends PapiRequest {
+    asset: string
+    amount: string
+    isIsolated?: boolean
+    symbol?: string
+  }
+
+  export interface PapiMarginOrderOcoParams extends PapiRequest {
+    symbol: string
+    side: OrderSide_LT
+    quantity: string
+    price: string
+    stopPrice: string
+    stopLimitPrice?: string
+    stopLimitTimeInForce?: TimeInForce_LT
+    listClientOrderId?: string
+    limitClientOrderId?: string
+    stopClientOrderId?: string
+    newOrderRespType?: OrderResponseType_LT
+    sideEffectType?: SideEffectType_LT
+    isIsolated?: boolean
+  }
+
+  export interface PapiUmCancelOrderParams extends PapiRequest {
+    symbol: string
+    orderId?: number
+    origClientOrderId?: string
+    newClientOrderId?: string
+  }
+
+  export interface PapiMarginRepayDebtParams extends PapiRequest {
+    asset: string
+    amount: string
   }
 }
