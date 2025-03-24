@@ -745,6 +745,11 @@ declare module 'binance-api-node' {
       limit?: number
       recvWindow?: number
     }): Promise<FuturesIncomeResult[]>
+    futuresGetDataStream(): Promise<{
+      listenKey: string
+    }>,
+    futuresKeepDataStream(): Promise<{}>,
+    futuresCloseDataStream(): Promise<{}>,
     marginOrder(options: NewOrderMargin): Promise<Order>
     marginOrderOco(options: NewOcoOrderMargin): Promise<MarginOcoOrder>
     marginGetOrder(options: {
