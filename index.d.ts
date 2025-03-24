@@ -633,7 +633,7 @@ declare module 'binance-api-node' {
     ): Promise<UniversalTransferHistoryResponse>
     futuresPing(): Promise<boolean>
     futuresTime(): Promise<number>
-    futuresExchangeInfo(): Promise<ExchangeInfo<FuturesOrderType_LT>>
+    futuresExchangeInfo(): Promise<FuturesExchangeInfo>
     futuresBook(options: { symbol: string; limit?: number }): Promise<OrderBook>
     futuresCandles(options: CandlesOptions): Promise<CandleChartResult[]>
     futuresMarkPriceCandles(options: CandlesOptions): Promise<CandleChartResult[]>
@@ -1053,11 +1053,12 @@ declare module 'binance-api-node' {
     limit: number
   }
 
-  export type ExchangeFilterType_LT = 'EXCHANGE_MAX_NUM_ORDERS' | 'EXCHANGE_MAX_ALGO_ORDERS'
+  export type ExchangeFilterType_LT = 'EXCHANGE_MAX_NUM_ORDERS' | 'EXCHANGE_MAX_NUM_ALGO_ORDERS' | 'EXCHANGE_MAX_NUM_ICEBERG_ORDERS'
 
   export const enum ExchangeFilterType {
     EXCHANGE_MAX_NUM_ORDERS = 'EXCHANGE_MAX_NUM_ORDERS',
-    EXCHANGE_MAX_ALGO_ORDERS = 'EXCHANGE_MAX_ALGO_ORDERS',
+    EXCHANGE_MAX_NUM_ALGO_ORDERS = 'EXCHANGE_MAX_NUM_ALGO_ORDERS',
+    EXCHANGE_MAX_NUM_ICEBERG_ORDERS = 'EXCHANGE_MAX_NUM_ICEBERG_ORDERS',
   }
 
   export interface ExchangeFilter {
@@ -1068,19 +1069,32 @@ declare module 'binance-api-node' {
   export type SymbolFilterType_LT =
     | 'PRICE_FILTER'
     | 'PERCENT_PRICE'
+    | 'PERCENT_PRICE_BY_SIDE'
     | 'LOT_SIZE'
+    | 'MARKET_LOT_SIZE'
     | 'MIN_NOTIONAL'
+    | 'NOTIONAL'
     | 'MAX_NUM_ORDERS'
-    | 'MAX_ALGO_ORDERS'
+    | 'MAX_NUM_ALGO_ORDERS'
+    | 'MAX_NUM_ICEBERG_ORDERS'
+    | 'ICEBERG_PARTS'
+    | 'MAX_POSITION'
+    | 'TRAILING_DELTA'
 
   export const enum SymbolFilterType {
     PRICE_FILTER = 'PRICE_FILTER',
     PERCENT_PRICE = 'PERCENT_PRICE',
+    PERCENT_PRICE_BY_SIDE = 'PERCENT_PRICE_BY_SIDE',
     LOT_SIZE = 'LOT_SIZE',
     MARKET_LOT_SIZE = 'MARKET_LOT_SIZE',
     MIN_NOTIONAL = 'MIN_NOTIONAL',
+    NOTIONAL = 'NOTIONAL',
     MAX_NUM_ORDERS = 'MAX_NUM_ORDERS',
-    MAX_ALGO_ORDERS = 'MAX_ALGO_ORDERS',
+    MAX_NUM_ALGO_ORDERS = 'MAX_NUM_ALGO_ORDERS',
+    MAX_NUM_ICEBERG_ORDERS = 'MAX_NUM_ICEBERG_ORDERS',
+    ICEBERG_PARTS = 'ICEBERG_PARTS',
+    MAX_POSITION = 'MAX_POSITION',
+    TRAILING_DELTA = 'TRAILING_DELTA',
   }
 
   export interface SymbolPriceFilter {
@@ -1113,7 +1127,7 @@ declare module 'binance-api-node' {
 
   export interface SymbolMinNotionalFilter {
     filterType: SymbolFilterType.MIN_NOTIONAL
-    notional: string
+    minNotional: string
   }
 
   export interface SymbolMaxNumOrdersFilter {
@@ -1121,19 +1135,66 @@ declare module 'binance-api-node' {
     maxNumOrders: number
   }
 
-  export interface SymbolMaxAlgoOrdersFilter {
-    filterType: SymbolFilterType.MAX_ALGO_ORDERS
+  export interface SymbolMaxNumAlgoOrdersFilter {
+    filterType: SymbolFilterType.MAX_NUM_ALGO_ORDERS
     maxNumAlgoOrders: number
+  }
+
+  export interface SymbolPercentPricePerSideFilter {
+    filterType: SymbolFilterType.PERCENT_PRICE_BY_SIDE
+    bidMultiplierUp: string
+    bidMultiplierDown: string
+    askMultiplierUp: string
+    askMultiplierDown: string
+    avgPriceMins: number
+  }
+
+  export interface SymbolNotionalFilter {
+    filterType: SymbolFilterType.NOTIONAL
+    minNotional: string
+    applyMinToMarket: boolean
+    maxNotional: string
+    applyMaxToMarket: boolean
+    avgPriceMins: number
+  }
+
+  export interface SymbolMaxNumIcebergOrdersFilter {
+    filterType: SymbolFilterType.MAX_NUM_ICEBERG_ORDERS
+    maxNumIcebergOrders: number
+  }
+
+  export interface SymbolIcebergPartsFilter {
+    filterType: SymbolFilterType.ICEBERG_PARTS
+    limit: number
+  }
+
+  export interface SymbolMaxPositionFilter {
+    filterType: SymbolFilterType.MAX_POSITION
+    maxPosition: string
+  }
+
+  export interface SymbolTrailingDeltaFilter {
+    filterType: SymbolFilterType.TRAILING_DELTA
+    minTrailingAboveDelta: number
+    maxTrailingAboveDelta: number
+    minTrailingBelowDelta: number
+    maxTrailingBelowDelta: number
   }
 
   export type SymbolFilter =
     | SymbolPriceFilter
     | SymbolPercentPriceFilter
+    | SymbolPercentPricePerSideFilter
     | SymbolLotSizeFilter
     | SymbolMarketLotSizeFilter
     | SymbolMinNotionalFilter
+    | SymbolNotionalFilter
     | SymbolMaxNumOrdersFilter
-    | SymbolMaxAlgoOrdersFilter
+    | SymbolMaxNumAlgoOrdersFilter
+    | SymbolMaxNumIcebergOrdersFilter
+    | SymbolIcebergPartsFilter
+    | SymbolMaxPositionFilter
+    | SymbolTrailingDeltaFilter
 
   export interface Symbol<T = OrderType_LT> {
     baseAsset: string
@@ -1169,6 +1230,111 @@ declare module 'binance-api-node' {
     lastUpdateId: number
     asks: Bid[]
     bids: Bid[]
+  }
+
+  export const enum FuturesSymbolFilterType {
+    PRICE_FILTER = 'PRICE_FILTER',
+    LOT_SIZE = 'LOT_SIZE',
+    MARKET_LOT_SIZE = 'MARKET_LOT_SIZE',
+    MAX_NUM_ORDERS = 'MAX_NUM_ORDERS',
+    MAX_NUM_ALGO_ORDERS = 'MAX_NUM_ALGO_ORDERS',
+    PERCENT_PRICE = 'PERCENT_PRICE',
+    MIN_NOTIONAL = 'MIN_NOTIONAL',
+  }
+
+  export interface FuturesSymbolPriceFilter {
+    filterType: FuturesSymbolFilterType.PRICE_FILTER
+    minPrice: string
+    maxPrice: string
+    tickSize: string
+  }
+
+  export interface FuturesSymbolLotSizeFilter {
+    filterType: FuturesSymbolFilterType.LOT_SIZE
+    minQty: string
+    maxQty: string
+    stepSize: string
+  }
+
+  export interface FuturesSymbolMarketLotSizeFilter {
+    filterType: FuturesSymbolFilterType.MARKET_LOT_SIZE
+    minQty: string
+    maxQty: string
+    stepSize: string
+  }
+
+  export interface FuturesSymbolPercentPriceFilter {
+    filterType: FuturesSymbolFilterType.PERCENT_PRICE
+    multiplierDown: string
+    multiplierUp: string
+    multiplierDecimal: number
+  }
+
+  export interface FuturesSymbolMinNotionalFilter {
+    filterType: FuturesSymbolFilterType.MIN_NOTIONAL
+    notional: string
+  }
+
+  export interface FuturesSymbolMaxNumOrdersFilter {
+    filterType: FuturesSymbolFilterType.MAX_NUM_ORDERS
+    limit: number
+  }
+
+  export interface FuturesSymbolMaxAlgoOrdersFilter {
+    filterType: FuturesSymbolFilterType.MAX_NUM_ALGO_ORDERS
+    limit: number
+  }
+
+  export type FuturesSymbolFilter = 
+    | FuturesSymbolPriceFilter
+    | FuturesSymbolLotSizeFilter
+    | FuturesSymbolMarketLotSizeFilter
+    | FuturesSymbolMaxNumOrdersFilter
+    | FuturesSymbolMaxAlgoOrdersFilter
+    | FuturesSymbolPercentPriceFilter
+    | FuturesSymbolMinNotionalFilter
+
+  export interface FuturesSymbol {
+    baseAsset: string
+    baseAssetPrecision: number
+    contractType: FuturesContractType,
+    deliveryDate: number
+    filters: FuturesSymbolFilter[],
+    liquidationFee: string
+    maintMarginPercent: string
+    marginAsset: string
+    marketTakeBound: string
+    maxMoveOrderLimit: number
+    onboardDate: number
+    orderTypes: FuturesOrderType_LT
+    pair: string
+    pricePrecision: number
+    quantityPrecision: number
+    quoteAsset: string
+    quotePrecision: number
+    requiredMarginPercent: string
+    settlePlan: number
+    status: FuturesContractStatus
+    symbol: string
+    timeInForce: FuturesTimeInForce
+    triggerProtect: string
+    underlyingType: string
+    underlyingSubType: string[]
+  }
+
+  export interface FuturesAsset_EI {
+    asset: string
+    marginAvailable: boolean
+    autoAssetExchange: string
+  }
+
+  export interface FuturesExchangeInfo {
+    timezone: string
+    serverTime: number
+    rateLimits: ExchangeInfoRateLimit[]
+    exchangeFilters: ExchangeFilter[]
+    assets: FuturesAsset_EI[]
+    symbols: FuturesSymbol[]
   }
 
   interface NewFuturesOrderBase {
@@ -1478,6 +1644,25 @@ declare module 'binance-api-node' {
     TRAILING_STOP_MARKET = 'TRAILING_STOP_MARKET',
   }
 
+  export type FuturesContractType = 
+    | 'PERPETUAL'
+    | 'CURRENT_MONTH'
+    | 'NEXT_MONTH'
+    | 'CURRENT_QUARTER'
+    | 'NEXT_QUARTER'
+    | 'PERPETUAL_DELIVERING'
+
+  export type FuturesContractStatus =
+    | 'PENDING_TRADING'
+    | 'TRADING'
+    | 'PRE_DELIVERING'
+    | 'DELIVERING'
+    | 'DELIVERED'
+    | 'PRE_SETTLE'
+    | 'SETTLING'
+    | 'CLOSE'
+
+
   export type NewOrderRespType_LT = 'ACK' | 'RESULT' | 'FULL'
 
   export const enum NewOrderRespType {
@@ -1487,6 +1672,8 @@ declare module 'binance-api-node' {
   }
 
   export type TimeInForce_LT = 'GTC' | 'IOC' | 'FOK' | 'GTE_GTC'
+
+  export type FuturesTimeInForce = 'GTC' | 'IOC' | 'FOK' | 'GTX' | 'GTD'
 
   export const enum TimeInForce {
     GTC = 'GTC',
