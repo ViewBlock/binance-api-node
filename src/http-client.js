@@ -483,6 +483,12 @@ export default opts => {
       ),
     futuresFundingRate: payload =>
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
+    futuresOpenInterest: function futuresOpenInterest(payload) {
+      return pubCall('/fapi/v1/openInterest', payload);
+    },
+    futuresOpenInterestHist: function futuresOpenInterestHist(payload) {
+      return pubCall('/futures/data/openInterestHist', payload);
+    },
 
     futuresOrder: payload => order(privCall, payload, '/fapi/v1/order'),
     futuresBatchOrders: payload => privCall('/fapi/v1/batchOrders', payload, 'POST'),
