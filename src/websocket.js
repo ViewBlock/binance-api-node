@@ -570,7 +570,6 @@ const trades = (payload, cb, transform = true) => {
     const w = openWebSocket(`${endpoints.base}/${symbol.toLowerCase()}@trade`)
     w.onmessage = msg => {
       const obj = JSONbig.parse(msg.data)
-
       cb(transform ? tradesTransform(obj) : obj)
     }
 
@@ -933,12 +932,9 @@ const futuresAllMarkPrices = (payload, cb, transform = true) => {
 }
 
 export default opts => {
-  if (opts && opts.wsBase) 
-    endpoints.base = opts.wsBase
-  if (opts && opts.wsFutures) 
-    endpoints.futures = opts.wsFutures
-  if (opts && opts.wsDelivery) 
-    endpoints.delivery = opts.wsDelivery
+  if (opts && opts.wsBase) endpoints.base = opts.wsBase
+  if (opts && opts.wsFutures) endpoints.futures = opts.wsFutures
+  if (opts && opts.wsDelivery) endpoints.delivery = opts.wsDelivery
 
   if (opts && opts.proxy) {
     wsOptions.proxy = opts.proxy

@@ -412,7 +412,6 @@ export default opts => {
     deliveryCloseDataStream: payload =>
       privCall('/dapi/v1/listenKey', payload, 'DELETE', false, true),
 
-
     // Futures endpoints
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
@@ -511,8 +510,8 @@ export default opts => {
     // PAPI endpoints
     papiPing: () => privCall('/papi/v1/ping'),
     papiAccount: () => privCall('/papi/v1/account'),
-    papiBalance: (payload) => privCall('/papi/v1/balance', payload),
-    papiUmOrder: (payload) => privCall('/papi/v1/um/order', payload),
+    papiBalance: payload => privCall('/papi/v1/balance', payload),
+    papiUmOrder: payload => privCall('/papi/v1/um/order', payload),
     papiUmConditionalOrder: payload => privCall('/papi/v1/um/conditional/order', payload, 'POST'),
     papiCmOrder: payload => privCall('/papi/v1/cm/order', payload, 'POST'),
     papiCmConditionalOrder: payload => privCall('/papi/v1/cm/conditional/order', payload, 'POST'),
@@ -616,26 +615,21 @@ export default opts => {
       privCall('/sapi/v1/portfolio/interest-history', payload),
 
     // Savings endpoints
-    savingsAccount: (payload) => privCall('/sapi/v1/lending/union/account'),
-    savingsPurchase: (payload) =>
-      privCall('/sapi/v1/lending/union/purchase', payload, 'POST'),
-    savingsRedeem: (payload) =>
-      privCall('/sapi/v1/lending/union/redeem', payload, 'POST'),
+    savingsAccount: payload => privCall('/sapi/v1/lending/union/account', payload),
+    savingsPurchase: payload => privCall('/sapi/v1/lending/union/purchase', payload, 'POST'),
+    savingsRedeem: payload => privCall('/sapi/v1/lending/union/redeem', payload, 'POST'),
     fundingWallet: payload => privCall('/sapi/v1/asset/get-funding-asset', payload, 'POST'),
-    convertTradeFlow: (payload) =>
-      privCall('/sapi/v1/convert/tradeFlow', payload),
+    convertTradeFlow: payload => privCall('/sapi/v1/convert/tradeFlow', payload),
     rebateTaxQuery: () => privCall('/sapi/v1/rebate/taxQuery'),
-    payTradeHistory: (payload) =>
-      privCall('/sapi/v1/pay/transactions', payload),
+    payTradeHistory: payload => privCall('/sapi/v1/pay/transactions', payload),
     apiRestrictions: payload => privCall('/sapi/v1/account/apiRestrictions', payload),
 
     // Mining endpoints
-    miningHashrateResaleRequest: (payload) =>
+    miningHashrateResaleRequest: payload =>
       privCall('/sapi/v1/mining/hash-transfer/config', payload, 'POST'),
-    miningHashrateResaleCancel: (payload) =>
+    miningHashrateResaleCancel: payload =>
       privCall('/sapi/v1/mining/hash-transfer/config/cancel', payload, 'POST'),
-    miningStatistics: (payload) =>
-      privCall('/sapi/v1/mining/statistics/user/status', payload),
+    miningStatistics: payload => privCall('/sapi/v1/mining/statistics/user/status', payload),
 
     // Utility endpoints
     privateRequest: (method, url, payload) => privCall(url, payload, method),
