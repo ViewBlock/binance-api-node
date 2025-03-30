@@ -67,8 +67,8 @@ const depth = (payload, cb, transform = true, variator) => {
           ? variator === 'futures'
             ? futuresDepthTransform(obj)
             : variator === 'delivery'
-            ? deliveryDepthTransform(obj)
-            : depthTransform(obj)
+              ? deliveryDepthTransform(obj)
+              : depthTransform(obj)
           : obj,
       )
     }
@@ -131,8 +131,8 @@ const partialDepth = (payload, cb, transform = true, variator) => {
           ? variator === 'futures'
             ? futuresPartDepthTransform(level, obj)
             : variator === 'delivery'
-            ? deliveryPartDepthTransform(level, obj)
-            : partialDepthTransform(symbol, level, obj)
+              ? deliveryPartDepthTransform(level, obj)
+              : partialDepthTransform(symbol, level, obj)
           : obj,
       )
     }
@@ -340,8 +340,8 @@ const ticker = (payload, cb, transform = true, variator) => {
         variator === 'futures'
           ? endpoints.futures
           : variator === 'delivery'
-          ? endpoints.delivery
-          : endpoints.base
+            ? endpoints.delivery
+            : endpoints.base
       }/${symbol.toLowerCase()}@ticker`,
     )
 
@@ -352,8 +352,8 @@ const ticker = (payload, cb, transform = true, variator) => {
           ? variator === 'futures'
             ? futuresTickerTransform(obj)
             : variator === 'delivery'
-            ? deliveryTickerTransform(obj)
-            : tickerTransform(obj)
+              ? deliveryTickerTransform(obj)
+              : tickerTransform(obj)
           : obj,
       )
     }
@@ -371,8 +371,8 @@ const allTickers = (cb, transform = true, variator) => {
       variator === 'futures'
         ? endpoints.futures
         : variator === 'delivery'
-        ? endpoints.delivery
-        : endpoints.base
+          ? endpoints.delivery
+          : endpoints.base
     }/!ticker@arr`,
   )
 
@@ -383,8 +383,8 @@ const allTickers = (cb, transform = true, variator) => {
         ? variator === 'futures'
           ? arr.map(m => futuresTickerTransform(m))
           : variator === 'delivery'
-          ? arr.map(m => deliveryTickerTransform(m))
-          : arr.map(m => tickerTransform(m))
+            ? arr.map(m => deliveryTickerTransform(m))
+            : arr.map(m => tickerTransform(m))
         : arr,
     )
   }
@@ -436,8 +436,8 @@ const customSubStream = (payload, cb, variator) => {
         variator === 'futures'
           ? endpoints.futures
           : variator === 'delivery'
-          ? endpoints.delivery
-          : endpoints.base
+            ? endpoints.delivery
+            : endpoints.base
       }/${sub}`,
     )
 
@@ -487,8 +487,8 @@ const aggTrades = (payload, cb, transform = true, variator) => {
         variator === 'futures'
           ? endpoints.futures
           : variator === 'delivery'
-          ? endpoints.delivery
-          : endpoints.base
+            ? endpoints.delivery
+            : endpoints.base
       }/${symbol.toLowerCase()}@aggTrade`,
     )
     w.onmessage = msg => {
@@ -767,27 +767,33 @@ const futuresUserTransforms = {
   }),
 }
 
-export const userEventHandler = (cb, transform = true, variator) => msg => {
-  const { e: type, ...rest } = JSONbig.parse(msg.data)
+export const userEventHandler =
+  (cb, transform = true, variator) =>
+  msg => {
+    const { e: type, ...rest } = JSONbig.parse(msg.data)
 
-  cb(
-    variator === 'futures' || variator === 'delivery'
-      ? transform && futuresUserTransforms[type]
-        ? futuresUserTransforms[type](rest)
-        : { type, ...rest }
-      : transform && userTransforms[type]
-      ? userTransforms[type](rest)
-      : { type, ...rest },
-  )
-}
+    cb(
+      variator === 'futures' || variator === 'delivery'
+        ? transform && futuresUserTransforms[type]
+          ? futuresUserTransforms[type](rest)
+          : { type, ...rest }
+        : transform && userTransforms[type]
+          ? userTransforms[type](rest)
+          : { type, ...rest },
+    )
+  }
 
-const userOpenHandler = (cb, transform = true) => () => {
-  cb({ [transform ? 'eventType' : 'type']: 'open' })
-}
+const userOpenHandler =
+  (cb, transform = true) =>
+  () => {
+    cb({ [transform ? 'eventType' : 'type']: 'open' })
+  }
 
-const userErrorHandler = (cb, transform = true) => error => {
-  cb({ [transform ? 'eventType' : 'type']: 'error', error })
-}
+const userErrorHandler =
+  (cb, transform = true) =>
+  error => {
+    cb({ [transform ? 'eventType' : 'type']: 'error', error })
+  }
 
 const STREAM_METHODS = ['get', 'keep', 'close']
 
@@ -866,8 +872,8 @@ const user = (opts, variator) => (cb, transform) => {
               variator === 'futures'
                 ? endpoints.futures
                 : variator === 'delivery'
-                ? endpoints.delivery
-                : endpoints.base
+                  ? endpoints.delivery
+                  : endpoints.base
             }/${listenKey}`,
           )
 

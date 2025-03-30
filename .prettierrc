@@ -1,6 +1,16 @@
-printWidth: 100
-semi: false
-singleQuote: true
-trailingComma: all
-tabWidth: 2
-arrowParens: avoid
+{
+  "printWidth": 100,
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "arrowParens": "avoid",
+  "overrides": [
+    {
+      "files": "*.ts",
+      "options": {
+        "parser": "typescript"
+      }
+    }
+  ]
+}

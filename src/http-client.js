@@ -121,21 +121,18 @@ const checkParams = (name, payload, requires = []) => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const publicCall = ({ proxy, endpoints, testnet }) => (
-  path,
-  data,
-  method = 'GET',
-  headers = {},
-) => {
-  return sendResult(
-    fetch(`${getEndpoint(endpoints, path, testnet)}${path}${makeQueryString(data)}`, {
-      method,
-      json: true,
-      headers,
-      ...(proxy ? { agent: new HttpsProxyAgent(proxy) } : {}),
-    }),
-  )
-}
+const publicCall =
+  ({ proxy, endpoints, testnet }) =>
+  (path, data, method = 'GET', headers = {}) => {
+    return sendResult(
+      fetch(`${getEndpoint(endpoints, path, testnet)}${path}${makeQueryString(data)}`, {
+        method,
+        json: true,
+        headers,
+        ...(proxy ? { agent: new HttpsProxyAgent(proxy) } : {}),
+      }),
+    )
+  }
 
 /**
  * Factory method for partial private calls against the api
@@ -145,15 +142,17 @@ const publicCall = ({ proxy, endpoints, testnet }) => (
  * @param {string} method HTTB VERB, GET by default
  * @returns {object} The api response
  */
-const keyCall = ({ apiKey, pubCall }) => (path, data, method = 'GET') => {
-  if (!apiKey) {
-    throw new Error('You need to pass an API key to make this call.')
-  }
+const keyCall =
+  ({ apiKey, pubCall }) =>
+  (path, data, method = 'GET') => {
+    if (!apiKey) {
+      throw new Error('You need to pass an API key to make this call.')
+    }
 
-  return pubCall(path, data, method, {
-    'X-MBX-APIKEY': apiKey,
-  })
-}
+    return pubCall(path, data, method, {
+      'X-MBX-APIKEY': apiKey,
+    })
+  }
 
 /**
  * Factory method for private calls against the api
@@ -164,47 +163,42 @@ const keyCall = ({ apiKey, pubCall }) => (path, data, method = 'GET') => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const privateCall = ({
-  apiKey,
-  apiSecret,
-  proxy,
-  endpoints,
-  getTime = defaultGetTime,
-  pubCall,
-  testnet,
-}) => (path, data = {}, method = 'GET', noData, noExtra) => {
-  if (!apiKey || !apiSecret) {
-    throw new Error('You need to pass an API key and secret to make authenticated calls.')
-  }
-
-  return (data && data.useServerTime
-    ? pubCall('/api/v3/time').then(r => r.serverTime)
-    : Promise.resolve(getTime())
-  ).then(timestamp => {
-    if (data) {
-      delete data.useServerTime
+const privateCall =
+  ({ apiKey, apiSecret, proxy, endpoints, getTime = defaultGetTime, pubCall, testnet }) =>
+  (path, data = {}, method = 'GET', noData, noExtra) => {
+    if (!apiKey || !apiSecret) {
+      throw new Error('You need to pass an API key and secret to make authenticated calls.')
     }
 
-    const signature = crypto
-      .createHmac('sha256', apiSecret)
-      .update(makeQueryString({ ...data, timestamp }).substr(1))
-      .digest('hex')
+    return (
+      data && data.useServerTime
+        ? pubCall('/api/v3/time').then(r => r.serverTime)
+        : Promise.resolve(getTime())
+    ).then(timestamp => {
+      if (data) {
+        delete data.useServerTime
+      }
 
-    const newData = noExtra ? data : { ...data, timestamp, signature }
+      const signature = crypto
+        .createHmac('sha256', apiSecret)
+        .update(makeQueryString({ ...data, timestamp }).substr(1))
+        .digest('hex')
 
-    return sendResult(
-      fetch(
-        `${getEndpoint(endpoints, path, testnet)}${path}${noData ? '' : makeQueryString(newData)}`,
-        {
-          method,
-          headers: { 'X-MBX-APIKEY': apiKey },
-          json: true,
-          ...(proxy ? { agent: new HttpsProxyAgent(proxy) } : {}),
-        },
-      ),
-    )
-  })
-}
+      const newData = noExtra ? data : { ...data, timestamp, signature }
+
+      return sendResult(
+        fetch(
+          `${getEndpoint(endpoints, path, testnet)}${path}${noData ? '' : makeQueryString(newData)}`,
+          {
+            method,
+            headers: { 'X-MBX-APIKEY': apiKey },
+            json: true,
+            ...(proxy ? { agent: new HttpsProxyAgent(proxy) } : {}),
+          },
+        ),
+      )
+    })
+  }
 
 export const candleFields = [
   'openTime',
