@@ -82,3 +82,39 @@ export const WithdrawStatus = {
   FAILURE: 5,
   COMPLETED: 6,
 }
+
+export const SavingsStatus = {
+  HOLDING: 'HOLDING',
+  REDEEMED: 'REDEEMED',
+  TRANSFERRED: 'TRANSFERRED',
+}
+
+export const SavingsType = {
+  FAST: 'FAST',
+  NORMAL: 'NORMAL',
+}
+
+export const MiningAlgo = {
+  SHA256: 'sha256',
+  SCRYPT: 'scrypt',
+  ETHASH: 'ethash',
+  X11: 'x11',
+}
+
+export const MiningStatus = {
+  HASH_RATE: 'hash_rate',
+  REJECTED: 'rejected',
+  EARNINGS: 'earnings',
+}
+
+export const ConvertStatus = {
+  PROCESSING: 'PROCESSING',
+  SUCCESS: 'SUCCESS',
+  FAILURE: 'FAILURE',
+}
+
+export const PayStatus = {
+  PENDING: 'PENDING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+}

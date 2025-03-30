@@ -933,13 +933,12 @@ const futuresAllMarkPrices = (payload, cb, transform = true) => {
 }
 
 export default opts => {
-  if (opts && opts.wsBase) {
+  if (opts && opts.wsBase) 
     endpoints.base = opts.wsBase
-  }
-
-  if (opts && opts.wsFutures) {
+  if (opts && opts.wsFutures) 
     endpoints.futures = opts.wsFutures
-  }
+  if (opts && opts.wsDelivery) 
+    endpoints.delivery = opts.wsDelivery
 
   if (opts && opts.proxy) {
     wsOptions.proxy = opts.proxy

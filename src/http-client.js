@@ -336,44 +336,33 @@ export default opts => {
   const kCall = keyCall({ ...opts, pubCall })
 
   return {
+    // Generic endpoints
     getInfo: () => info,
     ping: () => pubCall('/api/v3/ping').then(() => true),
     time: () => pubCall('/api/v3/time').then(r => r.serverTime),
     exchangeInfo: payload => pubCall('/api/v3/exchangeInfo', payload),
 
+    // Market Data endpoints
     book: payload => book(pubCall, payload),
     aggTrades: payload => aggTrades(pubCall, payload),
     candles: payload => candles(pubCall, payload),
-
     trades: payload =>
       checkParams('trades', payload, ['symbol']) && pubCall('/api/v3/trades', payload),
     tradesHistory: payload =>
       checkParams('tradesHitory', payload, ['symbol']) &&
       kCall('/api/v3/historicalTrades', payload),
-
     dailyStats: payload => pubCall('/api/v3/ticker/24hr', payload),
     prices: payload =>
       pubCall('/api/v3/ticker/price', payload).then(r =>
         (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur.price), out), {}),
       ),
-
     avgPrice: payload => pubCall('/api/v3/avgPrice', payload),
-
     allBookTickers: () =>
       pubCall('/api/v3/ticker/bookTicker').then(r =>
         (Array.isArray(r) ? r : [r]).reduce((out, cur) => ((out[cur.symbol] = cur), out), {}),
       ),
 
-    /**
-     * Call unmanaged private call to Binance api; you need a key and secret
-     */
-    privateRequest: (method, url, payload) => privCall(url, payload, method),
-
-    /**
-     * Call unmanaged public call to Binance api
-     */
-    publicRequest: (method, url, payload) => pubCall(url, payload, method),
-
+    // Order endpoints
     order: payload => order(privCall, payload, '/api/v3/order'),
     orderOco: payload => orderOco(privCall, payload, '/api/v3/order/oco'),
     orderTest: payload => order(privCall, payload, '/api/v3/order/test'),
@@ -381,16 +370,14 @@ export default opts => {
     getOrderOco: payload => privCall('/api/v3/orderList', payload),
     cancelOrder: payload => privCall('/api/v3/order', payload, 'DELETE'),
     cancelOrderOco: payload => privCall('/api/v3/orderList', payload, 'DELETE'),
-
     cancelOpenOrders: payload => privCall('/api/v3/openOrders', payload, 'DELETE'),
     openOrders: payload => privCall('/api/v3/openOrders', payload),
     allOrders: payload => privCall('/api/v3/allOrders', payload),
-
     allOrdersOCO: payload => privCall('/api/v3/allOrderList', payload),
 
+    // Account endpoints
     accountInfo: payload => privCall('/api/v3/account', payload),
     myTrades: payload => privCall('/api/v3/myTrades', payload),
-
     withdraw: payload => privCall('/sapi/v1/capital/withdraw/apply', payload, 'POST'),
     withdrawHistory: payload => privCall('/sapi/v1/capital/withdraw/history', payload),
     depositHistory: payload => privCall('/sapi/v1/capital/deposit/hisrec', payload),
@@ -400,65 +387,33 @@ export default opts => {
     accountSnapshot: payload => privCall('/sapi/v1/accountSnapshot', payload),
     universalTransfer: payload => privCall('/sapi/v1/asset/transfer', payload, 'POST'),
     universalTransferHistory: payload => privCall('/sapi/v1/asset/transfer', payload),
-
     dustLog: payload => privCall('/sapi/v1/asset/dribblet', payload),
     dustTransfer: payload => privCall('/sapi/v1/asset/dust', payload, 'POST'),
     accountCoins: payload => privCall('/sapi/v1/capital/config/getall', payload),
-
     getBnbBurn: payload => privCall('/sapi/v1/bnbBurn', payload),
     setBnbBurn: payload => privCall('/sapi/v1/bnbBurn', payload, 'POST'),
-
     capitalConfigs: () => privCall('/sapi/v1/capital/config/getall'),
 
+    // User Data Stream endpoints
     getDataStream: () => privCall('/api/v3/userDataStream', null, 'POST', true),
     keepDataStream: payload => privCall('/api/v3/userDataStream', payload, 'PUT', false, true),
     closeDataStream: payload => privCall('/api/v3/userDataStream', payload, 'DELETE', false, true),
-
     marginGetDataStream: () => privCall('/sapi/v1/userDataStream', null, 'POST', true),
     marginKeepDataStream: payload =>
       privCall('/sapi/v1/userDataStream', payload, 'PUT', false, true),
     marginCloseDataStream: payload =>
       privCall('/sapi/v1/userDataStream', payload, 'DELETE', false, true),
-
     futuresGetDataStream: () => privCall('/fapi/v1/listenKey', null, 'POST', true),
     futuresKeepDataStream: payload => privCall('/fapi/v1/listenKey', payload, 'PUT', false, true),
     futuresCloseDataStream: payload =>
       privCall('/fapi/v1/listenKey', payload, 'DELETE', false, true),
-
     deliveryGetDataStream: () => privCall('/dapi/v1/listenKey', null, 'POST', true),
     deliveryKeepDataStream: payload => privCall('/dapi/v1/listenKey', payload, 'PUT', false, true),
     deliveryCloseDataStream: payload =>
       privCall('/dapi/v1/listenKey', payload, 'DELETE', false, true),
 
-    marginAllOrders: payload => privCall('/sapi/v1/margin/allOrders', payload),
-    marginOrder: payload => order(privCall, payload, '/sapi/v1/margin/order'),
-    marginOrderOco: payload => orderOco(privCall, payload, '/sapi/v1/margin/order/oco'),
-    marginGetOrder: payload => privCall('/sapi/v1/margin/order', payload),
-    marginGetOrderOco: payload => privCall('/sapi/v1/margin/orderList', payload),
-    marginCancelOrder: payload => privCall('/sapi/v1/margin/order', payload, 'DELETE'),
-    marginOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload),
-    marginCancelOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload, 'DELETE'),
-    marginAccountInfo: payload => privCall('/sapi/v1/margin/account', payload),
-    marginMyTrades: payload => privCall('/sapi/v1/margin/myTrades', payload),
-    marginRepay: payload => privCall('/sapi/v1/margin/repay', payload, 'POST'),
-    marginLoan: payload => privCall('/sapi/v1/margin/loan', payload, 'POST'),
-    marginIsolatedAccount: payload => privCall('/sapi/v1/margin/isolated/account', payload),
-    marginMaxBorrow: payload => privCall('/sapi/v1/margin/maxBorrowable', payload),
-    marginCreateIsolated: payload => privCall('/sapi/v1/margin/isolated/create', payload, 'POST'),
-    marginIsolatedTransfer: payload =>
-      privCall('/sapi/v1/margin/isolated/transfer', payload, 'POST'),
-    marginIsolatedTransferHistory: payload =>
-      privCall('/sapi/v1/margin/isolated/transfer', payload),
-    disableMarginAccount: payload =>
-      privCall('/sapi/v1/margin/isolated/account', payload, 'DELETE'),
-    enableMarginAccount: payload => privCall('/sapi/v1/margin/isolated/account', payload, 'POST'),
-    portfolioMarginAccountInfo: () => privCall('/sapi/v1/portfolio/account'),
-    portfolioMarginCollateralRate: () => privCall('/sapi/v1/portfolio/collateralRate'),
-    portfolioMarginLoan: payload => privCall('/sapi/v1/portfolio/pmLoan', payload),
-    portfolioMarginLoanRepay: payload => privCall('/sapi/v1/portfolio/repay', payload, 'POST'),
-    portfolioMarginInterestHistory: payload =>
-      privCall('/sapi/v1/portfolio/interest-history', payload),
 
+    // Futures endpoints
     futuresPing: () => pubCall('/fapi/v1/ping').then(() => true),
     futuresTime: () => pubCall('/fapi/v1/time').then(r => r.serverTime),
     futuresExchangeInfo: () => pubCall('/fapi/v1/exchangeInfo'),
@@ -483,7 +438,6 @@ export default opts => {
       ),
     futuresFundingRate: payload =>
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
-
     futuresOrder: payload => order(privCall, payload, '/fapi/v1/order'),
     futuresBatchOrders: payload => privCall('/fapi/v1/batchOrders', payload, 'POST'),
     futuresGetOrder: payload => privCall('/fapi/v1/order', payload),
@@ -504,7 +458,10 @@ export default opts => {
     futuresPositionMargin: payload => privCall('/fapi/v1/positionMargin', payload, 'POST'),
     futuresMarginHistory: payload => privCall('/fapi/v1/positionMargin/history', payload),
     futuresIncome: payload => privCall('/fapi/v1/income', payload),
+    getMultiAssetsMargin: payload => privCall('/fapi/v1/multiAssetsMargin', payload),
+    setMultiAssetsMargin: payload => privCall('/fapi/v1/multiAssetsMargin', payload, 'POST'),
 
+    // Delivery endpoints
     deliveryPing: () => pubCall('/dapi/v1/ping').then(() => true),
     deliveryTime: () => pubCall('/dapi/v1/time').then(r => r.serverTime),
     deliveryExchangeInfo: () => pubCall('/dapi/v1/exchangeInfo'),
@@ -530,7 +487,6 @@ export default opts => {
       ),
     deliveryFundingRate: payload =>
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/dapi/v1/fundingRate', payload),
-
     deliveryOrder: payload => order(privCall, payload, '/dapi/v1/order'),
     deliveryBatchOrders: payload => privCall('/dapi/v1/batchOrders', payload, 'POST'),
     deliveryGetOrder: payload => privCall('/dapi/v1/order', payload),
@@ -552,15 +508,11 @@ export default opts => {
     deliveryMarginHistory: payload => privCall('/dapi/v1/positionMargin/history', payload),
     deliveryIncome: payload => privCall('/dapi/v1/income', payload),
 
-    getMultiAssetsMargin: payload => privCall('/fapi/v1/multiAssetsMargin', payload),
-    setMultiAssetsMargin: payload => privCall('/fapi/v1/multiAssetsMargin', payload, 'POST'),
-    lendingAccount: payload => privCall('/sapi/v1/lending/union/account', payload),
-    fundingWallet: payload => privCall('/sapi/v1/asset/get-funding-asset', payload, 'POST'),
-    apiPermission: payload => privCall('/sapi/v1/account/apiRestrictions', payload),
-
     // PAPI endpoints
-    papiPing: () => pubCall('/papi/v1/ping').then(() => true),
-    papiUmOrder: payload => privCall('/papi/v1/um/order', payload, 'POST'),
+    papiPing: () => privCall('/papi/v1/ping'),
+    papiAccount: () => privCall('/papi/v1/account'),
+    papiBalance: (payload) => privCall('/papi/v1/balance', payload),
+    papiUmOrder: (payload) => privCall('/papi/v1/um/order', payload),
     papiUmConditionalOrder: payload => privCall('/papi/v1/um/conditional/order', payload, 'POST'),
     papiCmOrder: payload => privCall('/papi/v1/cm/order', payload, 'POST'),
     papiCmConditionalOrder: payload => privCall('/papi/v1/cm/conditional/order', payload, 'POST'),
@@ -629,5 +581,64 @@ export default opts => {
     papiMarginGetOpenOrderList: payload => privCall('/papi/v1/margin/openOrderList', payload),
     papiMarginGetMyTrades: payload => privCall('/papi/v1/margin/myTrades', payload),
     papiMarginRepayDebt: payload => privCall('/papi/v1/margin/repay-debt', payload, 'POST'),
+
+    // Margin endpoints
+    marginAllOrders: payload => privCall('/sapi/v1/margin/allOrders', payload),
+    marginOrder: payload => order(privCall, payload, '/sapi/v1/margin/order'),
+    marginOrderOco: payload => orderOco(privCall, payload, '/sapi/v1/margin/order/oco'),
+    marginGetOrder: payload => privCall('/sapi/v1/margin/order', payload),
+    marginGetOrderOco: payload => privCall('/sapi/v1/margin/orderList', payload),
+    marginCancelOrder: payload => privCall('/sapi/v1/margin/order', payload, 'DELETE'),
+    marginOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload),
+    marginCancelOpenOrders: payload => privCall('/sapi/v1/margin/openOrders', payload, 'DELETE'),
+    marginAccountInfo: payload => privCall('/sapi/v1/margin/account', payload),
+    marginMyTrades: payload => privCall('/sapi/v1/margin/myTrades', payload),
+    marginRepay: payload => privCall('/sapi/v1/margin/repay', payload, 'POST'),
+    marginLoan: payload => privCall('/sapi/v1/margin/loan', payload, 'POST'),
+    marginIsolatedAccount: payload => privCall('/sapi/v1/margin/isolated/account', payload),
+    marginMaxBorrow: payload => privCall('/sapi/v1/margin/maxBorrowable', payload),
+    marginCreateIsolated: payload => privCall('/sapi/v1/margin/isolated/create', payload, 'POST'),
+    marginIsolatedTransfer: payload =>
+      privCall('/sapi/v1/margin/isolated/transfer', payload, 'POST'),
+    marginIsolatedTransferHistory: payload =>
+      privCall('/sapi/v1/margin/isolated/transfer', payload),
+    disableMarginAccount: payload =>
+      privCall('/sapi/v1/margin/isolated/account', payload, 'DELETE'),
+    enableMarginAccount: payload => privCall('/sapi/v1/margin/isolated/account', payload, 'POST'),
+    marginAccount: () => privCall('/sapi/v1/margin/account'),
+
+    // Portfolio Margin endpoints
+    portfolioMarginAccountInfo: () => privCall('/sapi/v1/portfolio/account'),
+    portfolioMarginCollateralRate: () => privCall('/sapi/v1/portfolio/collateralRate'),
+    portfolioMarginLoan: payload => privCall('/sapi/v1/portfolio/pmLoan', payload),
+    portfolioMarginLoanRepay: payload => privCall('/sapi/v1/portfolio/repay', payload, 'POST'),
+    portfolioMarginInterestHistory: payload =>
+      privCall('/sapi/v1/portfolio/interest-history', payload),
+
+    // Savings endpoints
+    savingsAccount: (payload) => privCall('/sapi/v1/lending/union/account'),
+    savingsPurchase: (payload) =>
+      privCall('/sapi/v1/lending/union/purchase', payload, 'POST'),
+    savingsRedeem: (payload) =>
+      privCall('/sapi/v1/lending/union/redeem', payload, 'POST'),
+    fundingWallet: payload => privCall('/sapi/v1/asset/get-funding-asset', payload, 'POST'),
+    convertTradeFlow: (payload) =>
+      privCall('/sapi/v1/convert/tradeFlow', payload),
+    rebateTaxQuery: () => privCall('/sapi/v1/rebate/taxQuery'),
+    payTradeHistory: (payload) =>
+      privCall('/sapi/v1/pay/transactions', payload),
+    apiRestrictions: payload => privCall('/sapi/v1/account/apiRestrictions', payload),
+
+    // Mining endpoints
+    miningHashrateResaleRequest: (payload) =>
+      privCall('/sapi/v1/mining/hash-transfer/config', payload, 'POST'),
+    miningHashrateResaleCancel: (payload) =>
+      privCall('/sapi/v1/mining/hash-transfer/config/cancel', payload, 'POST'),
+    miningStatistics: (payload) =>
+      privCall('/sapi/v1/mining/statistics/user/status', payload),
+
+    // Utility endpoints
+    privateRequest: (method, url, payload) => privCall(url, payload, method),
+    publicRequest: (method, url, payload) => pubCall(url, payload, method),
   }
 }
