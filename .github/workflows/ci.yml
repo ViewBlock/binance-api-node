@@ -1,0 +1,48 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+jobs:
+  code-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Install OpenVPN
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openvpn
+          
+      - name: Download IVPN config
+        run: |
+          wget https://www.ivpn.net/repo/configs/ivpn-openvpn-config/ivpn-openvpn-config.zip
+          unzip ivpn-openvpn-config.zip
+          cp ivpn-openvpn-config/OpenVPN256/US1.ivpn.net.udp.ovpn client.ovpn
+          
+      - name: Start IVPN connection
+        run: |
+          echo "${{ secrets.IVPN_ACCOUNT_NUMBER }}" > auth.txt
+          echo "${{ secrets.IVPN_ACCOUNT_NUMBER }}" >> auth.txt
+          sudo openvpn --config client.ovpn --auth-user-pass auth.txt &
+          sleep 10  # Wait for VPN to establish
+
+      - name: Run typecheck
+        run: yarn typecheck
+
+      - name: Run checks
+        run: yarn ci
+
+      - name: Cleanup VPN
+        if: always()
+        run: |
+          sudo killall openvpn || true
+          rm -f auth.txt
