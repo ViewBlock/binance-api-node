@@ -26,13 +26,12 @@ jobs:
         run: |
           wget -O ivpn-config.zip "https://api.ivpn.net/v5/config/ivpn-openvpn-config.zip?country=US&city=Las+Vegas&host=us-nv1.gw.ivpn.net&proto=udp&port=2049"
           unzip ivpn-config.zip
-          cp ivpn-openvpn-config/USA-Las_Vegas.ovpn client.ovpn
           
       - name: Start IVPN connection
         run: |
           echo "${{ secrets.IVPN_ACCOUNT_NUMBER }}" > auth.txt
           echo "${{ secrets.IVPN_ACCOUNT_NUMBER }}" >> auth.txt
-          sudo openvpn --config client.ovpn --auth-user-pass auth.txt &
+          sudo openvpn --config USA-Las_Vegas.ovpn --auth-user-pass auth.txt &
           sleep 10  # Wait for VPN to establish
 
       - name: Run typecheck
