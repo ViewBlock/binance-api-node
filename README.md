@@ -1,4 +1,4 @@
-# binance-api-node [![build](https://github.com/ViewBlock/binance-api-node/actions/workflows/ci.yaml/badge.svg?style=flat-square)](https://github.com/ViewBlock/binance-api-node/actions) [![bnb](https://img.shields.io/badge/binance-winner-yellow.svg?style=flat-square)](https://github.com/binance-exchange/binance-api-node)
+# binance-api-node [![build](https://img.shields.io/github/actions/workflow/status/viewblock/binance-api-node/ci.yml?style=flat-square)](https://github.com/ViewBlock/binance-api-node/actions) [![bnb](https://img.shields.io/badge/binance-winner-yellow.svg?style=flat-square)](https://github.com/binance-exchange/binance-api-node)
 
 > A complete API wrapper for the [Binance](https://binance.com) API.
 
